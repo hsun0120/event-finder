@@ -15,4 +15,7 @@
     </string>
     <string name="action_user_sign_in">Sign in as user</string>
     <string name="action_organizer_sign_in">Sign in as organizer</string>
+    <string name="invalidDateMessage">You can\'t create an even in the past!</string>
+    <string name="nameFieldHint">Event name</string>
+    <string name="dateFieldHint">Date</string>
 </resources>

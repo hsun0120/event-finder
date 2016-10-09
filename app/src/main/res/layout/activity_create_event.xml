@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="Event name"
+        android:hint="@string/nameFieldHint"
         android:ems="10"
         android:layout_alignParentTop="true"
         android:layout_marginTop="15dp"
@@ -25,7 +25,7 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:hint="Date"
+        android:hint="@string/dateFieldHint"
         android:clickable="true"
         android:onClick="pickDate"
         android:textAppearance="@android:style/TextAppearance.Large"
@@ -34,10 +34,10 @@
         android:layout_marginTop="14dp"
         android:textColor="#FF000000"
         android:layout_below="@+id/eventName"
-        android:layout_alignStart="@+id/datePicker" />
+        android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="You can't create an even in the past!"
+        android:text="@string/invalidDateMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
@@ -49,13 +49,21 @@
         android:layout_centerHorizontal="true"
         android:textAlignment="center" />
 
-    <DatePicker
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/dateCard"
         android:visibility="invisible"
-        android:id="@+id/datePicker"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:headerBackground="#FF1A237E" />
+        android:layout_alignEnd="@+id/invalidDateMessage">
+
+        <DatePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/datePicker"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:headerBackground="#FF1A237E" />
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

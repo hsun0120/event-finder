@@ -2,6 +2,7 @@ package edu.ucsd.cse110.group50.eventfinder;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -30,8 +31,9 @@ public class CreateEvent extends AppCompatActivity {
 
     public void pickDate( View v ) {
 
+        CardView dateCard = (CardView) findViewById( R.id.dateCard );
+        dateCard.setVisibility( View.VISIBLE );
         DatePicker datePicker = (DatePicker) findViewById( R.id.datePicker );
-        datePicker.setVisibility( View.VISIBLE );
         datePicker.init( selectedYear, selectedMonth, selectedDay, new DateChangeListener() );
 
     }
@@ -41,7 +43,8 @@ public class CreateEvent extends AppCompatActivity {
         @Override
         public void onDateChanged( DatePicker datePicker, int year, int month, int day ) {
 
-            datePicker.setVisibility( View.INVISIBLE );
+            CardView dateCard = (CardView) findViewById( R.id.dateCard );
+            dateCard.setVisibility( View.INVISIBLE );
             selectedDay = day;
             selectedMonth = month;
             selectedYear = year;
