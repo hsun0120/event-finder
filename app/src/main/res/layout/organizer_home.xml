@@ -5,7 +5,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:id="@+id/activity_organizer_home"
+    tools:context="edu.ucsd.cse110.group50.eventfinder.OrganizerHome">
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="53dp"
@@ -52,7 +54,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop="parent"
             android:layout_marginTop="125dp"
             android:id="@+id/Title1"
             android:textStyle="normal|bold"
@@ -65,7 +66,6 @@
             android:id="@+id/description1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:layout_constraintTop="parent"
             android:layout_marginTop="145dp"
             tools:text=" Date: \n Location \n"
             android:textAlignment="viewStart" />
