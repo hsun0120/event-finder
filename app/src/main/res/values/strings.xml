@@ -18,6 +18,13 @@
     <string name="invalidDateMessage">You can\'t create an even in the past!</string>
     <string name="nameFieldHint">Event name</string>
     <string name="dateFieldHint">Date</string>
+    <string name="timeFieldHint">Time</string>
     <string name="title_event_list">Events</string>
     <string name="title_event_detail">Event Detail</string>
+    <string name="passOptionLabel">Require password?</string>
+    <string name="passFieldHint">Password</string>
+    <string name="restrictionsLabel">Guest restrictions?</string>
+    <string name="restrictionsHint">Restrictions...</string>
+    <string name="descriptionHint">Event description...</string>
+    <string name="createEventDoneButton">Create event!</string>
 </resources>
