@@ -17,6 +17,7 @@
     <string name="action_organizer_sign_in">Sign in as organizer</string>
     <string name="invalidDateMessage">You can\'t create an even in the past!</string>
     <string name="nameFieldHint">Event name</string>
+    <string name="addressFieldHint">Event address</string>
     <string name="dateFieldHint">Date</string>
     <string name="timeFieldHint">Time</string>
     <string name="title_event_list">Events</string>

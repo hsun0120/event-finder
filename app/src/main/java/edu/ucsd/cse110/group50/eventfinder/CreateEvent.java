@@ -153,9 +153,10 @@ public class CreateEvent extends AppCompatActivity {
     private void setFormClickable( boolean clickable ) {
 
         EditText name = (EditText) findViewById( R.id.eventName );
+        EditText address = (EditText) findViewById( R.id.eventAddress );
         TextView date = (TextView) findViewById( R.id.eventDate ) ;
         TextView time = (TextView) findViewById( R.id.eventTime ) ;
-        CheckBox passwordToggle = (CheckBox) findViewById( R.id.passOption );
+        Switch passwordToggle = (Switch) findViewById( R.id.passOption );
         EditText password = (EditText) findViewById( R.id.eventPassword );
         Switch restrictionsToggle = (Switch) findViewById( R.id.restrictionsToggle );
         EditText restrictions = (EditText) findViewById( R.id.eventRestrictions );
@@ -163,6 +164,7 @@ public class CreateEvent extends AppCompatActivity {
         Button finish = (Button) findViewById( R.id.doneButton );
 
         name.setFocusable( clickable );
+        address.setFocusable( clickable );
         date.setClickable( clickable );
         time.setClickable( clickable );
         passwordToggle.setClickable( clickable );

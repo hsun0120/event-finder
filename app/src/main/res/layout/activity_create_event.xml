@@ -26,6 +26,14 @@
             android:layout_marginTop="15dp"
             android:id="@+id/eventName" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:ems="10"
+            android:hint="@string/addressFieldHint"
+            android:id="@+id/eventAddress" />
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -79,7 +87,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/eventPassArea" >
 
-            <CheckBox
+            <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/passOption"
@@ -145,7 +153,8 @@
         app:srcCompat="@android:color/background_light"
         android:alpha="0.75"
         android:visibility="invisible"
-        android:id="@+id/backgroundBlur"/>
+        android:id="@+id/backgroundBlur"
+        tools:ignore="ContentDescription" />
 
     <android.support.v7.widget.CardView
          android:layout_width="wrap_content"
@@ -167,7 +176,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                style="?android:attr/buttonBarStyle" >
 
                 <Button
                     android:text="Cancel"
@@ -175,7 +185,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/cancelTime"
                     android:layout_weight="1"
-                    android:onClick="closeTime" />
+                    android:onClick="closeTime"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:text="Set"
@@ -183,7 +194,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/setTime"
                     android:layout_weight="1"
-                    android:onClick="setTime" />
+                    android:onClick="setTime"
+                    style="?android:attr/buttonBarButtonStyle" />
             </LinearLayout>
 
         </LinearLayout>
