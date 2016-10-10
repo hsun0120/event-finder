@@ -3,6 +3,7 @@ package edu.ucsd.cse110.group50.eventfinder;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -43,6 +45,10 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+
+
+
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -82,8 +88,11 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_user_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mEmail_User_signInButton = (Button) findViewById(R.id.email_user_sign_in_button);
+        Button mEmail_Organizer_signInButton = (Button) findViewById(R.id.email_organizer_sign_in_button);
+
+
+        mEmail_User_signInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -92,6 +101,9 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+
+        OnClickButtonListner();
     }
 
     private void populateAutoComplete() {
@@ -289,6 +301,26 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+
+    public void OnClickButtonListner(){
+
+        Button button = (Button)findViewById(R.id.email_organizer_sign_in_button);
+        button.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(LoginScreen.this, OrganizerHome.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+    }
+
+
+
+
+
+
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
