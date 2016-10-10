@@ -70,14 +70,14 @@ public class EventListActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 //        toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         View recyclerView = findViewById(R.id.event_list);
         assert recyclerView != null;
@@ -157,6 +157,7 @@ public class EventListActivity extends AppCompatActivity {
 //        }
 
 
+
         public void toMapView(View v){
             Intent intent = new Intent( EventListActivity.this, MapViewActivity.class);
            startActivity(intent);
@@ -188,5 +189,10 @@ public class EventListActivity extends AppCompatActivity {
                 return super.toString() + " '" + mContentView.getText() + "'";
             }
         }
+    }
+
+    public void toggleMapView(View v){
+        Intent intent = new Intent (EventListActivity.this, MapViewActivity.class);
+        startActivity(intent);
     }
 }
