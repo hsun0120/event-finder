@@ -46,7 +46,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-
+//    private Button mEmail_User_signInButton;
+//    private Button mEmail_Organizer_signInButton;
 
 
 
@@ -55,7 +56,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
+            "foo@example.com:hello", "bar@example.com:world", "123:123"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -70,6 +71,9 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Button mEmail_User_signInButton = (Button) findViewById(R.id.email_user_sign_in_button);
+        Button mEmail_Organizer_signInButton = (Button) findViewById(R.id.email_organizer_sign_in_button);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
         // Set up the login form.
@@ -88,22 +92,22 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             }
         });
 
-        Button mEmail_User_signInButton = (Button) findViewById(R.id.email_user_sign_in_button);
-        Button mEmail_Organizer_signInButton = (Button) findViewById(R.id.email_organizer_sign_in_button);
 
 
-        mEmail_User_signInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+
+//        mEmail_User_signInButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                attemptLogin();
+//            }
+//        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
 
         OnClickButtonListner();
+        OnClickOrganizerButtonListner();
     }
 
     private void populateAutoComplete() {
@@ -303,9 +307,39 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     }
 
     public void OnClickButtonListner(){
+        Button mEmail_User_signInButton = (Button) findViewById(R.id.email_user_sign_in_button);
 
-        Button button = (Button)findViewById(R.id.email_organizer_sign_in_button);
-        button.setOnClickListener(
+        mEmail_User_signInButton.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Intent intent = new Intent(LoginScreen.this, EventListActivity.class);
+                        startActivity(intent);
+                    }
+                }
+        );
+
+
+
+
+//        mEmail_Organizer_signInButton.setOnClickListener(
+//                new View.OnClickListener(){
+//                    @Override
+//                    public void onClick(View v){
+//                        Intent intent = new Intent(LoginScreen.this, OrganizerHome.class);
+//                        startActivity(intent);
+//                    }
+//                }
+//        );
+    }
+
+
+    public void OnClickOrganizerButtonListner(){
+
+
+        Button mEmail_Organizer_signInButton = (Button) findViewById(R.id.email_organizer_sign_in_button);
+
+        mEmail_Organizer_signInButton.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
