@@ -127,6 +127,8 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
 
+        finish();
+
     }
 
     private void checkValidDate() {
