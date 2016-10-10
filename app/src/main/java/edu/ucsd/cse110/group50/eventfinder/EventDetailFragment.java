@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 import android.app.Activity;
+import android.app.usage.UsageEvents;
+import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -66,4 +68,11 @@ public class EventDetailFragment extends Fragment {
 
         return rootView;
     }
+
+
+
+//    public void eventDetail(View v){
+//        Intent intent = new Intent( EventListActivity.class);
+//        startActivity(intent);
+//    }
 }

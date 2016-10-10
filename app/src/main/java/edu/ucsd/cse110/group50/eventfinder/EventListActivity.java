@@ -12,8 +12,11 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+
+import com.google.android.gms.maps.MapView;
 
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
@@ -34,6 +37,29 @@ public class EventListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+//
+//    public void OnClickapp_bar(){
+//
+//
+//        Button app_bar = (Button) findViewById(R.id.app_bar);
+//
+//        app_bar.setOnClickListener(
+//                new View.OnClickListener(){
+//                    @Override
+//                    public void onClick(View v){
+//                        Intent intent = new Intent(EventListActivity.this, MapViewActivity.class);
+//                        startActivity(intent);
+//                    }
+//                }
+//        );
+//    }
+
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +90,10 @@ public class EventListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+
+//        //For map view
+//        OnClickapp_bar();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -118,6 +148,27 @@ public class EventListActivity extends AppCompatActivity {
         public int getItemCount() {
             return mValues.size();
         }
+
+
+
+//        public void eventDetail(View v){
+//            Intent intent = new Intent( EventListActivity.this, EventDetailActivity.class);
+//            startActivity(intent);
+//        }
+
+
+        public void toMapView(View v){
+            Intent intent = new Intent( EventListActivity.this, MapViewActivity.class);
+           startActivity(intent);
+
+        }
+
+
+
+        
+        
+        
+        
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
