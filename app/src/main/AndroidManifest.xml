@@ -79,7 +79,13 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapViewActivity"></activity>
+            android:name=".MapViewActivity">
+            <intent-filter>
+                <action android:name="edu.ucsd.cse110.group50.eventfinder.MapViewActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
