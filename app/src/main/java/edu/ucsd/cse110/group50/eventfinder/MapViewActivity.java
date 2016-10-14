@@ -1,46 +1,41 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapViewActivity extends FragmentActivity implements OnMapReadyCallback {
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;;
 
-    private GoogleMap mMap;
+
+public class MapViewActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(GoogleMap map) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(41.889, -87.622), 16));
 
-        // Add a marker in Sydney and move the camera
-        LatLng sanDiego = new LatLng(32.7157, -117.1611);
-        mMap.addMarker(new MarkerOptions().position(sanDiego).title("Marker in San Diego"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sanDiego));
+        // You can customize the marker image using images bundled with
+        // your app, or dynamically generated bitmaps.
+        map.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                .position(new LatLng(41.889, -87.622))
+                .alpha(1.0f)
+
+        );
+
+
     }
 }
