@@ -21,7 +21,11 @@ public class OrganizerHome extends AppCompatActivity {
 
         Intent intent = new Intent( OrganizerHome.this, CreateEvent.class );
         startActivity( intent );
+    }
 
+    public void newDetails( View v ) {
+        Intent details = new Intent(OrganizerHome.this, EventDetailActivity.class);
+        startActivity(details);
     }
 
 }

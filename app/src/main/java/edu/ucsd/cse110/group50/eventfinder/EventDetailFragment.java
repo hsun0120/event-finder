@@ -50,16 +50,13 @@ public class EventDetailFragment extends Fragment {
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
-            }
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.event_detail, container, false);
+        View rootView = inflater.inflate(R.layout.activity_event_detail, container, false);
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {

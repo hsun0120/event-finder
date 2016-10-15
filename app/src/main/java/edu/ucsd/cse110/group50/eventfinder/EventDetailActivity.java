@@ -37,6 +37,7 @@ public class EventDetailActivity extends AppCompatActivity {
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -77,5 +78,9 @@ public class EventDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void createEvent( View v ){
+        finish();
     }
 }
