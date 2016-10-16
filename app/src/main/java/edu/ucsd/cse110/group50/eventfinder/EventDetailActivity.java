@@ -9,6 +9,7 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.net.Uri;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -84,5 +85,14 @@ public class EventDetailActivity extends AppCompatActivity {
 
     public void createEvent( View v ){
         finish();
+    }
+
+    public void showMap(View v) {
+        Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 }
