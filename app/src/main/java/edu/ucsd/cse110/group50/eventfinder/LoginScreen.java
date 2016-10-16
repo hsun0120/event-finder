@@ -313,7 +313,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        Intent intent = new Intent(LoginScreen.this, EventListActivity.class);
+                        Intent intent = new Intent(LoginScreen.this, MyActivities.class);
                         startActivity(intent);
                     }
                 }

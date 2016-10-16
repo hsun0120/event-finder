@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/action_new_event"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_calendarView"
+        android:title="@string/action_calendar_view"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_event_black_24dp" />
+
+    <item android:id="@+id/action_filter"
+        android:title="@string/action_filter"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_filter_black_24dp" />
+
+</menu>
