@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:name=".EventDetailActivity"
-            android:label="Event Detail">
+            android:label="">
             <intent-filter>
                 <action android:name="edu.ucsd.cse110.group50.eventfinder.EventDetailActivity" />
 

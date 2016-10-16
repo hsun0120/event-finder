@@ -24,6 +24,7 @@ public class EventDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Event Title");
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +35,7 @@ public class EventDetailActivity extends AppCompatActivity {
 //            }
 //        });
 
-        // Show the Up button in the action bar.
+        //Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
@@ -50,6 +51,7 @@ public class EventDetailActivity extends AppCompatActivity {
         //
         // http://developer.android.com/guide/components/fragments.html
         //
+        /*
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -61,7 +63,7 @@ public class EventDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.event_detail_container, fragment)
                     .commit();
-        }
+        }*/
     }
 
     @Override

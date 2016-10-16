@@ -49,21 +49,21 @@ public class EventDetailFragment extends Fragment {
             mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            //CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.main_collapsing);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_event_detail, container, false);
+        //View rootView = inflater.inflate(R.layout.activity_event_detail, container, false);
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
             //((TextView) rootView.findViewById(R.id.event_detail)).setText(mItem.details);
         }
 
-        return rootView;
+        return null;
     }
 
 
