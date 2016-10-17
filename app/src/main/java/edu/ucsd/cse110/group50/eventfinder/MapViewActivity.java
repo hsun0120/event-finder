@@ -78,6 +78,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_toolbar_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.to_Map_View_Button);
+        item.setVisible(false);
         return true;
     }
 
@@ -97,8 +100,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 return true;
 
             case R.id.to_List_view:
-                Intent intent3 = new Intent( MapViewActivity.this, EventListActivity.class);
-                startActivity(intent3);
+                finish();
                 return true;
 
             default:

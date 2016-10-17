@@ -62,6 +62,10 @@ public class EventListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_toolbar_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.to_List_view);
+        item.setVisible(false);
+
         return true;
     }
 

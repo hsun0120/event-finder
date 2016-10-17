@@ -49,7 +49,7 @@
         </activity>
         <activity
             android:name=".EventListActivity"
-            android:label="Event List">
+            android:label="Nearby Events">
             <intent-filter>
                 <action android:name="edu.ucsd.cse110.group50.eventfinder.EventListActivity" />
 
@@ -85,8 +85,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyActivities">
-            android:name=".MyActivities"
+        <activity android:name=".MyActivities"
             android:label="My Activities">
             <intent-filter>
                 <action android:name="edu.ucsd.cse110.group50.eventfinder.MyActivities" />
