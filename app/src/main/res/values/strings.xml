@@ -39,4 +39,7 @@
     <string name="action_new_event">"Create a new event"</string>
     <string name="action_calendar_view">"Open calendar view"</string>
     <string name="action_filter">"Set up list filters</string>
+    <string name="to_list_view">to list view</string>
+    <string name="to_map_view">to map view</string>
+    <string name="to_my_activities" />
 </resources>

@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -55,9 +58,39 @@ public class EventListActivity extends AppCompatActivity {
 //        );
 //    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_toolbar_menu, menu);
+        return true;
+    }
 
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.to_My_Activities:
+                Intent intent = new Intent( EventListActivity.this, MyActivities.class );
+                startActivity( intent );
+                return true;
+
+            case R.id.to_Map_View_Button:
+                Intent intent2 = new Intent( EventListActivity.this, MapViewActivity.class);
+                startActivity(intent2);
+                return true;
+
+            case R.id.to_List_view:
+                // TODO
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 
 
 
@@ -66,8 +99,8 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        setSupportActionBar(toolbar);
 //        toolbar.setTitle(getTitle());
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

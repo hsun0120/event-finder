@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/to_my_activities"
+        android:id="@+id/to_My_Activities"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        app:showAsAction="always" />
+    <item android:title="@string/to_list_view"
+        android:id="@+id/to_List_view"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        app:showAsAction="always" />
+
+
+    <item android:title="@string/to_map_view"
+        android:icon="@android:drawable/ic_dialog_map"
+        app:showAsAction="always"
+        android:id="@+id/to_Map_View_Button" />
+</menu>
