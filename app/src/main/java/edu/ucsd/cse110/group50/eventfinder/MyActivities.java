@@ -41,11 +41,6 @@ public class MyActivities extends AppCompatActivity {
                 // TODO
                 return true;
 
-            case R.id.to_Nearby_Events:
-                Intent intent3 = new Intent( MyActivities.this, EventListActivity.class );
-                startActivity( intent3 );
-                return true;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
