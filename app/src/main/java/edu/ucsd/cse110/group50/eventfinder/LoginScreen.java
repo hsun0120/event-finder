@@ -318,18 +318,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                 }
         );
 
-
-
-
-//        mEmail_Organizer_signInButton.setOnClickListener(
-//                new View.OnClickListener(){
-//                    @Override
-//                    public void onClick(View v){
-//                        Intent intent = new Intent(LoginScreen.this, OrganizerHome.class);
-//                        startActivity(intent);
-//                    }
-//                }
-//        );
     }
 
 
