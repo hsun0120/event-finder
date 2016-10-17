@@ -16,5 +16,9 @@
         android:icon="@android:drawable/ic_input_add"
         android:title="@string/action_new_event"
         app:showAsAction="always"/>
+    <item android:title="@string/to_nearby_events"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        app:showAsAction="always"
+        android:id="@+id/to_Nearby_Events" />
 
 </menu>

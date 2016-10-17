@@ -42,4 +42,5 @@
     <string name="to_list_view">to list view</string>
     <string name="to_map_view">to map view</string>
     <string name="to_my_activities" />
+    <string name="to_nearby_events">to nearby events</string>
 </resources>
