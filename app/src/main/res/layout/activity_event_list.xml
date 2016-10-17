@@ -18,9 +18,7 @@
         android:layout_width="0dp"
         app:layout_constraintHorizontal_chainPacked="false"
         tools:layout_editor_absoluteY="0dp"
-        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints" />
 
