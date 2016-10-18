@@ -5,7 +5,7 @@
 Developer: GROUP 50
 Members:
 - Thiago Marback (tmarback@ucsd.edu)
-- Haoran Sun (hsun@ucsd.com)
+- Haoran Sun (hsun@ucsd.edu)
 - Jianling Liu (jil096@ucsd.edu)
 - Zihao Zhou (ziz060@ucsd.edu)
 - Xiuyuan Chen (xic145@ucsd.edu)
