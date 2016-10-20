@@ -80,12 +80,7 @@ public class EventListActivity extends AppCompatActivity {
                 return true;
 
             case R.id.to_Map_View_Button:
-                Intent intent2 = new Intent( EventListActivity.this, MapViewActivity.class);
-                startActivity(intent2);
-                return true;
-
-            case R.id.to_List_view:
-                // TODO
+                finish();
                 return true;
 
             default:

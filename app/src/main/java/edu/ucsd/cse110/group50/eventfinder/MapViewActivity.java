@@ -88,19 +88,16 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.to_My_Activities:
-                Intent intent = new Intent( MapViewActivity.this, MyActivities.class );
+                intent = new Intent( MapViewActivity.this, MyActivities.class );
                 startActivity( intent );
                 return true;
 
-            case R.id.to_Map_View_Button:
-                Intent intent2 = new Intent( MapViewActivity.this, MapViewActivity.class);
-                startActivity(intent2);
-                return true;
-
             case R.id.to_List_view:
-                finish();
+                intent = new Intent( MapViewActivity.this, EventListActivity.class);
+                startActivity(intent);
                 return true;
 
             default:
