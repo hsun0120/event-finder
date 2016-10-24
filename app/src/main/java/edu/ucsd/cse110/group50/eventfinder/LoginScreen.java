@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -30,8 +31,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
+
+
+//For fire base
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -69,6 +88,15 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     private View mProgressView;
     private View mLoginFormView;
 
+
+
+//    private GoogleApiClient mGoogleApiClient;
+//    // Firebase instance variables
+//    private FirebaseAuth mFirebaseAuth;
+//    private FirebaseUser mFirebaseUser;
+//
+//    private String mUsername;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -95,19 +123,14 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
 
 
-//        mEmail_User_signInButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                attemptLogin();
-//            }
-//        });
-
-        //mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
-
 
         OnClickButtonListner();
     }
+
+
+
+
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
