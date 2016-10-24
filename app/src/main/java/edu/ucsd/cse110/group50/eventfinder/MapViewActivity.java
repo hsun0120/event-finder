@@ -1,8 +1,6 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -91,7 +89,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         Intent intent;
         switch (item.getItemId()) {
             case R.id.to_My_Activities:
-                intent = new Intent( MapViewActivity.this, MyActivities.class );
+                intent = new Intent( MapViewActivity.this, MyEvents.class );
                 startActivity( intent );
                 return true;
 

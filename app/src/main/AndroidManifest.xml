@@ -56,6 +56,32 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".MapViewActivity">
+            <intent-filter>
+                <action android:name="edu.ucsd.cse110.group50.eventfinder.MapViewActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MyEvents"
+            android:label="My Events">
+            <intent-filter>
+                <action android:name="edu.ucsd.cse110.group50.eventfinder.MyEvents" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MyCalendar" />
+        <activity
+            android:name=".MyEventsFilter"
+            android:label="My Events Filter">
+            <intent-filter>
+                <action android:name="edu.ucsd.cse110.group50.eventfinder.MyEventsFilter" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -69,21 +95,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MapViewActivity">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.MapViewActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MyActivities"
-            android:label="My Activities">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.MyActivities" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

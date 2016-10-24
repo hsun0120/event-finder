@@ -6,7 +6,7 @@
     android:id="@+id/activity_my_activities"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.ucsd.cse110.group50.eventfinder.MyActivities">
+    tools:context="edu.ucsd.cse110.group50.eventfinder.MyEvents">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

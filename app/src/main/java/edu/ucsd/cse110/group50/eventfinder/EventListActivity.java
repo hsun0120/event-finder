@@ -7,19 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-
-import com.google.android.gms.maps.MapView;
 
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
@@ -75,7 +70,7 @@ public class EventListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.to_My_Activities:
-                Intent intent = new Intent( EventListActivity.this, MyActivities.class );
+                Intent intent = new Intent( EventListActivity.this, MyEvents.class );
                 startActivity( intent );
                 return true;
 
