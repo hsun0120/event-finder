@@ -16,4 +16,11 @@
         android:icon="@android:drawable/ic_dialog_map"
         app:showAsAction="always"
         android:id="@+id/to_Map_View_Button" />
+
+    <item android:title="Sign out"
+        android:id="@+id/sign_out"
+        android:icon="@android:drawable/btn_dialog"
+        app:showAsAction="withText|collapseActionView" />
+
+
 </menu>
