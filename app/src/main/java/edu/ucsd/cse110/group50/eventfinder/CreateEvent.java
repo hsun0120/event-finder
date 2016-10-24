@@ -165,15 +165,15 @@ public class CreateEvent extends AppCompatActivity {
         EditText description = (EditText) findViewById( R.id.eventDescription );
         Button finish = (Button) findViewById( R.id.doneButton );
 
-        name.setFocusable( clickable );
-        address.setFocusable( clickable );
+        name.setEnabled( clickable );
+        address.setEnabled( clickable );
         date.setClickable( clickable );
         time.setClickable( clickable );
         passwordToggle.setClickable( clickable );
-        password.setFocusable( clickable );
+        password.setEnabled( clickable );
         restrictionsToggle.setClickable( clickable );
-        restrictions.setFocusable( clickable );
-        description.setFocusable( clickable );
+        restrictions.setEnabled( clickable );
+        description.setEnabled( clickable );
         finish.setClickable( clickable );
 
     }
