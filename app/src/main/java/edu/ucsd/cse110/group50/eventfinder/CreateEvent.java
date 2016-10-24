@@ -107,7 +107,7 @@ public class CreateEvent extends AppCompatActivity {
         selectedHour = hour;
         selectedMinute = minute;
 
-        String time = hour + ":" + minute;
+        String time = String.format( "%02d:%02d", hour, minute );
         TextView eventTime = (TextView) findViewById( R.id.eventTime );
         eventTime.setText( time );
         checkValidDate();
