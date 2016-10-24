@@ -73,7 +73,7 @@
             android:ems="10"
             android:hint="Password"/>
 
-        <android.support.v7.widget.AppCompatButton
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -10,10 +10,16 @@
     <item android:title="@string/to_list_view"
         android:id="@+id/to_List_view"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item android:title="@string/to_map_view"
         android:icon="@android:drawable/ic_dialog_map"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:id="@+id/to_Map_View_Button" />
+
+    <item android:title="Sign out"
+        android:id="@+id/sign_out"
+        android:icon="@android:drawable/btn_dialog"
+        app:showAsAction="withText|collapseActionView" />
+
 </menu>
