@@ -13,8 +13,8 @@ public class Card {
 
     public Card(int picID, String title, String text){
         this.picID = picID;
-        this.title = title;
-        this.text = text;
+        this.title = "Sample";//title;
+        this.text = "Sample";//text;
     }
 
     public int getPicID(){

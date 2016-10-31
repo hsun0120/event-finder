@@ -51,7 +51,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         // - replace the contents of the view with that element
         holder.titleTextView.setText(cards.get(position).title);
         holder.desTextView.setText(cards.get(position).getText());
-        holder.imageView.setImageResource(cards.get(position).getPicID());
+        holder.imageView.setImageResource(/*cards.get(position).getPicID()*/R.drawable.activity_default);
     }
 
     @Override
