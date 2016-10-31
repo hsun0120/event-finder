@@ -26,6 +26,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         public TextView titleTextView;
         public TextView desTextView;
         public TextView dateTextView;
+
         public ViewHolder(View v) {
             super(v);
             titleTextView = (TextView) v.findViewById(R.id.info_title);
@@ -61,4 +62,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         return cards.size();
     }
 
+    /**
+     * Remove items from database if swiped
+     * @param position Position in the dataset
+     */
+    public void remove(int position) {
+        cards.remove(position);
+        notifyItemRemoved(position);
+    }
 }
