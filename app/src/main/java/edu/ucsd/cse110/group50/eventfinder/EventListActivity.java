@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * An activity representing a list of Events. This activity
@@ -35,6 +36,7 @@ public class EventListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private LinkedList<Card> cards;
 
 //
 //    public void OnClickapp_bar(){
@@ -123,97 +125,20 @@ public class EventListActivity extends AppCompatActivity {
 //        OnClickapp_bar();
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    private void setUpCards(){
+        cards = new LinkedList<Card>();
+        cards.add(new Card(R.drawable.activity_default, "Enrollment Begin",
+                "This is enrollment start date"));
+        cards.add(new Card(R.drawable.activity_default, "Drop without W",
+                "Last date to drop without receiving Ws."));
     }
 
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        setUpCards();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(new CardAdapter(cards));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        private final List<DummyContent.DummyItem> mValues;
-
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent));
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(EventDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        EventDetailFragment fragment = new EventDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.event_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, EventDetailActivity.class);
-                        intent.putExtra(EventDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValues.size();
-        }
-
-
-
-//        public void eventDetail(View v){
-//            Intent intent = new Intent( EventListActivity.this, EventDetailActivity.class);
-//            startActivity(intent);
-//        }
-
-
-
-        public void toMapView(View v){
-            Intent intent = new Intent( EventListActivity.this, MapViewActivity.class);
-           startActivity(intent);
-
-        }
-
-
-
-        
-        
-        
-        
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
-
-            public ViewHolder(View view) {
-                super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
-
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
-            }
-        }
     }
 
     public void toggleMapView(View v){
