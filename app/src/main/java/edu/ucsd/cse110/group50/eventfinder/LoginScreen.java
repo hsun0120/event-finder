@@ -95,10 +95,18 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     private SignInButton mSignInButton;
 
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient getmGoogleApiClient() {
+        return mGoogleApiClient;
+    }
+
+    public static FirebaseAuth getmFirebaseAuth() {
+        return mFirebaseAuth;
+    }
+
+    private static GoogleApiClient mGoogleApiClient;
 
     // Firebase instance variables
-    private FirebaseAuth mFirebaseAuth;
+    private static FirebaseAuth mFirebaseAuth;
 
 
     @Override
