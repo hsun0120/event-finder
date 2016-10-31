@@ -19,7 +19,7 @@ public class EventCardData {
         return ourInstance;
     }
 
-    private EventCardData(/*Drawable img*/, String name) {
+    private EventCardData(/*Drawable img*/String name) {
         //cardImg = img;
         cardName = name;
     }

@@ -138,9 +138,7 @@ public class EventListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.event_list_content, parent, false);
-            return new ViewHolder(view);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent));
         }
 
         @Override
