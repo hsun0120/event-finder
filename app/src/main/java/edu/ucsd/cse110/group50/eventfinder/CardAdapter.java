@@ -25,12 +25,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         // each data item is just a string in this case
         public TextView titleTextView;
         public TextView desTextView;
-        public ImageView imageView;
+        public TextView dateTextView;
         public ViewHolder(View v) {
             super(v);
             titleTextView = (TextView) v.findViewById(R.id.info_title);
             desTextView = (TextView) v.findViewById(R.id.info_des);
-            imageView = (ImageView) v.findViewById(R.id.activityImg);
+            //imageView = (ImageView) v.findViewById(R.id.activityImg);
+            dateTextView = (TextView) v.findViewById(R.id.info_date);
         }
     }
 
@@ -49,9 +50,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.titleTextView.setText(cards.get(position).title);
-        holder.desTextView.setText(cards.get(position).getText());
-        holder.imageView.setImageResource(/*cards.get(position).getPicID()*/R.drawable.activity_default);
+        holder.titleTextView.setText(cards.get(position).getCardName());
+        holder.desTextView.setText(cards.get(position).getDescription());
+        //holder.imageView.setImageResource(/*cards.get(position).getPicID()*/R.drawable.activity_default);
+        holder.dateTextView.setText(cards.get(position).getDate());
     }
 
     @Override

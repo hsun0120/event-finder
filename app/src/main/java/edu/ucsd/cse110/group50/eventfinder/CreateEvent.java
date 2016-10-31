@@ -27,6 +27,9 @@ public class CreateEvent extends AppCompatActivity {
     private int selectedDay, selectedMonth, selectedYear;
     private int selectedHour, selectedMinute;
 
+    private Card eventToAdd;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

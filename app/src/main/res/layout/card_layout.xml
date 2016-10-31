@@ -22,15 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                card_view:srcCompat="@drawable/activity_default"
-                android:id="@+id/activityImg"
-                android:scaleType="centerCrop"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="141dp"
-                />
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:id="@+id/info_date"
+                android:layout_weight="0.05" />
 
             <TextView
                 android:id="@+id/info_title"

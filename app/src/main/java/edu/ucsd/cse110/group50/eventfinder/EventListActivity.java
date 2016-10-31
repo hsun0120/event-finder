@@ -127,10 +127,14 @@ public class EventListActivity extends AppCompatActivity {
 
     private void setUpCards(){
         cards = new LinkedList<Card>();
-        cards.add(new Card(R.drawable.activity_default, "Enrollment Begin",
-                "This is enrollment start date"));
-        cards.add(new Card(R.drawable.activity_default, "Drop without W",
-                "Last date to drop without receiving Ws."));
+        cards.add(new Card("Enrollment Begin",
+                "2016/10/30", "description"));
+        cards.add(new Card("Drop without W",
+                "2016/10/31", "description"));
+        cards.add(new Card("Drop without W",
+                "2016/10/32", "description"));
+        cards.add(new Card("Drop without W",
+                "2016/10/33", "description"));
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
