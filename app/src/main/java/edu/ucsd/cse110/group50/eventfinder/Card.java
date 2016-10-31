@@ -19,7 +19,11 @@ public class Card {
         return ourInstance;
     }
 
-    public Card() {};
+    public Card() {
+        cardName = "Event Untitled";
+        this.date = "Date Not Set";
+        this.description = "Description: Nothing more to say!";
+    };
 
     public Card(String name, String date, String description) {
         //cardImg = img;
