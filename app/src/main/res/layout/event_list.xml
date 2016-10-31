@@ -6,8 +6,7 @@
     android:name="edu.ucsd.cse110.group50.eventfinder.EventListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="22dp"
+    android:layout_marginRight="22dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="edu.ucsd.cse110.group50.eventfinder.EventListActivity"
-    tools:listitem="@layout/event_list_content" />
+    tools:context="edu.ucsd.cse110.group50.eventfinder.EventListActivity"/>

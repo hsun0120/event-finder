@@ -9,13 +9,7 @@ import android.content.Context;
 public class Card {
 
     // private Drawable cardImg = getResources().getDrawable(R.drawable.activity_default);
-    public  void setCardName(String cardName) {
-        this.cardName = cardName;
-    }public void setDate(String date) {
-        this.date = date;
-    }public void setDescription(String description) {
-        this.description = description;
-    }private String cardName = "Event";
+    private String cardName = "Event";
     private String date = "2016/10/30";
     private String description = "Halloween party.";
 
@@ -36,6 +30,18 @@ public class Card {
     //public Drawable getCardImage() {
     //    return cardImg;
     //}
+
+    public  void setCardName(String cardName) {
+        this.cardName = cardName;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getCardName(){ return cardName;}
 

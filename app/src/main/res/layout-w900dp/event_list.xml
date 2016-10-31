@@ -26,8 +26,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="edu.ucsd.cse110.group50.eventfinder.EventListActivity"
-        tools:listitem="@layout/event_list_content" />
+        tools:context="edu.ucsd.cse110.group50.eventfinder.EventListActivity"/>
 
     <FrameLayout
         android:id="@+id/event_detail_container"
