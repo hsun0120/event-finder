@@ -14,9 +14,22 @@
         android:layout_height="300dp"
         card_view:cardCornerRadius="4dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:srcCompat="@drawable/activity_default"
+            android:id="@+id/activityImg"
+            android:layout_weight="1" />
+
         <TextView
-            android:id="@+id/info_text"
+            android:id="@+id/info_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/info_des" />
     </android.support.v7.widget.CardView>
+
 </LinearLayout>

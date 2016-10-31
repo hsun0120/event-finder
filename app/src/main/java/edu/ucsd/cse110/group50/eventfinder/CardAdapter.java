@@ -1,60 +1,62 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import java.lang.Object;
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.LinkedList;
+
 /**
- * CardView Adapter
+ * Created by Haoran Sun on 2016/10/30.
  */
 
+public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
-public class CardAdapter extends Adapter<CardAdapter.ViewHolder> {
-    private String[] data;
+    private LinkedList<Card> cards;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public ImageView cardImage;
-        public TextView cardName;
-        public ViewHolder(TextView u, ImageView v) {
-            super(u,v);
-            cardName = u;
-            cardImage = v;
+        public TextView titleTextView;
+        public TextView desTextView;
+        public ImageView imageView;
+        public ViewHolder(View v) {
+            super(v);
+            titleTextView = (TextView) v.findViewById(R.id.info_title);
+            desTextView = (TextView) v.findViewById(R.id.info_des);
+            imageView = (ImageView) v.findViewById(R.id.activityImg);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public CardAdapter(String[] input) {
-        data = input;
+    public CardAdapter(LinkedList<Card> cards){
+        this.cards = cards;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
-    public CardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
-        // create a new view
-        View u = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_name, parent, false);
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_image, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(u,v);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_layout, parent, false);
+        ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.cardName.setText(data[position]);
-
+        holder.titleTextView.setText(cards.get(position).title);
+        holder.desTextView.setText(cards.get(position).getText());
+        holder.imageView.setImageResource(cards.get(position).getPicID());
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return data.length;
+        return cards.size();
     }
 
 }
