@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -137,12 +138,21 @@ public class EventListActivity extends AppCompatActivity {
                 "2016/10/33", "description"));
     }
 
+    /**
+     * Setup recyclerView and swipe and dismiss
+     * @param recyclerView
+     */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         setUpCards();
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new CardAdapter(cards));
+        CardAdapter adapter = new CardAdapter(cards);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+        /* Swipe and dismiss configuarations */
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
     }
 
     public void toggleMapView(View v){
