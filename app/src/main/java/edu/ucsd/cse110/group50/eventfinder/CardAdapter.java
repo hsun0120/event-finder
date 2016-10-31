@@ -23,16 +23,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView titleTextView;
-        public TextView desTextView;
-        public TextView dateTextView;
+        public TextView eventName;
+        public TextView eventDate;
+        public TextView eventDes;
+
 
         public ViewHolder(View v) {
             super(v);
-            titleTextView = (TextView) v.findViewById(R.id.info_title);
-            desTextView = (TextView) v.findViewById(R.id.info_des);
+            eventName = (TextView) v.findViewById(R.id.info_title);
+            eventDes = (TextView) v.findViewById(R.id.info_des);
             //imageView = (ImageView) v.findViewById(R.id.activityImg);
-            dateTextView = (TextView) v.findViewById(R.id.info_date);
+            eventDate = (TextView) v.findViewById(R.id.info_date);
         }
     }
 
@@ -51,10 +52,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.titleTextView.setText(cards.get(position).getCardName());
-        holder.desTextView.setText(cards.get(position).getDescription());
+        holder.eventName.setText(cards.get(position).getCardName());
+        holder.eventDes.setText(cards.get(position).getDescription());
         //holder.imageView.setImageResource(/*cards.get(position).getPicID()*/R.drawable.activity_default);
-        holder.dateTextView.setText(cards.get(position).getDate());
+        holder.eventDate.setText(cards.get(position).getDate());
     }
 
     @Override

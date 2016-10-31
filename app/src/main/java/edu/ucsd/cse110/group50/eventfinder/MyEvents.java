@@ -44,29 +44,25 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Card, MessageViewHolder>
+    private FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>
             mFirebaseAdapter;
 
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-
-
-
-
-
-        public TextView eventName;
-        public TextView eventDate;
-        public TextView eventDes;
-        public MessageViewHolder(View v) {
-            super(v);
-            eventName = (TextView) itemView.findViewById(R.id.info_title);
-            eventDate = (TextView) itemView.findViewById(R.id.info_date);
-            eventDes = (TextView) itemView.findViewById(R.id.info_des);
-        }
-
-    }
+//    public static class CardAdapter.ViewHolder extends RecyclerView.ViewHolder {
+//
+//        public TextView eventName;
+//        public TextView eventDate;
+//        public TextView eventDes;
+//        public CardAdapter.ViewHolder(View v) {
+//            super(v);
+//            eventName = (TextView) itemView.findViewById(R.id.info_title);
+//            eventDate = (TextView) itemView.findViewById(R.id.info_date);
+//            eventDes = (TextView) itemView.findViewById(R.id.info_des);
+//        }
+//
+//    }
 
 
     @Override
@@ -77,8 +73,8 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         setSupportActionBar(toolbar);
 
 
-        View recyclerView = findViewById(R.id.event_list);
-        assert recyclerView != null;
+       // View recyclerView = findViewById(R.id.event_list);
+        //assert recyclerView != null;
         //setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.event_list) != null) {
@@ -116,29 +112,29 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //        // Initialize ProgressBar and RecyclerView.
 //        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.event_list);
-//        mLinearLayoutManager = new LinearLayoutManager(this);
-//        mLinearLayoutManager.setStackFromEnd(true);
-//        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setStackFromEnd(true);
+        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card,
-                MessageViewHolder>(
-                Card.class,
-                R.layout.event_list,
-                MessageViewHolder.class,
-                mFirebaseDatabaseReference.child("events")) {
-
-            @Override
-            protected void populateViewHolder(MessageViewHolder viewHolder,
-                                              Card eventCard, int position) {
-//                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                viewHolder.eventName.setText(eventCard.getCardName());
-                viewHolder.eventDate.setText(eventCard.getDate());
-                viewHolder.eventDes.setText(eventCard.getDescription());
-            }
-        };
-
+//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
+//                Card.class,
+//                R.layout.event_list,
+//                CardAdapter.ViewHolder.class,
+//                mFirebaseDatabaseReference.child("events")) {
+//
+//            @Override
+//            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
+//                                              Card eventCard, int position) {
+////                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+//                    viewHolder.eventName.setText(eventCard.getCardName());
+//                    viewHolder.eventDate.setText(eventCard.getDate());
+//                    viewHolder.eventDes.setText(eventCard.getDescription());
+//
+//            }
+//        };
+//
 //        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
 //            @Override
 //            public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -159,12 +155,6 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-
-
-
-
-
-
 
 
 
