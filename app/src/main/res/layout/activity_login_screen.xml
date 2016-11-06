@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#2E64FE"
+    android:background="#FFFFFF"
     android:fitsSystemWindows="true"
     tools:context="edu.ucsd.cse110.group50.eventfinder.LoginScreen">
 
@@ -24,54 +24,9 @@
         app:srcCompat="@color/colorPrimary"
             android:id="@+id/imageView" />
 
+
+
         ]]>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            app:srcCompat="@mipmap/ic_launcher"
-            android:id="@+id/imageView2"
-            android:layout_weight="0.11" />
-
-        <TextView
-            android:text="Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize = "16sp"
-            android:id="@+id/textView" />
-
-        <AutoCompleteTextView
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize = "20sp"
-            android:layout_marginBottom="8dp"
-            android:inputType="textEmailAddress"
-            android:ems="10"
-            android:hint="Email"/>
-
-        <TextView
-            android:text="Password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize = "16sp"
-            android:id="@+id/textView2" />
-
-        <AutoCompleteTextView
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize = "20sp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="10dp"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:hint="Password"/>
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_login"
@@ -79,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:layout_marginBottom="20dp"
-            android:background="#2E2EFE"
+            android:background="#FFFFFF"
             android:textColor="#FFFFFF"
             android:textSize = "22sp"
             android:padding="20dp"

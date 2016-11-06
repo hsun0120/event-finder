@@ -7,7 +7,6 @@ Members:
 - Thiago Marback (tmarback@ucsd.edu)
 - Haoran Sun (hsun@ucsd.edu)
 - Jianling Liu (jil096@ucsd.edu)
-- Zihao Zhou (ziz060@ucsd.edu)
 - Xiuyuan Chen (xic145@ucsd.edu)
 - Tian Qiu (tqiu@ucsd.edu)
 - Yining Liang (yil290@ucsd.edu)

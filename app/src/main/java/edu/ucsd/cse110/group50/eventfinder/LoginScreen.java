@@ -95,6 +95,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     private SignInButton mSignInButton;
 
+
+
     private GoogleApiClient mGoogleApiClient;
 
     // Firebase instance variables
@@ -132,33 +134,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     }
 
 
-
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//
-//        Button mEmail_User_signInButton = (Button) findViewById(R.id.btn_login);
-//
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login_screen);
-//        // Set up the login form.
-//        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-//        populateAutoComplete();
-//
-//        mPasswordView = (EditText) findViewById(R.id.password);
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.password || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
-//        OnClickButtonListner();
-//    }
 
     @Override
     public void onClick(View v) {
