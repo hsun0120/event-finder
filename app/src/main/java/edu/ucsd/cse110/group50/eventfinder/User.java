@@ -16,15 +16,21 @@ import java.util.ArrayList;
  */
 public class User implements Parcelable {
 
-    private final long UID;
+    /* Instance fields */
+
+    private final long uid;
     private String name;
 
     private ArrayList<Event> hostedEvents;
     private ArrayList<Event> pastHosted;
     // private float score;
 
+    /* Constants */
+
     private static final String HOSTED_EVENTS = "hosted";
     private static final String PAST_EVENTS = "past";
+
+    /* Ctors */
 
     /**
      * Creates a new instance of this class with a given UID.
@@ -45,7 +51,7 @@ public class User implements Parcelable {
      */
     public User( long uid, String name ) {
 
-        this.UID = uid;
+        this.uid = uid;
         this.name = name;
 
         this.hostedEvents = new ArrayList<>();
@@ -61,7 +67,7 @@ public class User implements Parcelable {
      */
     public User( User u ) {
 
-        this.UID = u.UID;
+        this.uid = u.uid;
         this.name = u.name;
 
         this.hostedEvents = new ArrayList<>( u.hostedEvents );
@@ -78,7 +84,7 @@ public class User implements Parcelable {
      */
     private User( Parcel in ) {
 
-        UID = in.readLong();
+        uid = in.readLong();
         name = in.readString();
 
         Bundle events = in.readBundle();
@@ -86,6 +92,54 @@ public class User implements Parcelable {
         pastHosted = events.getParcelableArrayList( PAST_EVENTS );
 
     }
+
+    /* Getters */
+
+    /**
+     * Retrieves the UID of this instance.
+     *
+     * @return The UID of this instance.
+     */
+    public long getUID() {
+
+        return uid;
+
+    }
+
+    /**
+     * Retrieves the name of this instance.
+     *
+     * @return The name of this instance.
+     */
+    public String getName() {
+
+        return name;
+
+    }
+
+    /**
+     * Retrieves the events being hosted by this user.
+     *
+     * @return The events being hosted.
+     */
+    public ArrayList<Event> getHostedEvents() {
+
+        return hostedEvents;
+
+    }
+
+    /**
+     * Retrieves the events hosted by this user in the past.
+     *
+     * @return The events hosted by the user in the past.
+     */
+    public ArrayList<Event> getPastHosted() {
+
+        return pastHosted;
+
+    }
+
+    /* Parcelable requirements */
 
     /**
      * {@inheritDoc}
@@ -97,7 +151,7 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel( Parcel dest, int flags ) {
 
-        dest.writeLong( UID );
+        dest.writeLong( uid );
         dest.writeString( name );
 
         Bundle events = new Bundle();

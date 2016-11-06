@@ -15,7 +15,9 @@ import java.util.ArrayList;
  */
 public class Event implements Parcelable {
 
-    private final long UID;
+    /* Instance fields */
+
+    private final long uid;
     private String name;
     private final long host;
 
@@ -35,8 +37,12 @@ public class Event implements Parcelable {
     private ArrayList<String> restrictions;
     private String description;
 
+    /* Constants */
+
     private static final byte TRUE = 1;
     private static final byte FALSE = 0;
+
+    /* Ctors */
 
     /**
      * Creates a new instance of this class with a given UID and host.
@@ -59,7 +65,7 @@ public class Event implements Parcelable {
      */
     public Event( long uid, String name, long host ) {
 
-        this.UID = uid;
+        this.uid = uid;
         this.name = name;
         this.host = host;
 
@@ -87,7 +93,7 @@ public class Event implements Parcelable {
      */
     public Event( Event u ) {
 
-        this.UID = u.UID;
+        this.uid = u.uid;
         this.name = u.name;
         this.host = u.host;
 
@@ -116,7 +122,7 @@ public class Event implements Parcelable {
      */
     private Event( Parcel in ) {
 
-        UID = in.readLong();
+        uid = in.readLong();
         name = in.readString();
         host = in.readLong();
 
@@ -145,6 +151,164 @@ public class Event implements Parcelable {
 
     }
 
+    /* Getters */
+
+    /**
+     * Retrieves the UID of this instance.
+     *
+     * @return The UID of this instance.
+     */
+    public long getUid() {
+
+        return uid;
+
+    }
+
+    /**
+     * Retrieves the name of this instance.
+     *
+     * @return The name of this instance.
+     */
+    public String getName() {
+
+        return name;
+
+    }
+
+    /**
+     * Retrieves the host of this event.
+     *
+     * @return The host of this event.
+     */
+    public long getHost() {
+
+        return host;
+
+    }
+
+    /**
+     * Retrieves the hour of this event.
+     *
+     * @return The hour of this event.
+     */
+    public byte getHour() {
+
+        return hour;
+
+    }
+
+    /**
+     * Retrieves the minute of this event.
+     *
+     * @return The minute of this event.
+     */
+    public byte getMinute() {
+
+        return minute;
+
+    }
+
+    /**
+     * Retrieves the day of this event.
+     *
+     * @return The day of this event.
+     */
+    public byte getDay() {
+
+        return day;
+
+    }
+
+    /**
+     * Retrieves the month of this event.
+     *
+     * @return The month of this event.
+     */
+    public byte getMonth() {
+
+        return month;
+
+    }
+
+    /**
+     * Retrieves the year of this event.
+     *
+     * @return The year of this event.
+     */
+    public byte getYear() {
+
+        return year;
+
+    }
+
+    /**
+     * Retrieves the address of this event.
+     *
+     * @return The address of this event.
+     */
+    public String getAddress() {
+
+        return address;
+
+    }
+
+    /**
+     * Checks if this event requires a password.
+     *
+     * @return true if password is required; false otherwise.
+     */
+    public boolean getHasPassword() {
+
+        return hasPassword;
+
+    }
+
+    /**
+     * Retrieves the password of this event.
+     *
+     * @return The password of this event.
+     */
+    public String getPassword() {
+
+        return password;
+
+    }
+
+    /**
+     * Checks if this event has restrictions.
+     *
+     * @return true if the event is restricted; false otherwise.
+     */
+    public boolean getHasRestrictions() {
+
+        return hasRestrictions;
+
+    }
+
+    /**
+     * Retrieves the restrictions of this event.
+     *
+     * @return The list of restrictions of this event.
+     */
+    public ArrayList<String> getRestrictions() {
+
+        return restrictions;
+
+    }
+
+    /**
+     * Retrieves the description of this event.
+     *
+     * @return The description of this event.
+     */
+    public String getDescription() {
+
+        return description;
+
+    }
+
+    /* Parcelable requirements */
+
     /**
      * {@inheritDoc}
      *
@@ -155,7 +319,7 @@ public class Event implements Parcelable {
     @Override
     public void writeToParcel( Parcel dest, int flags ) {
 
-        dest.writeLong( UID );
+        dest.writeLong( uid );
         dest.writeString( name );
         dest.writeLong( host );
 
