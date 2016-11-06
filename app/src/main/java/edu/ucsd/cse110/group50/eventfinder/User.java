@@ -100,6 +100,52 @@ public class User implements Parcelable {
 
     }
 
+    /* Event-list methods */
+
+    /**
+     * Adds a new event to the list of hosted events.
+     *
+     * @param uid UID of the hosted event.
+     * @return true if successfully added;
+     *         false if was already in the list.
+     */
+    public boolean addHosted( long uid ) {
+
+        return hostedEvents.add( uid );
+
+    }
+
+    /**
+     * Removes an event from the list of hosted events.
+     *
+     * @param uid UID of the cancelled event.
+     * @return true if successfully removed;
+     *         false if not found.
+     */
+    public boolean removeHosted( long uid ) {
+
+        return hostedEvents.remove( uid );
+
+    }
+
+    /**
+     * Moves an event from the "going to host" list to the "hosted in the past" list.
+     *
+     * @param uid UID of the completed event.
+     * @return true if successfully moved;
+     *         false if not found as a hosted.
+     */
+    public boolean eventDone( long uid ) {
+
+        boolean success = hostedEvents.remove( uid );
+        if ( success ) {
+            pastHosted.add( uid );
+        }
+
+        return success;
+
+    }
+
     /* Getters */
 
     /**

@@ -42,6 +42,9 @@ public class Event implements Parcelable {
     private static final byte TRUE = 1;
     private static final byte FALSE = 0;
 
+    private static final String TIME_SEPARATOR = ":";
+    private static final String DATE_SEPARATOR = "/";
+
     /* Ctors */
 
     /**
@@ -148,6 +151,85 @@ public class Event implements Parcelable {
         }
         restrictions = in.createStringArrayList();
         description = in.readString();
+
+    }
+
+    /* Utility methods */
+
+    /**
+     * Creates a String that represents the time this event will be held.
+     *
+     * @return The time when this event will be held.
+     */
+    public String getTime() {
+
+        return hour + TIME_SEPARATOR + minute;
+
+    }
+
+    /**
+     * Creates a String that represents the date this event will be held.
+     *
+     * @return The date when this event will be held.
+     */
+    public String getDate() {
+
+        return month + DATE_SEPARATOR + day + DATE_SEPARATOR + year;
+
+    }
+
+    /**
+     * Sets the time of this event.
+     *
+     * @param hour Hour when this event will be held.
+     * @param minute Minute when this event will be held.
+     */
+    public void setTime( byte hour, byte minute ) {
+
+        this.hour = hour;
+        this.minute = minute;
+
+    }
+
+    /**
+     * Sets the time of this event.
+     *
+     * @param time Time the event will be held, in the format hour:minute
+     */
+    public void setTime( String time ) {
+
+        String[] timePieces = time.split( TIME_SEPARATOR );
+        hour = Byte.valueOf( timePieces[0] );
+        minute = Byte.valueOf( timePieces[1] );
+
+    }
+
+    /**
+     * Sets the date of this event.
+     *
+     * @param day Day when this event will be held.
+     * @param month Month when this event will be held.
+     * @param year Year when this event will be held.
+     */
+    public void setDate( byte day, byte month, byte year ) {
+
+        this.day = day;
+        this.month = month;
+        this.year = year;
+
+    }
+
+    /**
+     * Sets the date of this event.
+     *
+     * @param date Date the event will be held, in the format month/day/year
+     */
+    public void setDate( String date ) {
+
+        String[] datePieces = date.split( DATE_SEPARATOR );
+        month = Byte.valueOf( datePieces[0] );
+        day = Byte.valueOf( datePieces[1] );
+        year = Byte.valueOf( datePieces[2] );
 
     }
 
@@ -389,8 +471,8 @@ public class Event implements Parcelable {
      * Sets whether this event requires a password.
      *
      * @param hasPassword Whether this event requires a password.
-     *                    true = requires password
-     *                    false = does not require password
+     *                    true = requires password;
+     *                    false = does not require password.
      */
     public void setHasPassword( boolean hasPassword ) {
 
@@ -413,8 +495,8 @@ public class Event implements Parcelable {
      * Sets whether this events has restrictions.
      *
      * @param hasRestrictions Whether this event has restrictions.
-     *                        true = restricted
-     *                        false = not restricted
+     *                        true = restricted;
+     *                        false = not restricted.
      */
     public void setHasRestrictions( boolean hasRestrictions ) {
 
