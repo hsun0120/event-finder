@@ -208,9 +208,9 @@ public class User implements Parcelable {
     /* Parcelable requirements */
 
     /**
-     * {@inheritDoc}
+     * Flattens this instance to a Parcel.
      *
-     * @param dest {@inheritDoc}
+     * @param dest Parcel where the flattened instance should be stored.
      * @param flags Not used.
      *
      */
