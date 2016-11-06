@@ -1,7 +1,10 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
 
 /**
  * Class that stores the data for a single user.
@@ -15,17 +18,20 @@ public class User implements Parcelable {
 
     private final long UID;
     private String name;
-    // private Event[] hostedEvents;
-    // private Event[] pastHosted;
+
+    private ArrayList<Event> hostedEvents;
+    private ArrayList<Event> pastHosted;
     // private float score;
 
+    private static final String HOSTED_EVENTS = "hosted";
+    private static final String PAST_EVENTS = "past";
+
     /**
-     * Creates a new instance of this class with a given UID. All other fields are initally
-     * set to 0 or blank (empty).
+     * Creates a new instance of this class with a given UID.
      *
      * @param uid UID of this instance.
      */
-    public User ( long uid ) {
+    public User( long uid ) {
 
         this( uid, "" );
 
@@ -41,8 +47,9 @@ public class User implements Parcelable {
 
         this.UID = uid;
         this.name = name;
-        //this.hostedEvents = new Event[];
-        //this.pastHosted = new Event[];
+
+        this.hostedEvents = new ArrayList<>();
+        this.pastHosted = new ArrayList<>();
         //this.score = 0.0;
 
     }
@@ -56,8 +63,9 @@ public class User implements Parcelable {
 
         this.UID = u.UID;
         this.name = u.name;
-        //this.hostedEvents = Arrays.copyOf( u.hostedEvents, u.hostedEvents.length );
-        //this.pastHosted = Arrays.copyOf( u.pastHosted, u.pastHosted.length );
+
+        this.hostedEvents = new ArrayList<>( u.hostedEvents );
+        this.pastHosted = new ArrayList<>( u.pastHosted );
         //this.score = u.score;
 
     }
@@ -73,6 +81,10 @@ public class User implements Parcelable {
         UID = in.readLong();
         name = in.readString();
 
+        Bundle events = in.readBundle();
+        hostedEvents = events.getParcelableArrayList( HOSTED_EVENTS );
+        pastHosted = events.getParcelableArrayList( PAST_EVENTS );
+
     }
 
     /**
@@ -87,6 +99,11 @@ public class User implements Parcelable {
 
         dest.writeLong( UID );
         dest.writeString( name );
+
+        Bundle events = new Bundle();
+        events.putParcelableArrayList( HOSTED_EVENTS, hostedEvents );
+        events.putParcelableArrayList( PAST_EVENTS, pastHosted );
+        dest.writeBundle( events );
 
     }
 
