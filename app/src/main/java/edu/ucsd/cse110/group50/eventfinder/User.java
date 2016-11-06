@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Class that stores the data for a single user.
@@ -21,14 +22,9 @@ public class User implements Parcelable {
     private final long uid;
     private String name;
 
-    private ArrayList<Event> hostedEvents;
-    private ArrayList<Event> pastHosted;
+    private ArrayList<Long> hostedEvents;
+    private ArrayList<Long> pastHosted;
     // private float score;
-
-    /* Constants */
-
-    private static final String HOSTED_EVENTS = "hosted";
-    private static final String PAST_EVENTS = "past";
 
     /* Ctors */
 
@@ -87,9 +83,20 @@ public class User implements Parcelable {
         uid = in.readLong();
         name = in.readString();
 
-        Bundle events = in.readBundle();
-        hostedEvents = events.getParcelableArrayList( HOSTED_EVENTS );
-        pastHosted = events.getParcelableArrayList( PAST_EVENTS );
+        long[] hosted = in.createLongArray();
+        hostedEvents = new ArrayList<>( hosted.length );
+        for ( long uid : hosted ) {
+
+            hostedEvents.add( uid );
+
+        }
+        long[] past = in.createLongArray();
+        pastHosted = new ArrayList<Long>( past.length );
+        for ( long uid : past ) {
+
+            pastHosted.add( uid );
+
+        }
 
     }
 
@@ -118,24 +125,37 @@ public class User implements Parcelable {
     }
 
     /**
-     * Retrieves the events being hosted by this user.
+     * Retrieves the UIDs of the events being hosted by this user.
      *
      * @return The events being hosted.
      */
-    public ArrayList<Event> getHostedEvents() {
+    public ArrayList<Long> getHostedEvents() {
 
         return hostedEvents;
 
     }
 
     /**
-     * Retrieves the events hosted by this user in the past.
+     * Retrieves the UIDs of the events hosted by this user in the past.
      *
      * @return The events hosted by the user in the past.
      */
-    public ArrayList<Event> getPastHosted() {
+    public ArrayList<Long> getPastHosted() {
 
         return pastHosted;
+
+    }
+
+    /* Setters */
+
+    /**
+     * Sets the name of this instance.
+     *
+     * @param name New name of this instance.
+     */
+    public void setName( String name ) {
+
+        this.name = name;
 
     }
 
@@ -154,10 +174,22 @@ public class User implements Parcelable {
         dest.writeLong( uid );
         dest.writeString( name );
 
-        Bundle events = new Bundle();
-        events.putParcelableArrayList( HOSTED_EVENTS, hostedEvents );
-        events.putParcelableArrayList( PAST_EVENTS, pastHosted );
-        dest.writeBundle( events );
+        long[] hosted = new long[hostedEvents.size()];
+        int i = 0;
+        for ( long uid : hostedEvents ) {
+
+            hosted[i++] = uid;
+
+        }
+        dest.writeLongArray( hosted );
+        long[] past = new long[pastHosted.size()];
+        i = 0;
+        for ( long uid : pastHosted ) {
+
+            past[i++] = uid;
+
+        }
+        dest.writeLongArray( past );
 
     }
 

@@ -307,6 +307,143 @@ public class Event implements Parcelable {
 
     }
 
+    /* Setters */
+
+    /**
+     * Sets the name of this instance.
+     *
+     * @param name New name of this instance.
+     */
+    public void setName( String name ) {
+
+        this.name = name;
+
+    }
+
+    /**
+     * Sets the hour of this event.
+     *
+     * @param hour New hour of this event.
+     */
+    public void setHour( byte hour ) {
+
+        this.hour = hour;
+
+    }
+
+    /**
+     * Sets the minute of this event.
+     *
+     * @param minute New minute of this event.
+     */
+    public void setMinute( byte minute ) {
+
+        this.minute = minute;
+
+    }
+
+    /**
+     * Sets the day of this event.
+     *
+     * @param day New day of this event.
+     */
+    public void setDay( byte day ) {
+
+        this.day = day;
+
+    }
+
+    /**
+     * Sets the month of this event.
+     *
+     * @param month New month of this event.
+     */
+    public void setMonth( byte month ) {
+
+        this.month = month;
+
+    }
+
+    /**
+     * Sets the year of this event.
+     *
+     * @param year New year of this event.
+     */
+    public void setYear( byte year ) {
+
+        this.year = year;
+
+    }
+
+    /**
+     * Sets the address of this event.
+     * @param address New address of this event.
+     */
+    public void setAddress( String address ) {
+
+        this.address = address;
+
+    }
+
+    /**
+     * Sets whether this event requires a password.
+     *
+     * @param hasPassword Whether this event requires a password.
+     *                    true = requires password
+     *                    false = does not require password
+     */
+    public void setHasPassword( boolean hasPassword ) {
+
+        this.hasPassword = hasPassword;
+
+    }
+
+    /**
+     * Sets the password of this event.
+     *
+     * @param password New password of this event.
+     */
+    public void setPassword( String password ) {
+
+        this.password = password;
+
+    }
+
+    /**
+     * Sets whether this events has restrictions.
+     *
+     * @param hasRestrictions Whether this event has restrictions.
+     *                        true = restricted
+     *                        false = not restricted
+     */
+    public void setHasRestrictions( boolean hasRestrictions ) {
+
+        this.hasRestrictions = hasRestrictions;
+
+    }
+
+    /**
+     * Sets the restrictions of this event.
+     *
+     * @param restrictions New restrictions of this event.
+     */
+    public void setRestrictions( ArrayList<String> restrictions ) {
+
+        this.restrictions = new ArrayList<>( restrictions );
+
+    }
+
+    /**
+     * Sets the description of this event.
+     *
+     * @param description New description of this event.
+     */
+    public void setDescription( String description ) {
+
+        this.description = description;
+
+    }
+
     /* Parcelable requirements */
 
     /**
