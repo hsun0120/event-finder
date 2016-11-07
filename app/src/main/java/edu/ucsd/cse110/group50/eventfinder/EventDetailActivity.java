@@ -25,7 +25,7 @@ public class EventDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Event Title");
+        setData();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -95,4 +95,11 @@ public class EventDetailActivity extends AppCompatActivity {
             startActivity(mapIntent);
         }
     }
+
+    private void setData(){
+        Card card = (Card) getIntent().getSerializableExtra("event_card");
+        //Set data here
+        setTitle(card.getCardName());
+    }
+
 }
