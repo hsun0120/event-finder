@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.net.Uri;
+import android.widget.TextView;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -100,6 +101,15 @@ public class EventDetailActivity extends AppCompatActivity {
         Card card = (Card) getIntent().getSerializableExtra("event_card");
         //Set data here
         setTitle(card.getCardName());
+        TextView date= (TextView) findViewById(R.id.textView6);
+        date.setText(card.getDate());
+        TextView location= (TextView) findViewById(R.id.textView7);
+        //Not sure whether uri information should be passed in. Tian
+        if(card.getLocation() != null) {
+            location.setText(card.getLocation().toString());
+        }
+        TextView description = (TextView) findViewById(R.id.textView8);
+        description.setText(card.getDescription());
     }
 
 }

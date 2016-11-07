@@ -128,14 +128,21 @@ public class EventListActivity extends AppCompatActivity {
 
     private void setUpCards(){
         cards = new LinkedList<Card>();
-        cards.add(new Card("Enrollment Begin", "2016/10/30", "description",
+        cards.add(new Card("umaru!", "2016/11/1", "(σ｀・д･)σ space " +
+                "space space space space space space space space space space " +
+                "space space space space space space space space space space " +
+                "space space space space space space space space space space " +
+                "space space space space space space space space space space ",
                 Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Drop without W",
-                "2016/10/31", "description", Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Drop without W", "2016/10/32", "description",
+        cards.add(new Card("Dummy Content",
+                "1999/12/31", "Testcase 1234567890", Uri.parse("geo:37.7749,-122.4194")));
+        cards.add(new Card("Drop without W", "2048/255/255", "A long card\n\nLimits!(＠_＠;)\n" +
+                "\n\n\n\n\n\n\n\n\n",
                 Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Drop without W", "2016/10/33", "description",
+        cards.add(new Card("Intentionally Left Blank", "", "",
                 Uri.parse("geo:37.7749,-122.4194")));
+        for(int i = 0; i < 5; i++)
+            cards.add(new Card());
     }
 
     /**
