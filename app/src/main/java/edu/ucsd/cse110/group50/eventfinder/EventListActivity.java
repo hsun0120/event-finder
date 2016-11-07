@@ -96,6 +96,13 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Check whether we're recreating a previously destroyed instance
+
+
+
+
+
+
         setContentView(R.layout.activity_event_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);

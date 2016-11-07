@@ -50,9 +50,11 @@ public class FirebaseHelper {
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                fetchData(dataSnapshot);
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                fetchData(dataSnapshot);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

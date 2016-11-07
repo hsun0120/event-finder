@@ -28,16 +28,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
 
     private boolean mTwoPane;
-    private LinkedList<Card> cards;
-
-
-
 
 
     // Firebase instance variables
@@ -46,7 +43,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder> mFirebaseAdapter;
+    //private FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder> mFirebaseAdapter;
     //private FirebaseListAdapter<Card> mFirebaseAdapter;
 
     private RecyclerView mMessageRecyclerView;
@@ -55,35 +52,27 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     FirebaseHelper helper;
     CardAdapter adapter;
 
-//    public static class CardAdapter.ViewHolder extends RecyclerView.ViewHolder {
-//
-//        public TextView eventName;
-//        public TextView eventDate;
-//        public TextView eventDes;
-//        public CardAdapter.ViewHolder(View v) {
-//            super(v);
-//            eventName = (TextView) itemView.findViewById(R.id.info_title);
-//            eventDate = (TextView) itemView.findViewById(R.id.info_date);
-//            eventDes = (TextView) itemView.findViewById(R.id.info_des);
-//        }
-//
-//    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_events);
+
+        if(savedInstanceState == null)
+        {
+            System.out.println("savedinstance is NULL!!!!");
+        }
+        else
+        {
+            System.out.println("Savedinstance is NOT NULL");
+        }
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
 
-        //RecyclerView eventListView = (RecyclerView) findViewById(R.id.event_list);
-
-
-
-       // View recyclerView = findViewById(R.id.event_list);
-        //assert recyclerView != null;
-        //setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.event_list) != null) {
             // The detail container view will be present only in the
@@ -92,6 +81,20 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+        mMessageRecyclerView = (RecyclerView) findViewById(R.id.event_list);
+        assert mMessageRecyclerView != null;
+        //mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+
+
+
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        helper = new FirebaseHelper(mFirebaseDatabaseReference);
+        adapter=new CardAdapter(this,helper.retrieve());
+        mMessageRecyclerView.setAdapter(adapter);
+
+
+        setupRecyclerView((RecyclerView) mMessageRecyclerView);
+
 
 
 
@@ -110,60 +113,56 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         } else {
             mUsername = mFirebaseUser.getDisplayName();
         }
+//
+//
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API)
+//                .build();
 
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .build();
-
-//        // Initialize ProgressBar and RecyclerView.
+        // Initialize ProgressBar and RecyclerView.
 //        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mMessageRecyclerView = (RecyclerView) findViewById(R.id.event_list);
-        mLinearLayoutManager = new LinearLayoutManager(this);
-        mLinearLayoutManager.setStackFromEnd(true);
-        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        // New child entries
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        helper = new FirebaseHelper(mFirebaseDatabaseReference);
-        //mFirebaseDatabaseReference = new DatabaseReference("https://windy-oxide-146019.firebaseio.com/");
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
-                Card.class,
-                R.layout.event_list,
-                CardAdapter.ViewHolder.class,
-                mFirebaseDatabaseReference.child("events")) {
+        //mLinearLayoutManager = new LinearLayoutManager(this);
+        //mLinearLayoutManager.setStackFromEnd(false);
 
-            @Override
-            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
-                                              Card eventCard, int position) {
-//                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                    viewHolder.eventName.setText(eventCard.getEventName());
-                    viewHolder.eventDate.setText(eventCard.getEventDate());
-                    viewHolder.eventDes.setText(eventCard.getEventDescription());
 
-            }
-        };
-        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+
+
+
+//        // New child entries
+//        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference()
+//       helper = new FirebaseHelper(mFirebaseDatabaseReference);
+//        //mFirebaseDatabaseReference = new DatabaseReference("https://windy-oxide-146019.firebaseio.com/");
+//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
+//                Card.class,
+//                R.layout.event_list,
+//                CardAdapter.ViewHolder.class,
+//                mFirebaseDatabaseReference.child("events")) {
+//
+//            @Override
+//            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
+//                                              Card eventCard, int position) {
+////                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+//                    viewHolder.eventName.setText(eventCard.getEventName());
+//                    viewHolder.eventDate.setText(eventCard.getEventDate());
+//                    viewHolder.eventDes.setText(eventCard.getEventDescription());
+//
+//            }
+//        };
+//        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+//        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
 
 
         //ADAPTER
-        adapter=new CardAdapter(this,helper.retrieve());
-        mMessageRecyclerView.setAdapter(adapter);
 
 
-//        mFirebaseAdapter = new FirebaseListAdapter<Card>(this, Card.class, android.R.layout.two_line_list_item, mFirebaseDatabaseReference) {
-//            @Override
-//            protected void populateView(View view, Card chatMessage, int position) {
-//                ((TextView)view.findViewById(R.id.info_title)).setText(chatMessage.getEventName());
-//                ((TextView)view.findViewById(R.id.info_date)).setText(chatMessage.getEventDate());
-//                ((TextView)view.findViewById(R.id.info_des)).setText(chatMessage.getDescription());
-//            }
-//        };
 
-//    eventListView.setAdapter(mFirebaseAdapter);
+
+
+
+
 
 
 
@@ -184,9 +183,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //                }
 //            }
 //        });
-
-
-
+        //super.onCreate(savedInstanceState);
 
 
 
@@ -227,36 +224,40 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     }
 
 
+//
+    /**
+     * Setup recyclerView and swipe and dismiss
+     * @param recyclerView
+     */
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        System.out.println("setup recyler is called!!!!!!!!!!");
 
-//    //for view of cards.
-//    private void setUpCards(){
-//        cards = new LinkedList<Card>();
-//        cards.add(new Card("Enrollment Begin",
-//                "2016/10/30", "description"));
-//        cards.add(new Card("Drop without W",
-//                "2016/10/31", "description"));
-//        cards.add(new Card("Drop without W",
-//                "2016/10/32", "description"));
-//        cards.add(new Card("Drop without W",
-//                "2016/10/33", "description"));
-//    }
-//
-//    /**
-//     * Setup recyclerView and swipe and dismiss
-//     * @param recyclerView
-//     */
-//    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-//        setUpCards();
-//        recyclerView.setHasFixedSize(true);
-//        CardAdapter adapter = new CardAdapter(cards);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//
-//        /* Swipe and dismiss configuarations */
-//        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
-//        ItemTouchHelper helper = new ItemTouchHelper(callback);
-//        helper.attachToRecyclerView(recyclerView);
-//    }
+
+        ArrayList<Card> events = helper.events;
+
+        recyclerView.setHasFixedSize(true);
+        CardAdapter adapter = new CardAdapter(this,events);
+        //adapter=new CardAdapter(this,this.helper.retrieve());
+
+
+
+        recyclerView.setAdapter(adapter);
+        //recyclerView.setLayoutManager(mLinearLayoutManager);
+
+        /* Swipe and dismiss configuarations */
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+
+        //CardAdapter adapter = new CardAdapter(this,cards);
+        //adapter=new CardAdapter(this,this.helper.retrieve());
+
+
+
+        helper.attachToRecyclerView(recyclerView);
+
+        //mMessageRecyclerView.setAdapter(adapter);
+
+    }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     // An unresolvable error has occurred and Google APIs (including Sign-In) will not
@@ -265,10 +266,10 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
      Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mFirebaseAdapter.cleanup();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        adapter.cleanup();
+//    }
 
 }
