@@ -2,8 +2,10 @@ package edu.ucsd.cse110.group50.eventfinder;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Class that stores the data for a single event.
@@ -26,7 +28,7 @@ public class Event implements Parcelable {
 
     private byte day;
     private byte month;
-    private byte year;
+    private short year;
 
     private String address;
     // private ?? location; (coordinates)
@@ -134,7 +136,7 @@ public class Event implements Parcelable {
 
         day = in.readByte();
         month = in.readByte();
-        year = in.readByte();
+        year = (short) in.readInt();
 
         address = in.readString();
 
@@ -163,7 +165,7 @@ public class Event implements Parcelable {
      */
     public String getTime() {
 
-        return hour + TIME_SEPARATOR + minute;
+        return String.format( "%02d" + TIME_SEPARATOR + "%02d", hour, minute );
 
     }
 
@@ -174,7 +176,8 @@ public class Event implements Parcelable {
      */
     public String getDate() {
 
-        return month + DATE_SEPARATOR + day + DATE_SEPARATOR + year;
+        return String.format( "%02d" + DATE_SEPARATOR + "%02d" + DATE_SEPARATOR + "%04d",
+                              month, day, year );
 
     }
 
@@ -211,7 +214,7 @@ public class Event implements Parcelable {
      * @param month Month when this event will be held.
      * @param year Year when this event will be held.
      */
-    public void setDate( byte day, byte month, byte year ) {
+    public void setDate( byte day, byte month, short year ) {
 
         this.day = day;
         this.month = month;
@@ -229,7 +232,7 @@ public class Event implements Parcelable {
         String[] datePieces = date.split( DATE_SEPARATOR );
         month = Byte.valueOf( datePieces[0] );
         day = Byte.valueOf( datePieces[1] );
-        year = Byte.valueOf( datePieces[2] );
+        year = Short.valueOf( datePieces[2] );
 
     }
 
@@ -317,7 +320,7 @@ public class Event implements Parcelable {
      *
      * @return The year of this event.
      */
-    public byte getYear() {
+    public short getYear() {
 
         return year;
 
@@ -374,7 +377,7 @@ public class Event implements Parcelable {
      */
     public ArrayList<String> getRestrictions() {
 
-        return restrictions;
+        return new ArrayList<>( restrictions );
 
     }
 
@@ -451,7 +454,7 @@ public class Event implements Parcelable {
      *
      * @param year New year of this event.
      */
-    public void setYear( byte year ) {
+    public void setYear( short year ) {
 
         this.year = year;
 
@@ -547,7 +550,7 @@ public class Event implements Parcelable {
 
         dest.writeByte( day );
         dest.writeByte( month );
-        dest.writeByte( year );
+        dest.writeInt( year );
 
         dest.writeString( address );
 
