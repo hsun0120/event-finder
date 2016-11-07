@@ -277,6 +277,23 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
      Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+//        mFirebaseAuth = FirebaseAuth.getInstance();
+//        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+//        //SETUP FB
+//        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+//        helper = new FirebaseHelper(mFirebaseDatabaseReference);
+//        //ADAPTER
+//        mMessageRecyclerView.setAdapter(adapter);
+        adapter=new CardAdapter(this,helper.retrieve());
+        setupRecyclerView((RecyclerView) mMessageRecyclerView);
+        System.out.println("On Resume Called!");
+    }
+
+
 //    @Override
 //    protected void onDestroy() {
 //        super.onDestroy();

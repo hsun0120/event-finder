@@ -68,10 +68,12 @@ public class FirebaseHelper {
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
             Card event = new Card(
+                    ds.getValue(Card.class).getOwnerName(),
                     ds.getValue(Card.class).getEventName(),
                     ds.getValue(Card.class).getEventDate(),
                     ds.getValue(Card.class).getEventDescription(),
-                    ds.getValue(Card.class).getLocation()
+                    ds.getValue(Card.class).getLocation(),
+                    ds.getValue(Card.class).getAddress()
             );
             //Card event=ds.getValue(Card.class);
             events.add(event);

@@ -127,28 +127,26 @@ public class EventListActivity extends AppCompatActivity {
         }
 
 
-//        //For map view
-//        OnClickapp_bar();
     }
 
-    private void setUpCards(){
-        cards = new ArrayList<>();
-        cards.add(new Card("umaru!", "2016/11/1", "(σ｀・д･)σ space " +
-                "space space space space space space space space space space " +
-                "space space space space space space space space space space " +
-                "space space space space space space space space space space " +
-                "space space space space space space space space space space ",
-                Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Dummy Content",
-                "1999/12/31", "Testcase 1234567890", Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Drop without W", "2048/255/255", "A long card\n\nLimits!(＠_＠;)\n" +
-                "\n\n\n\n\n\n\n\n\n",
-                Uri.parse("geo:37.7749,-122.4194")));
-        cards.add(new Card("Intentionally Left Blank", "", "",
-                Uri.parse("geo:37.7749,-122.4194")));
-        for(int i = 0; i < 5; i++)
-            cards.add(new Card());
-    }
+//    private void setUpCards(){
+//        cards = new ArrayList<>();
+//        cards.add(new Card("umaru!", "2016/11/1", "(σ｀・д･)σ space " +
+//                "space space space space space space space space space space " +
+//                "space space space space space space space space space space " +
+//                "space space space space space space space space space space " +
+//                "space space space space space space space space space space ",
+//                Uri.parse("geo:37.7749,-122.4194")));
+//        cards.add(new Card("Dummy Content",
+//                "1999/12/31", "Testcase 1234567890", Uri.parse("geo:37.7749,-122.4194")));
+//        cards.add(new Card("Drop without W", "2048/255/255", "A long card\n\nLimits!(＠_＠;)\n" +
+//                "\n\n\n\n\n\n\n\n\n",
+//                Uri.parse("geo:37.7749,-122.4194")));
+//        cards.add(new Card("Intentionally Left Blank", "", "",
+//                Uri.parse("geo:37.7749,-122.4194")));
+//        for(int i = 0; i < 5; i++)
+//            cards.add(new Card());
+//    }
 
     /**
      * Setup recyclerView and swipe and dismiss
@@ -172,4 +170,21 @@ public class EventListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        //SETUP FB
+        //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        //helper = new FirebaseHelper(mFirebaseDatabaseReference);
+        //ADAPTER
+        //recyclerView.setAdapter(adapter);
+        adapter=new CardAdapter(this,helper.retrieve());
+        cards = helper.events;
+        setupRecyclerView((RecyclerView) recyclerView);
+
+        System.out.println("On Resume Called!");
+    }
 }
