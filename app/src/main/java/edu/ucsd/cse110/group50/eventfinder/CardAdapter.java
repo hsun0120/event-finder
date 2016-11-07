@@ -10,8 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.Query;
+
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -20,20 +24,22 @@ import java.util.LinkedList;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
-    private LinkedList<Card> cards;
+    Context c;
+    private static ArrayList<Card> cards;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+
         // each data item is just a string in this case
-        public TextView eventName;
-        public TextView eventDate;
-        public TextView eventDes;
+        TextView eventName;
+        TextView eventDate;
+        TextView eventDes;
 
 
         public ViewHolder(View v) {
             super(v);
             eventName = (TextView) v.findViewById(R.id.info_title);
             eventDes = (TextView) v.findViewById(R.id.info_des);
-            //imageView = (ImageView) v.findViewById(R.id.activityImg);
             eventDate = (TextView) v.findViewById(R.id.info_date);
 
             v.setOnClickListener(new View.OnClickListener() {
@@ -46,9 +52,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
                 }
             });
         }
+
+
     }
 
-    public CardAdapter(LinkedList<Card> cards){
+//    public CardAdapter(Query query, Class<MyItem> itemClass, @Nullable ArrayList<MyItem> items,
+//                     @Nullable ArrayList<String> keys) {
+//        super(query, itemClass, items, keys);
+//    }
+
+    public CardAdapter(Context c, ArrayList<Card> cards){
+        this.c = c;
         this.cards = cards;
     }
 
@@ -63,10 +77,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.eventName.setText(cards.get(position).getCardName());
-        holder.eventDes.setText(cards.get(position).getDescription());
+        holder.eventName.setText(cards.get(position).getEventName());
+        holder.eventDes.setText(cards.get(position).getEventDescription());
         //holder.imageView.setImageResource(/*cards.get(position).getPicID()*/R.drawable.activity_default);
-        holder.eventDate.setText(cards.get(position).getDate());
+        holder.eventDate.setText(cards.get(position).getEventDate());
     }
 
     @Override

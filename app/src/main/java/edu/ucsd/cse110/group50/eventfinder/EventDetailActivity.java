@@ -100,16 +100,16 @@ public class EventDetailActivity extends AppCompatActivity {
     private void setData(){
         Card card = (Card) getIntent().getSerializableExtra("event_card");
         //Set data here
-        setTitle(card.getCardName());
+        setTitle(card.getEventName());
         TextView date= (TextView) findViewById(R.id.textView6);
-        date.setText(card.getDate());
+        date.setText(card.getEventDate());
         TextView location= (TextView) findViewById(R.id.textView7);
         //Not sure whether uri information should be passed in. Tian
         if(card.getLocation() != null) {
             location.setText(card.getLocation().toString());
         }
         TextView description = (TextView) findViewById(R.id.textView8);
-        description.setText(card.getDescription());
+        description.setText(card.getEventDescription());
     }
 
 }

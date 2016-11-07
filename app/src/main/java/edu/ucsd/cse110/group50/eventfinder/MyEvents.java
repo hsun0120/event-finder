@@ -13,10 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,11 +46,14 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>
-            mFirebaseAdapter;
+    private FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder> mFirebaseAdapter;
+    //private FirebaseListAdapter<Card> mFirebaseAdapter;
 
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
+
+    FirebaseHelper helper;
+    CardAdapter adapter;
 
 //    public static class CardAdapter.ViewHolder extends RecyclerView.ViewHolder {
 //
@@ -71,6 +76,9 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         setContentView(R.layout.activity_my_events);
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
+
+        //RecyclerView eventListView = (RecyclerView) findViewById(R.id.event_list);
+
 
 
        // View recyclerView = findViewById(R.id.event_list);
@@ -118,23 +126,47 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
-//                Card.class,
-//                R.layout.event_list,
-//                CardAdapter.ViewHolder.class,
-//                mFirebaseDatabaseReference.child("events")) {
-//
+        helper = new FirebaseHelper(mFirebaseDatabaseReference);
+        //mFirebaseDatabaseReference = new DatabaseReference("https://windy-oxide-146019.firebaseio.com/");
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
+                Card.class,
+                R.layout.event_list,
+                CardAdapter.ViewHolder.class,
+                mFirebaseDatabaseReference.child("events")) {
+
+            @Override
+            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
+                                              Card eventCard, int position) {
+//                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                    viewHolder.eventName.setText(eventCard.getEventName());
+                    viewHolder.eventDate.setText(eventCard.getEventDate());
+                    viewHolder.eventDes.setText(eventCard.getEventDescription());
+
+            }
+        };
+        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+
+
+
+        //ADAPTER
+        adapter=new CardAdapter(this,helper.retrieve());
+        mMessageRecyclerView.setAdapter(adapter);
+
+
+//        mFirebaseAdapter = new FirebaseListAdapter<Card>(this, Card.class, android.R.layout.two_line_list_item, mFirebaseDatabaseReference) {
 //            @Override
-//            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
-//                                              Card eventCard, int position) {
-////                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-//                    viewHolder.eventName.setText(eventCard.getCardName());
-//                    viewHolder.eventDate.setText(eventCard.getDate());
-//                    viewHolder.eventDes.setText(eventCard.getDescription());
-//
+//            protected void populateView(View view, Card chatMessage, int position) {
+//                ((TextView)view.findViewById(R.id.info_title)).setText(chatMessage.getEventName());
+//                ((TextView)view.findViewById(R.id.info_date)).setText(chatMessage.getEventDate());
+//                ((TextView)view.findViewById(R.id.info_des)).setText(chatMessage.getDescription());
 //            }
 //        };
-//
+
+//    eventListView.setAdapter(mFirebaseAdapter);
+
+
+
 //        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
 //            @Override
 //            public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -153,8 +185,6 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //            }
 //        });
 
-        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
 
 
@@ -233,6 +263,12 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     // be available.
      Log.d("LoginScreen", "onConnectionFailed:" + connectionResult);
      Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFirebaseAdapter.cleanup();
     }
 
 }

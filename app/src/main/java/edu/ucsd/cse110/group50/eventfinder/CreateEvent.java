@@ -102,53 +102,44 @@ public class CreateEvent extends AppCompatActivity {
 
 
 
-        //Communicate with firebase
-        // New child entries
+//        //Communicate with firebase
+//        // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card,
-                MessageViewHolder>(
-                Card.class,
-                R.layout.activity_my_events,
-                MessageViewHolder.class,
-                mFirebaseDatabaseReference.child("events")) {
+//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card,
+//                MessageViewHolder>(
+//                Card.class,
+//                R.layout.activity_my_events,
+//                MessageViewHolder.class,
+//                mFirebaseDatabaseReference.child("events")) {
+//
+//            @Override
+//            protected void populateViewHolder(MessageViewHolder viewHolder,
+//                                              Card eventCard, int position) {
+//                //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+//                viewHolder.eventName.setText(eventCard.getCardName());
+//                viewHolder.eventDate.setText(eventCard.getDate());
+//                viewHolder.eventDes.setText(eventCard.getDescription());
+//
+//            }
+//        };
 
-            @Override
-            protected void populateViewHolder(MessageViewHolder viewHolder,
-                                              Card eventCard, int position) {
-                //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                viewHolder.eventName.setText(eventCard.getCardName());
-                viewHolder.eventDate.setText(eventCard.getDate());
-                viewHolder.eventDes.setText(eventCard.getDescription());
-//                if (friendlyMessage.getPhotoUrl() == null) {
-//                    viewHolder.messengerImageView
-//                            .setImageDrawable(ContextCompat
-//                                    .getDrawable(MainActivity.this,
-//                                            R.drawable.ic_account_circle_black_36dp));
-//                } else {
-//                    Glide.with(MainActivity.this)
-//                            .load(friendlyMessage.getPhotoUrl())
-//                            .into(viewHolder.messengerImageView);
-//                }
-            }
-        };
-
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                int numOfEvents = mFirebaseAdapter.getItemCount();
-//                int lastVisiblePosition =
-//                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-                // If the recycler view is initially being loaded or the
-                // user is at the bottom of the list, scroll to the bottom
-                // of the list to show the newly added message.
-//                if (lastVisiblePosition == -1 ||
-//                        (positionStart >= (numOfEvents - 1) &&
-//                                lastVisiblePosition == (positionStart - 1))) {
-//                    mMessageRecyclerView.scrollToPosition(positionStart);
-//                }
-            }
-        });
+//        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                super.onItemRangeInserted(positionStart, itemCount);
+//                int numOfEvents = mFirebaseAdapter.getItemCount();
+////                int lastVisiblePosition =
+////                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+//                // If the recycler view is initially being loaded or the
+//                // user is at the bottom of the list, scroll to the bottom
+//                // of the list to show the newly added message.
+////                if (lastVisiblePosition == -1 ||
+////                        (positionStart >= (numOfEvents - 1) &&
+////                                lastVisiblePosition == (positionStart - 1))) {
+////                    mMessageRecyclerView.scrollToPosition(positionStart);
+////                }
+//            }
+//        });
 
 
 //        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -304,9 +295,9 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
         //send event to firebase
-        eventToAdd.setDate(selectedYear+"/"+selectedMonth+"/"+selectedDay+" "+selectedHour+":"+selectedMinute);
-        eventToAdd.setCardName(eventNameEdit.getText().toString());
-        eventToAdd.setDescription(eventDescriptionEdit.getText().toString());
+        eventToAdd.setEventDate(selectedYear+"/"+selectedMonth+"/"+selectedDay+" "+selectedHour+":"+selectedMinute);
+        eventToAdd.setEventName(eventNameEdit.getText().toString());
+        eventToAdd.setEventDescription(eventDescriptionEdit.getText().toString());
         mFirebaseDatabaseReference.child("events")
                 .push().setValue(eventToAdd);
         eventNameEdit.setText("");

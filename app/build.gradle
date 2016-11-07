@@ -13,13 +13,17 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
+
+
+
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -46,8 +50,13 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:9.6.1'
     compile 'com.google.firebase:firebase-crash:9.6.1'
     compile 'com.google.firebase:firebase-database:9.6.1'
+
     // Firebase UI
-    compile 'com.firebaseui:firebase-ui-database:0.4.0'
+
+
+    // Single target that includes all FirebaseUI libraries above
+    compile 'com.firebaseui:firebase-ui:0.6.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

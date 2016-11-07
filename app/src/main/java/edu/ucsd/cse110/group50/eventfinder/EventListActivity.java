@@ -10,17 +10,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
-
-import static java.security.AccessController.getContext;
 
 /**
  * An activity representing a list of Events. This activity
@@ -37,7 +39,7 @@ public class EventListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    private static LinkedList<Card> cards;
+    private static ArrayList<Card> cards;
 
 //
 //    public void OnClickapp_bar(){
@@ -127,7 +129,7 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void setUpCards(){
-        cards = new LinkedList<Card>();
+        cards = new ArrayList<>();
         cards.add(new Card("umaru!", "2016/11/1", "(σ｀・д･)σ space " +
                 "space space space space space space space space space space " +
                 "space space space space space space space space space space " +
@@ -152,7 +154,7 @@ public class EventListActivity extends AppCompatActivity {
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         setUpCards();
         recyclerView.setHasFixedSize(true);
-        CardAdapter adapter = new CardAdapter(cards);
+        CardAdapter adapter = new CardAdapter(this,cards);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 

@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.content.Context;
 import android.net.Uri;
+
 import java.io.Serializable;
 
 /**
@@ -10,56 +12,54 @@ import java.io.Serializable;
 public class Card implements Serializable {
 
     // private Drawable cardImg = getResources().getDrawable(R.drawable.activity_default);
-    private String cardName = "Event";
-    private String date = "2016/10/30";
-    private String description = "Halloween party.";
+    private String eventName = "Event";
+    private String eventDate = "2016/10/30";
+    private String eventDescription = "Halloween party.";
     private transient Uri location; //Not serializable
 
-    private static Card ourInstance = new Card("Sample.", "2016/10/30", "party",
-            Uri.parse("geo:37.7749,-122.4194"));
+    private static Card ourInstance = new Card("Sample.", "2016/10/30", "party", Uri.parse("geo:37.7749,-122.4194"));
 
     public static Card getInstance() {
         return ourInstance;
     }
 
     public Card() {
-        this.cardName = "Event Untitled";
-        this.date = "Date Not Set";
-        this.description = "Description: Nothing more to say!";
-        this.location = Uri.parse("geo:37.7749,-122.4194");
-    };
+        this.eventName = "Event Untitled";
+        this.eventDate = "eventDate Not Set";
+        this.eventDescription = "Description: Nothing more to say!";
+    }
 
-    public Card(String name, String date, String description, Uri location) {
+    public Card(String name, String eventDate, String description, Uri location) {
         //cardImg = img;
-        this.cardName = name;
-        this.date = date;
-        this.description = description;
+        eventName = name;
+        this.eventDate = eventDate;
+        this.eventDescription = description;
         this.location = location;
     }
     //public Drawable getCardImage() {
     //    return cardImg;
     //}
 
-    public  void setCardName(String cardName) {
-        this.cardName = cardName;
+    public  void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEventDescription(String description) {
+        this.eventDescription = description;
     }
 
-    public String getCardName(){ return cardName;}
+    public String getEventName(){ return eventName;}
 
-    public String getDescription() {
-        return description;
+    public String getEventDescription() {
+        return eventDescription;
     }
 
-    public String getDate() {
-        return date;
+    public String getEventDate() {
+        return eventDate;
     }
 
     public Uri getLocation() { return  this.location; }
