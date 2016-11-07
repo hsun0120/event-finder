@@ -2,6 +2,7 @@ package edu.ucsd.cse110.group50.eventfinder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,18 +10,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
 import java.util.LinkedList;
+
+import static java.security.AccessController.getContext;
 
 /**
  * An activity representing a list of Events. This activity
@@ -37,7 +37,7 @@ public class EventListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    private LinkedList<Card> cards;
+    private static LinkedList<Card> cards;
 
 //
 //    public void OnClickapp_bar(){
@@ -128,14 +128,14 @@ public class EventListActivity extends AppCompatActivity {
 
     private void setUpCards(){
         cards = new LinkedList<Card>();
-        cards.add(new Card("Enrollment Begin",
-                "2016/10/30", "description"));
+        cards.add(new Card("Enrollment Begin", "2016/10/30", "description",
+                Uri.parse("geo:37.7749,-122.4194")));
         cards.add(new Card("Drop without W",
-                "2016/10/31", "description"));
-        cards.add(new Card("Drop without W",
-                "2016/10/32", "description"));
-        cards.add(new Card("Drop without W",
-                "2016/10/33", "description"));
+                "2016/10/31", "description", Uri.parse("geo:37.7749,-122.4194")));
+        cards.add(new Card("Drop without W", "2016/10/32", "description",
+                Uri.parse("geo:37.7749,-122.4194")));
+        cards.add(new Card("Drop without W", "2016/10/33", "description",
+                Uri.parse("geo:37.7749,-122.4194")));
     }
 
     /**
@@ -159,4 +159,5 @@ public class EventListActivity extends AppCompatActivity {
         Intent intent = new Intent (EventListActivity.this, MapViewActivity.class);
         startActivity(intent);
     }
+
 }

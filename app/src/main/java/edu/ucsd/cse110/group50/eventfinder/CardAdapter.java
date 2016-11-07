@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -21,7 +22,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     private LinkedList<Card> cards;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView eventName;
         public TextView eventDate;
@@ -34,6 +35,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             eventDes = (TextView) v.findViewById(R.id.info_des);
             //imageView = (ImageView) v.findViewById(R.id.activityImg);
             eventDate = (TextView) v.findViewById(R.id.info_date);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+                    int position = getAdapterPosition();
+                    intent.putExtra("event_card", cards.get(position));
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
     }
 
