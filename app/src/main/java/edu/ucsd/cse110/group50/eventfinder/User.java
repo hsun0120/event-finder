@@ -153,7 +153,7 @@ public class User implements Parcelable {
      *
      * @return The UID of this instance.
      */
-    public long getUID() {
+    public long getUid() {
 
         return uid;
 
@@ -177,7 +177,7 @@ public class User implements Parcelable {
      */
     public ArrayList<Long> getHostedEvents() {
 
-        return hostedEvents;
+        return new ArrayList<>( hostedEvents );
 
     }
 
@@ -188,7 +188,7 @@ public class User implements Parcelable {
      */
     public ArrayList<Long> getPastHosted() {
 
-        return pastHosted;
+        return new ArrayList<>( pastHosted );
 
     }
 
