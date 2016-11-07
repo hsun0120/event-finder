@@ -87,18 +87,17 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         //Setup user Auth
         //Download from firebase
         String mUsername = "anonymous";
-
+        //mFirebaseAuth = FirebaseAuth.getInstance();
+        //mFirebaseUser = mFirebaseAuth.getCurrentUser();
         // Initialize Firebase Auth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, LoginScreen.class));
-            finish();
-            return;
-        } else {
-            mUsername = mFirebaseUser.getDisplayName();
-        }
+//        if (mFirebaseUser == null) {
+//            // Not signed in, launch the Sign In activity
+//            startActivity(new Intent(this, LoginScreen.class));
+//            finish();
+//            return;
+//        } else {
+//            mUsername = mFirebaseUser.getDisplayName();
+//        }
 
 
 
@@ -106,7 +105,8 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //        rv= (RecyclerView) findViewById(R.id.rv);
 //        rv.setLayoutManager(new LinearLayoutManager(this));
         //SETUP FB
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = MapViewActivity.mFirebaseReference;
         helper = new FirebaseHelper(mFirebaseDatabaseReference);
         //ADAPTER
         mMessageRecyclerView.setAdapter(adapter);

@@ -29,6 +29,7 @@ import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * An activity representing a list of Events. This activity
@@ -86,6 +87,12 @@ public class EventListActivity extends AppCompatActivity {
                 finish();
                 return true;
 
+            case R.id.sign_out:
+                mFirebaseAuth.signOut();
+                Intent sign_in_intent = new Intent(this, LoginScreen.class);
+                startActivity(sign_in_intent);
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -105,8 +112,11 @@ public class EventListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.event_list);
+        mFirebaseAuth = MapViewActivity.mFirebaseAuth;
+        mFirebaseUser = MapViewActivity.mFirebaseUser;
         //SETUP FB
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = MapViewActivity.mFirebaseReference;
         helper = new FirebaseHelper(mFirebaseDatabaseReference);
         //ADAPTER
         recyclerView.setAdapter(adapter);
