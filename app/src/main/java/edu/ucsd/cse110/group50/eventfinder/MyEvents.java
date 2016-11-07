@@ -56,6 +56,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Setup content view and tool bar.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_events);
 
@@ -68,11 +69,8 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
             System.out.println("Savedinstance is NOT NULL");
         }
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-
 
         if (findViewById(R.id.event_list) != null) {
             // The detail container view will be present only in the
@@ -86,21 +84,9 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         //mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
 
-
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        helper = new FirebaseHelper(mFirebaseDatabaseReference);
-        adapter=new CardAdapter(this,helper.retrieve());
-        mMessageRecyclerView.setAdapter(adapter);
-
-
-        setupRecyclerView((RecyclerView) mMessageRecyclerView);
-
-
-
-
+        //Setup user Auth
         //Download from firebase
         String mUsername = "anonymous";
-
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -113,6 +99,31 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         } else {
             mUsername = mFirebaseUser.getDisplayName();
         }
+
+
+
+//        //SETUP RV
+//        rv= (RecyclerView) findViewById(R.id.rv);
+//        rv.setLayoutManager(new LinearLayoutManager(this));
+        //SETUP FB
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        helper = new FirebaseHelper(mFirebaseDatabaseReference);
+        //ADAPTER
+        mMessageRecyclerView.setAdapter(adapter);
+        adapter=new CardAdapter(this,helper.retrieve());
+
+
+
+
+
+
+
+        setupRecyclerView((RecyclerView) mMessageRecyclerView);
+
+
+
+
+
 //
 //
 //        mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -236,7 +247,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         ArrayList<Card> events = helper.events;
 
         recyclerView.setHasFixedSize(true);
-        CardAdapter adapter = new CardAdapter(this,events);
+        //CardAdapter adapter = new CardAdapter(this,events);
         //adapter=new CardAdapter(this,this.helper.retrieve());
 
 

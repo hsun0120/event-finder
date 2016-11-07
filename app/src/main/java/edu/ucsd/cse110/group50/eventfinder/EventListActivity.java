@@ -19,6 +19,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import edu.ucsd.cse110.group50.eventfinder.dummy.DummyContent;
 
 import java.util.ArrayList;
@@ -41,22 +47,19 @@ public class EventListActivity extends AppCompatActivity {
     private boolean mTwoPane;
     private static ArrayList<Card> cards;
 
-//
-//    public void OnClickapp_bar(){
-//
-//
-//        Button app_bar = (Button) findViewById(R.id.app_bar);
-//
-//        app_bar.setOnClickListener(
-//                new View.OnClickListener(){
-//                    @Override
-//                    public void onClick(View v){
-//                        Intent intent = new Intent(EventListActivity.this, MapViewActivity.class);
-//                        startActivity(intent);
-//                    }
-//                }
-//        );
-//    }
+    // Firebase instance variables
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+    // Firebase instance variables
+    private DatabaseReference mFirebaseDatabaseReference;
+   // private RecyclerView mMessageRecyclerView;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager mLinearLayoutManager;
+    private FirebaseHelper helper;
+    private CardAdapter adapter;
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,29 +99,22 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Check whether we're recreating a previously destroyed instance
-
-
-
-
-
 
         setContentView(R.layout.activity_event_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-//        toolbar.setTitle(getTitle());
+        recyclerView = (RecyclerView) findViewById(R.id.event_list);
+        //SETUP FB
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        helper = new FirebaseHelper(mFirebaseDatabaseReference);
+        //ADAPTER
+        recyclerView.setAdapter(adapter);
+        adapter=new CardAdapter(this,helper.retrieve());
+        cards = helper.events;
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
-        View recyclerView = findViewById(R.id.event_list);
+
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
@@ -159,7 +155,7 @@ public class EventListActivity extends AppCompatActivity {
      * @param recyclerView
      */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        setUpCards();
+        //setUpCards();
         recyclerView.setHasFixedSize(true);
         CardAdapter adapter = new CardAdapter(this,cards);
         recyclerView.setAdapter(adapter);
