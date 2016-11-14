@@ -119,6 +119,8 @@ public class Event implements Parcelable {
         this.restrictions = new ArrayList<>();
         this.description = "";
 
+        this.listeners = new ArrayList<>();
+
     }
 
     /**
@@ -146,6 +148,8 @@ public class Event implements Parcelable {
         this.hasRestrictions = u.hasRestrictions;
         this.restrictions = new ArrayList<>( u.restrictions );
         this.description = u.description;
+
+        this.listeners = u.listeners;
 
     }
 
@@ -331,6 +335,12 @@ public class Event implements Parcelable {
                 }
                 description = (String) data.child( DESCRIPTION_CHILD ).getValue();
 
+                for ( int i = 0; i < listeners.size(); i++ ) {
+
+                    listeners.get( i ).onLoadComplete( this );
+
+                }
+
             }
 
             /**
@@ -347,11 +357,6 @@ public class Event implements Parcelable {
             }
         };
         mDatabase.addValueEventListener( eventListener );
-        for ( int i = 0; i < listeners.size(); i++ ) {
-
-            listeners.get( i ).onLoadComplete( this );
-
-        }
 
     }
 
@@ -742,21 +747,26 @@ public class Event implements Parcelable {
     /**
      * Creates a new Event instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired Event object.
+     * If the Event does not currently exist, initializes it.
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the Event is completed.
+     * @param uid UID of the user being read.
+     * @param host UID of the host of the event.
      */
     public static void readFromFirebase( final DatabaseReference mDatabase,
-                                         LoadListener listener ) {
+                                         LoadListener listener,
+                                         String uid, String host ) {
 
         // Listener that reads the UID and host, and creates the new instance.
-        EventBuilder eventListener = new EventBuilder( mDatabase, listener );
+        EventBuilder eventListener = new EventBuilder( mDatabase, listener, uid, host );
         mDatabase.addListenerForSingleValueEvent( eventListener );
 
     }
 
     /**
      * Listener class that performs the initial read of an Event from the database.
+     * Creates the Event in the database if it did not exist.
      *
      * @author Thiago Marback
      * @version 1.1
@@ -767,17 +777,24 @@ public class Event implements Parcelable {
         Event newEvent;
         final DatabaseReference mDatabase;
         LoadListener listener;
+        String uid;
+        String host;
 
         /**
          * Creates a new builder with the given database.
          *
          * @param mDatabase database to be read.
          * @param listener Event handler for when the User is completed.
+         * @param uid UID of the Event.
+         * @param host UID of the host of the Event.
          */
-        EventBuilder( final DatabaseReference mDatabase, LoadListener listener ) {
+        EventBuilder( final DatabaseReference mDatabase, LoadListener listener,
+                      String uid, String host ) {
 
             this.mDatabase = mDatabase;
             this.listener = listener;
+            this.uid = uid;
+            this.host = host;
 
         }
 
@@ -796,9 +813,14 @@ public class Event implements Parcelable {
                 throw new NullPointerException();
             }
 
-            String uid = (String) data.child( UID_CHILD ).getValue();
-            String host = (String) data.child( HOST_CHILD ).getValue();
-            newEvent = new Event( uid, host );
+            if ( data.exists() ) {
+                String uid = (String) data.child(UID_CHILD).getValue();
+                String host = (String) data.child(HOST_CHILD).getValue();
+                newEvent = new Event(uid, host);
+            } else {
+                newEvent = new Event( this.uid, this.host );
+                mDatabase.setValue( newEvent );
+            }
             newEvent.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newEvent );
 

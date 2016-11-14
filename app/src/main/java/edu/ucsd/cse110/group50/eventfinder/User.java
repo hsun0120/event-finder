@@ -72,6 +72,8 @@ public class User implements Parcelable {
         this.pastHosted = new ArrayList<>();
         //this.score = 0.0;
 
+        this.listeners = new ArrayList<>();
+
     }
 
     /**
@@ -87,6 +89,8 @@ public class User implements Parcelable {
         this.hostedEvents = new ArrayList<>( u.hostedEvents );
         this.pastHosted = new ArrayList<>( u.pastHosted );
         //this.score = u.score;
+
+        this.listeners = u.listeners;
 
     }
 
@@ -208,6 +212,12 @@ public class User implements Parcelable {
                     }
                 }
 
+                for ( int i = 0; i < listeners.size(); i++ ) {
+
+                    listeners.get( i ).onLoadComplete( this );
+
+                }
+
             }
 
             /**
@@ -224,11 +234,6 @@ public class User implements Parcelable {
             }
         };
         mDatabase.addValueEventListener( userListener );
-        for ( int i = 0; i < listeners.size(); i++ ) {
-
-            listeners.get( i ).onLoadComplete( this );
-
-        }
 
     }
 
@@ -363,21 +368,24 @@ public class User implements Parcelable {
     /**
      * Creates a new User instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired User object.
+     * If the User does not currently exist, initializes it.
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the User is completed.
+     * @param uid UID of the user being read.
      */
     public static void readFromFirebase( final DatabaseReference mDatabase,
-                                         LoadListener listener ) {
+                                         LoadListener listener, String uid ) {
 
         // Listener that reads the UID and host, and creates the new instance.
-        UserBuilder userListener = new UserBuilder( mDatabase, listener );
+        UserBuilder userListener = new UserBuilder( mDatabase, listener, uid );
         mDatabase.addListenerForSingleValueEvent( userListener );
 
     }
 
     /**
      * Listener class that performs the initial read of an User from the database.
+     * Creates the User in the database if it did not exist.
      *
      * @author Thiago Marback
      * @version 1.1
@@ -388,17 +396,21 @@ public class User implements Parcelable {
         private User newUser;
         final DatabaseReference mDatabase;
         LoadListener listener;
+        String uid;
 
         /**
          * Creates a new builder with the given database.
          *
          * @param mDatabase database to be read.
          * @param listener Event handler for when the User is completed.
+         * @param uid UID of the User.
          */
-        UserBuilder( final DatabaseReference mDatabase, LoadListener listener ) {
+        UserBuilder( final DatabaseReference mDatabase, LoadListener listener,
+                     String uid ) {
 
             this.mDatabase = mDatabase;
             this.listener = listener;
+            this.uid = uid;
 
         }
 
@@ -418,8 +430,14 @@ public class User implements Parcelable {
                 throw new NullPointerException();
             }
 
-            String uid = (String) data.child( UID_CHILD ).getValue();
-            newUser = new User( uid );
+            if ( data.exists() ) {
+                String uid = (String) data.child( UID_CHILD ).getValue();
+                newUser = new User( uid );
+            } else {
+                newUser = new User( this.uid );
+                mDatabase.setValue( newUser );
+            }
+
             newUser.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newUser );
 
