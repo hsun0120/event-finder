@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -264,6 +265,13 @@ public class CreateEvent extends AppCompatActivity {
         eventTime.setText( time );
         checkValidDate();
         closeTime( v );
+
+    }
+
+    public void pickPlace( View v ) {
+        Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+        v.getContext().startActivity(intent);
+
 
     }
 
