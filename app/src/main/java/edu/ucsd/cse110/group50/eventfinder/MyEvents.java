@@ -50,7 +50,6 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     private LinearLayoutManager mLinearLayoutManager;
 
     FirebaseHelper helper;
-    CardAdapter adapter;
 
 
 
@@ -106,11 +105,9 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //        rv.setLayoutManager(new LinearLayoutManager(this));
         //SETUP FB
         //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseDatabaseReference = MapViewActivity.mFirebaseReference;
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         helper = new FirebaseHelper(mFirebaseDatabaseReference);
         //ADAPTER
-        mMessageRecyclerView.setAdapter(adapter);
-        adapter=new CardAdapter(this,helper.retrieve());
 
 
 
@@ -244,7 +241,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         System.out.println("setup recyler is called!!!!!!!!!!");
 
 
-        ArrayList<Card> events = helper.events;
+        ArrayList<Object> events = helper.events;
 
         recyclerView.setHasFixedSize(true);
         //CardAdapter adapter = new CardAdapter(this,events);
@@ -252,19 +249,15 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 
 
 
-        recyclerView.setAdapter(adapter);
         //recyclerView.setLayoutManager(mLinearLayoutManager);
 
         /* Swipe and dismiss configuarations */
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
 
         //CardAdapter adapter = new CardAdapter(this,cards);
         //adapter=new CardAdapter(this,this.helper.retrieve());
 
 
 
-        helper.attachToRecyclerView(recyclerView);
 
         //mMessageRecyclerView.setAdapter(adapter);
 
@@ -288,7 +281,6 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //        helper = new FirebaseHelper(mFirebaseDatabaseReference);
 //        //ADAPTER
 //        mMessageRecyclerView.setAdapter(adapter);
-        adapter=new CardAdapter(this,helper.retrieve());
         setupRecyclerView((RecyclerView) mMessageRecyclerView);
         System.out.println("On Resume Called!");
     }

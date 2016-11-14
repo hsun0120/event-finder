@@ -1,5 +1,20 @@
 <resources>
     <string name="app_name">Event Finder</string>
+    <string name="action_account">account</string>
+    <string name="action_filter">filter</string>
+    <string name="search_hint">search_hint</string>
+
+    <string-array name="Planets">
+        <item>Sun</item>
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -32,10 +47,10 @@
     </string>
     <string name="action_new_event">Create a new event</string>
     <string name="action_calendar_view">Open calendar view</string>
-    <string name="action_filter">Set up list filters</string>
     <string name="to_list_view">To list view</string>
     <string name="to_map_view">To map view</string>
     <string name="to_my_activities">Go to My Activities</string>
     <string name="to_nearby_events">Go to nearby events</string>
     <string name="save_filter">Save filter</string>
+
 </resources>

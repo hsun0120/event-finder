@@ -45,32 +45,13 @@ public class CreateEvent extends AppCompatActivity {
     private int selectedHour, selectedMinute;
 
     //event card to add to firebase
-    private Card eventToAdd = new Card();
 
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-
-
-
-
-
-        public TextView eventName;
-        public TextView eventDate;
-        public TextView eventDes;
-        public MessageViewHolder(View v) {
-            super(v);
-            eventName = (TextView) itemView.findViewById(R.id.info_title);
-            eventDate = (TextView) itemView.findViewById(R.id.info_date);
-            eventDes = (TextView) itemView.findViewById(R.id.info_des);
-        }
-
-    }
     //vars needed for database communication
     // Firebase instance variables
     private LinearLayoutManager mLinearLayoutManager;
     private RecyclerView mMessageRecyclerView;
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Card, MessageViewHolder> mFirebaseAdapter;
     private Button create_button;
     //edit text
     EditText eventNameEdit;
@@ -269,7 +250,7 @@ public class CreateEvent extends AppCompatActivity {
     }
 
     public void pickPlace( View v ) {
-        Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+        Intent intent = new Intent(v.getContext(), MapView.class);
         v.getContext().startActivity(intent);
 
 
@@ -287,12 +268,6 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
         //send event to firebase
-        eventToAdd.setEventDate(selectedYear+"/"+selectedMonth+"/"+selectedDay+" "+selectedHour+":"+selectedMinute);
-        eventToAdd.setEventName(eventNameEdit.getText().toString());
-        eventToAdd.setEventDescription(eventDescriptionEdit.getText().toString());
-        mFirebaseDatabaseReference.child("events")
-                .push().setValue(eventToAdd);
-        eventNameEdit.setText("");
 
         //System.out.println(selectedYear+"/"+selectedMonth+"/"+selectedDay+" "+selectedHour+":"+selectedMinute);
 

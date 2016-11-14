@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    card_view:cardCornerRadius="4dp"
+    android:layout_margin="5dp">
 
-    <!-- A CardView that contains a TextView -->
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        card_view:cardElevation="3dp">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="50dp"
+            android:background="#8C9EFF"
+            android:text="Event name"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/info_date"
-                android:layout_weight="0.05"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp" />
+        <TextView
+            android:id="@+id/txtAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Addresss"
+            android:gravity="center_vertical"
+            android:textSize="16dp"
+            android:layout_below="@id/name"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"/>
 
-            <TextView
-                android:id="@+id/info_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:textColor="#222"
-                android:textStyle="bold"
-                android:textSize="22sp"
-                android:elevation="0dp"
-                android:paddingTop="8dp" />
+        <TextView
+            android:id="@+id/txtDescrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:gravity="center_vertical"
+            android:textSize="16dp"
+            android:layout_below="@id/txtAddress"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/info_des"
-                android:maxLines="3"
-                android:textColor="#666"
-                android:textSize="14sp"
-                android:layout_weight="0.49"
-                android:paddingTop="8dp" />
+    </RelativeLayout>
 
-        </LinearLayout>
 
-    </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</android.support.v7.widget.CardView>

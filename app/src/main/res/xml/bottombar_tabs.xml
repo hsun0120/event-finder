@@ -1,0 +1,17 @@
+<tabs>
+    <tab
+        id="@+id/my_event_item"
+        icon="@drawable/ic_calendar_text_white_24dp"
+        title="My Event"
+        barColorWhenSelected="#FFD700" />
+    <tab
+        id="@+id/location_item"
+        icon="@drawable/ic_location_on_white_24dp"
+        title="location"
+        barColorWhenSelected="#FF4081" />
+    <tab
+        id="@+id/list_item"
+        icon="@drawable/ic_format_list_bulleted_white_24dp"
+        title="List"
+        barColorWhenSelected="#7FFFD4" />
+</tabs>

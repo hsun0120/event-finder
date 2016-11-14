@@ -2,104 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.ucsd.cse110.group50.eventfinder">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality.
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".LoginScreen"
-            android:label="@string/app_name">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name="edu.ucsd.cse110.group50.eventfinder.MapView">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".CreateEvent"
-            android:label="Create Event">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.CreateEvent" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".EventListActivity"
-            android:label="Nearby Events">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.EventListActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".EventDetailActivity"
-            android:label="">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.EventDetailActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MapViewActivity">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.MapViewActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".MyEvents"
-            android:label="My Events">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.MyEvents" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MyCalendar" />
-        <activity
-            android:name=".MyEventsFilter"
-            android:label="My Events Filter">
-            <intent-filter>
-                <action android:name="edu.ucsd.cse110.group50.eventfinder.MyEventsFilter" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-
-
-
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
+        <activity android:name="edu.ucsd.cse110.group50.eventfinder.OpenFilter" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-
     </application>
 
 </manifest>

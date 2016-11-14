@@ -202,7 +202,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                                                 public void onLoadComplete( Object data ) {
 
                                                     curUser.removeListener( this );
-                                                    Intent intent = new Intent(LoginScreen.this, MapViewActivity.class);
+                                                    Intent intent = new Intent(LoginScreen.this, MapView.class);
                                                     intent.putExtra( Identifiers.USER, curUser );
                                                     startActivity( intent );
                                                     finish();

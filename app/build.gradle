@@ -57,6 +57,8 @@ dependencies {
 
     // Single target that includes all FirebaseUI libraries above
     compile 'com.firebaseui:firebase-ui:0.6.1'
+    
+    compile 'com.roughike:bottom-bar:2.0.2'
 
 }
 

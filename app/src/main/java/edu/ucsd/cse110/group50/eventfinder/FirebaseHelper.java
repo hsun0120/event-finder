@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class FirebaseHelper {
     DatabaseReference db;
     Boolean saved=null;
-    ArrayList<Card> events=new ArrayList<>();
+    ArrayList<Object> events=new ArrayList<>();
     public FirebaseHelper(DatabaseReference db) {
         this.db = db;
     }
@@ -37,7 +37,7 @@ public class FirebaseHelper {
         return saved;
     }
     //READ
-    public ArrayList<Card> retrieve()
+    public ArrayList<Object> retrieve()
     {
         db.addChildEventListener(new ChildEventListener() {
             @Override
@@ -67,16 +67,7 @@ public class FirebaseHelper {
         events.clear();
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
-            Card event = new Card(
-                    ds.getValue(Card.class).getOwnerName(),
-                    ds.getValue(Card.class).getEventName(),
-                    ds.getValue(Card.class).getEventDate(),
-                    ds.getValue(Card.class).getEventDescription(),
-                    ds.getValue(Card.class).getLocation(),
-                    ds.getValue(Card.class).getAddress()
-            );
-            //Card event=ds.getValue(Card.class);
-            events.add(event);
+
         }
     }
 }
