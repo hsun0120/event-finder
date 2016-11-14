@@ -8,6 +8,7 @@ public interface Identifiers {
 
     String USER = "user";
     String EVENTS = "events";
+    String EVENT = "event";
 
     String FIREBASE_USERS = "users";
     String FIREBASE_EVENTS = "events";

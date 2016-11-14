@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -29,12 +28,12 @@ public class Event implements Parcelable {
     private String name;
     private final String host;
 
-    private byte hour;
-    private byte minute;
+    private int hour;
+    private int minute;
 
-    private byte day;
-    private byte month;
-    private short year;
+    private int day;
+    private int month;
+    private int year;
 
     private String address;
     //private Uri location;
@@ -165,12 +164,12 @@ public class Event implements Parcelable {
         name = in.readString();
         host = in.readString();
 
-        hour = in.readByte();
-        minute = in.readByte();
+        hour = in.readInt();
+        minute = in.readInt();
 
-        day = in.readByte();
-        month = in.readByte();
-        year = (short) in.readInt();
+        day = in.readInt();
+        month = in.readInt();
+        year = in.readInt();
 
         address = in.readString();
         //location = in.readParcelable( Uri.class.getClassLoader() );
@@ -222,7 +221,7 @@ public class Event implements Parcelable {
      * @param hour Hour when this event will be held.
      * @param minute Minute when this event will be held.
      */
-    public void setTime( byte hour, byte minute ) {
+    public void setTime( int hour, int minute ) {
 
         this.hour = hour;
         this.minute = minute;
@@ -249,7 +248,7 @@ public class Event implements Parcelable {
      * @param month Month when this event will be held.
      * @param year Year when this event will be held.
      */
-    public void setDate( byte day, byte month, short year ) {
+    public void setDate( int day, int month, int year ) {
 
         this.day = day;
         this.month = month;
@@ -306,17 +305,18 @@ public class Event implements Parcelable {
 
                 if ( !data.getKey().equals( uid ) ) {
                     Log.wtf( TAG, "Reading data from a different UID." );
-                    throw new IllegalArgumentException( "UID mismatch" );
+                    Log.wtf( TAG, "Was reading " + uid + ", got " + data.getKey() );
+                    throw new IllegalArgumentException( "UID mismatch: " + uid + " | " + data.getKey() );
                 }
 
                 name = (String) data.child( NAME_CHILD ).getValue();
 
-                hour = (byte) data.child( HOUR_CHILD ).getValue();
-                minute = (byte) data.child( MINUTE_CHILD ).getValue();
+                hour = (int) ( (long) data.child( HOUR_CHILD ).getValue() );
+                minute = (int) ( (long) data.child( MINUTE_CHILD ).getValue() );
 
-                day = (byte) data.child( DAY_CHILD ).getValue();
-                month = (byte) data.child( MONTH_CHILD ).getValue();
-                year = (short) data.child( YEAR_CHILD ).getValue();
+                day = (int) ( (long) data.child( DAY_CHILD ).getValue() );
+                month = (int) ( (long) data.child( MONTH_CHILD ).getValue() );
+                year = (int) ( (long) data.child( YEAR_CHILD ).getValue() );
 
                 address = (String) data.child( ADDRESS_CHILD ).getValue();
                 //location = (Uri) data.child( LOCATION_CHILD ).getValue();
@@ -337,7 +337,7 @@ public class Event implements Parcelable {
 
                 for ( int i = 0; i < listeners.size(); i++ ) {
 
-                    listeners.get( i ).onLoadComplete( this );
+                    listeners.get( i ).onLoadComplete( Event.this );
 
                 }
 
@@ -422,7 +422,7 @@ public class Event implements Parcelable {
      *
      * @return The hour of this event.
      */
-    public byte getHour() {
+    public int getHour() {
 
         return hour;
 
@@ -433,7 +433,7 @@ public class Event implements Parcelable {
      *
      * @return The minute of this event.
      */
-    public byte getMinute() {
+    public int getMinute() {
 
         return minute;
 
@@ -444,7 +444,7 @@ public class Event implements Parcelable {
      *
      * @return The day of this event.
      */
-    public byte getDay() {
+    public int getDay() {
 
         return day;
 
@@ -455,7 +455,7 @@ public class Event implements Parcelable {
      *
      * @return The month of this event.
      */
-    public byte getMonth() {
+    public int getMonth() {
 
         return month;
 
@@ -466,7 +466,7 @@ public class Event implements Parcelable {
      *
      * @return The year of this event.
      */
-    public short getYear() {
+    public int getYear() {
 
         return year;
 
@@ -556,7 +556,7 @@ public class Event implements Parcelable {
      *
      * @param hour New hour of this event.
      */
-    public void setHour( byte hour ) {
+    public void setHour( int hour ) {
 
         this.hour = hour;
 
@@ -567,7 +567,7 @@ public class Event implements Parcelable {
      *
      * @param minute New minute of this event.
      */
-    public void setMinute( byte minute ) {
+    public void setMinute( int minute ) {
 
         this.minute = minute;
 
@@ -578,7 +578,7 @@ public class Event implements Parcelable {
      *
      * @param day New day of this event.
      */
-    public void setDay( byte day ) {
+    public void setDay( int day ) {
 
         this.day = day;
 
@@ -589,7 +589,7 @@ public class Event implements Parcelable {
      *
      * @param month New month of this event.
      */
-    public void setMonth( byte month ) {
+    public void setMonth( int month ) {
 
         this.month = month;
 
@@ -600,7 +600,7 @@ public class Event implements Parcelable {
      *
      * @param year New year of this event.
      */
-    public void setYear( short year ) {
+    public void setYear( int year ) {
 
         this.year = year;
 
@@ -658,7 +658,7 @@ public class Event implements Parcelable {
      *
      * @param restrictions New restrictions of this event.
      */
-    public void setRestrictions( ArrayList<String> restrictions ) {
+    public void setRestrictions( List<String> restrictions ) {
 
         this.restrictions = new ArrayList<>( restrictions );
 
@@ -691,11 +691,11 @@ public class Event implements Parcelable {
         dest.writeString( name );
         dest.writeString( host );
 
-        dest.writeByte( hour );
-        dest.writeByte( minute );
+        dest.writeInt( hour );
+        dest.writeInt( minute );
 
-        dest.writeByte( day );
-        dest.writeByte( month );
+        dest.writeInt( day );
+        dest.writeInt( month );
         dest.writeInt( year );
 
         dest.writeString( address );
@@ -839,5 +839,68 @@ public class Event implements Parcelable {
 
         }
     };
+
+    public static void loadAllEvents( final DatabaseReference mDatabase, LoadListener listener ) {
+
+        ListLoader loader = new ListLoader( mDatabase, listener );
+        mDatabase.addListenerForSingleValueEvent( loader );
+
+    }
+
+    private static class ListLoader implements ValueEventListener {
+
+        final DatabaseReference mDatabase;
+        LoadListener listener;
+        ArrayList<Event> eventList;
+        long count;
+
+        ListLoader( DatabaseReference mDatabase, LoadListener listener ) {
+
+            this.mDatabase = mDatabase;
+            this.listener = listener;
+            this.eventList = new ArrayList<>();
+
+        }
+
+        private synchronized void oneLoaded() {
+
+            count--;
+            if ( count == 0 ) {
+                listener.onLoadComplete( eventList );
+            }
+
+        }
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+            this.count = dataSnapshot.getChildrenCount();
+            Iterable<DataSnapshot> dataList = dataSnapshot.getChildren();
+            for ( DataSnapshot data : dataList ) {
+
+                readFromFirebase( data.getRef(),
+                        new LoadListener() {
+
+                            @Override
+                            public void onLoadComplete( Object data ) {
+
+                                eventList.add( (Event) data );
+                                oneLoaded();
+
+                            }
+
+                        },
+                        (String) data.child( UID_CHILD ).getValue(),
+                        (String) data.child( HOST_CHILD ).getValue() );
+
+            }
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }
 
 }

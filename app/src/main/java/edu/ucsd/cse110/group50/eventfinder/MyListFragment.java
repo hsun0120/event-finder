@@ -14,10 +14,23 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MyListFragment extends Fragment implements OnItemClickListener {
+
+    DatabaseReference databaseReference;
+    RecyclerView recList;
+
+    private static String TAG = "MyListFragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -25,7 +38,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
         // Create new RecyclerView
-        RecyclerView recList = (RecyclerView) view.findViewById(R.id.cardList);
+        recList = (RecyclerView) view.findViewById(R.id.cardList);
         // Improve performance
         recList.setHasFixedSize(true);
 
@@ -34,9 +47,22 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        Event.loadAllEvents(databaseReference.child(Identifiers.FIREBASE_EVENTS),
+                new LoadListener() {
+
+                    @Override
+                    public void onLoadComplete(Object data) {
+
+                        EventAdapter ca = new EventAdapter( (ArrayList<Event>) data );
+                        recList.setAdapter( ca );
+
+                    }
+
+                });
+
         // Example event card manually created
-        EventAdapter ca = new EventAdapter(createList(30));
-        recList.setAdapter(ca);
+
 
         return view;
     }
@@ -49,6 +75,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
         Log.d("LIST", "Item: " + position + "selected");
+
     }
 
     // Manually create example event card list

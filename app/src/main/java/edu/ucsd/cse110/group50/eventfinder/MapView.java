@@ -144,6 +144,9 @@ public class MapView extends AppCompatActivity
         // Setting up bottombar
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
+        // Set default tab to location_item
+        bottomBar.setDefaultTabPosition(2);
+
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -151,6 +154,9 @@ public class MapView extends AppCompatActivity
                 switch (tabId){
                     case R.id.my_event_item:
                         Log.d("TAB","My Event Item Selected");
+                        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
+                        intent1.putExtra( Identifiers.USER, curUser );
+                        startActivity( intent1 );
                         break;
                     case R.id.list_item:
                         Log.d("TAB","List Item Selected");
@@ -171,9 +177,6 @@ public class MapView extends AppCompatActivity
             public void onTabReSelected(@IdRes int tabId) {
             }
         });
-
-        // Set default tab to location_item
-        bottomBar.setDefaultTabPosition(1);
 
         // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
         //bottomBar.setActiveTabColor(0xC2185B);

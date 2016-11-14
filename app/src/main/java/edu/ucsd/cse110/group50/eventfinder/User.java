@@ -214,7 +214,7 @@ public class User implements Parcelable {
 
                 for ( int i = 0; i < listeners.size(); i++ ) {
 
-                    listeners.get( i ).onLoadComplete( this );
+                    listeners.get( i ).onLoadComplete( User.this );
 
                 }
 
