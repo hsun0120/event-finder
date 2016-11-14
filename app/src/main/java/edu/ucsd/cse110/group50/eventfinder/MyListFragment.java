@@ -20,20 +20,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class MyListFragment extends Fragment implements OnItemClickListener {
 
-    DatabaseReference databaseReference;
+
     RecyclerView recList;
 
+    ArrayList<Event> events_to_adapt;
+
+    DatabaseReference mFirebaseReference;
+
     private static String TAG = "MyListFragment";
+
+    public MyListFragment()
+    {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        System.out.println("MYLISTFRAGMENT ONCREATE Called");
         // Get the view of the fragment
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
@@ -47,19 +58,29 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        Event.loadAllEvents(databaseReference.child(Identifiers.FIREBASE_EVENTS),
+
+
+        //Get events from firebase
+        mFirebaseReference = MapView.mFirebaseReference;
+        Event.loadAllEvents(mFirebaseReference.child(Identifiers.FIREBASE_EVENTS),
                 new LoadListener() {
 
                     @Override
                     public void onLoadComplete(Object data) {
+                        ArrayList<Event> unprocessed_events =(ArrayList<Event>)data;
 
-                        EventAdapter ca = new EventAdapter( (ArrayList<Event>) data );
-                        recList.setAdapter( ca );
+                        ArrayList<Event> processed_events = processSearch((ArrayList<Event>)data, MapView.curUser.getUid());
+
+                        EventAdapter ca = new EventAdapter(processed_events);
+                        recList.setAdapter(ca);
+//                        Bundle unprocessed_bundle = new Bundle();
+//                        unprocessed_bundle.putParcelableArrayList(unprocessed_events);
+
 
                     }
 
                 });
+
 
         // Example event card manually created
 
@@ -93,4 +114,40 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         }
         return result;
     }
+    //Yining: Dummy Local Search Functions:
+    public ArrayList<Event> processSearch(ArrayList<Event> curr_list, String hostID)
+    {
+        ArrayList<Event> new_list = new ArrayList<>();
+
+        for(Event e : curr_list)
+        {
+            if(e.getHost().equals(hostID))
+            {
+                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
+                new_list.add(e);
+            }
+            else
+            {
+                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
+            }
+        }
+
+        return new_list;
+    }
+
+
+
+//    @Override
+//    public void onStart()
+//    {
+//        super.onStart();
+//        on_all_events_flag = MapView.user_on_all_events_flag;
+//    }
+//
+//    @Override
+//    public void onResume()
+//    {
+//        super.onResume();
+//        on_all_events_flag = MapView.user_on_all_events_flag;
+//    }
 }

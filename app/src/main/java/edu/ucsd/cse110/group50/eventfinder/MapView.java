@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +41,8 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.util.ArrayList;
+
 public class MapView extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -48,7 +51,7 @@ public class MapView extends AppCompatActivity
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
 
-    User curUser;
+    public static User curUser;
 
     // Firebase instance variables
     public static FirebaseAuth mFirebaseAuth;
@@ -59,6 +62,14 @@ public class MapView extends AppCompatActivity
     private String[] mDrawerTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+
+    //Flag used to determine which page the user is on. 0 for my_events, 1 for all_events_list;
+    public static int user_on_all_events_flag;
+
+    ArrayList<Event> unprocessed_events;
+
+    ArrayList<Event> processed_events;
+
 
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
@@ -133,8 +144,15 @@ public class MapView extends AppCompatActivity
         final SupportMapFragment supportMapFragment =  SupportMapFragment.newInstance();
         fm.beginTransaction().replace(R.id.container, supportMapFragment).commit();
 
+
+
+
+
+
+
         // Setting up list
         final MyListFragment listFragment = new MyListFragment();
+        //final MyListFragment myListFragment = new MyListFragment();
 
         // Setting up toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -153,12 +171,15 @@ public class MapView extends AppCompatActivity
                 int current=bottomBar.getCurrentTabId();
                 switch (tabId){
                     case R.id.my_event_item:
+                        user_on_all_events_flag = 0;
                         Log.d("TAB","My Event Item Selected");
+
                         Intent intent1 = new Intent(MapView.this, CreateEvent.class);
                         intent1.putExtra( Identifiers.USER, curUser );
                         startActivity( intent1 );
                         break;
                     case R.id.list_item:
+                        user_on_all_events_flag = 1;
                         Log.d("TAB","List Item Selected");
                         popFragment(supportMapFragment);
                         pushFragment(listFragment);
@@ -254,5 +275,24 @@ public class MapView extends AppCompatActivity
                 .position(new LatLng(0, 0))
                 .title("Marker"));
     }
-
+//    //Yining: Dummy Local Search Functions:
+//    public ArrayList<Event> processSearch(ArrayList<Event> curr_list,  String hostID)
+//    {
+//        ArrayList<Event> new_list = new ArrayList<>();
+//
+//        for(Event e : curr_list)
+//        {
+//            if(e.getHost().equals(hostID))
+//            {
+//                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
+//                new_list.add(e);
+//            }
+//            else
+//            {
+//                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
+//            }
+//        }
+//
+//        return new_list;
+//    }
 }

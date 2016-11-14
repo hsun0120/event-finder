@@ -838,7 +838,7 @@ public class Event implements Parcelable {
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
 
         }
-    };
+    }
 
     public static void loadAllEvents( final DatabaseReference mDatabase, LoadListener listener ) {
 
