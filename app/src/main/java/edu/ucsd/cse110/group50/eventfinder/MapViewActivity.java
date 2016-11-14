@@ -82,8 +82,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
+                //.addApi(Places.GEO_DATA_API)
+                //.addApi(Places.PLACE_DETECTION_API)
                 .build();
 
 
