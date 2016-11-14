@@ -32,6 +32,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -43,6 +47,13 @@ public class MapView extends AppCompatActivity
 
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+
+    User curUser;
+
+    // Firebase instance variables
+    public static FirebaseAuth mFirebaseAuth;
+    public static FirebaseUser mFirebaseUser;
+    public static DatabaseReference mFirebaseReference;
 
     // for the drawer
     private String[] mDrawerTitles;
@@ -82,6 +93,20 @@ public class MapView extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_view);
+
+        // Initialize Firebase Auth
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser == null) {
+            // Not signed in, launch the Sign In activity
+            startActivity(new Intent(this, LoginScreen.class));
+            finish();
+            return;
+        }
+        mFirebaseReference = FirebaseDatabase.getInstance().getReference();
+
+        Intent intent = getIntent();
+        curUser = intent.getParcelableExtra( Identifiers.USER );
 
         // Initialize the drawer list
         mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
