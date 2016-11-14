@@ -34,6 +34,17 @@
             android:hint="@string/addressFieldHint"
             android:id="@+id/eventAddress" />
 
+
+        <Button
+            android:text="Place Picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/placepicker"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:elevation="0dp"
+            android:onClick="pickPlace"/>
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
