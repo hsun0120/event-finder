@@ -15,6 +15,38 @@
       },
       "oauth_client": [
         {
+          "client_id": "44077308970-bqpkfuj24td2phor1fba72f462av14qr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ucsd.cse110.group50.eventfinder",
+            "certificate_hash": "902D8F12E1E24340681B0B92C811E274CE8AF7B6"
+          }
+        },
+        {
+          "client_id": "44077308970-jj5vg1m5k3lkqm35o4qm2vl0qoit0j21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ucsd.cse110.group50.eventfinder",
+            "certificate_hash": "91E35DA682541A52DF5F068D5CC71091474AE67B"
+          }
+        },
+        {
+          "client_id": "44077308970-ngv29u896npln0vht0vv9ch3bnslomhi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ucsd.cse110.group50.eventfinder",
+            "certificate_hash": "3E357EA06B3764CF06A0A9F683AC927992C84B1E"
+          }
+        },
+        {
+          "client_id": "44077308970-vrek74b74fs78odlfr3he00fhfd7o1qj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ucsd.cse110.group50.eventfinder",
+            "certificate_hash": "C3956ECD19AC366269DE2F28AEBAEA036B27EF4E"
+          }
+        },
+        {
           "client_id": "44077308970-iu4efspavhtp1rlemnorub1povpkrvi3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

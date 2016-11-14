@@ -3,9 +3,17 @@ package edu.ucsd.cse110.group50.eventfinder;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Class that stores the data for a single user.
@@ -13,18 +21,24 @@ import java.util.Arrays;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 1.0
+ * @version 2.0
  */
 public class User implements Parcelable {
 
     /* Instance fields */
 
-    private final long uid;
+    private final String uid;
     private String name;
 
-    private ArrayList<Long> hostedEvents;
-    private ArrayList<Long> pastHosted;
+    private ArrayList<String> hostedEvents;
+    private ArrayList<String> pastHosted;
     // private float score;
+
+    private static final String UID_CHILD = "uid";
+    private static final String NAME_CHILD = "name";
+    private static final String HOSTED_CHILD = "hostedEvents";
+    private static final String PAST_CHILD = "pastHosted";
+    private static final String TAG = "User";
 
     /* Ctors */
 
@@ -33,7 +47,7 @@ public class User implements Parcelable {
      *
      * @param uid UID of this instance.
      */
-    public User( long uid ) {
+    public User( String uid ) {
 
         this( uid, "" );
 
@@ -45,7 +59,7 @@ public class User implements Parcelable {
      * @param uid UID of this instance.
      * @param name Initial name of this instance.
      */
-    public User( long uid, String name ) {
+    public User( String uid, String name ) {
 
         this.uid = uid;
         this.name = name;
@@ -80,23 +94,11 @@ public class User implements Parcelable {
      */
     private User( Parcel in ) {
 
-        uid = in.readLong();
+        uid = in.readString();
         name = in.readString();
 
-        long[] hosted = in.createLongArray();
-        hostedEvents = new ArrayList<>( hosted.length );
-        for ( long uid : hosted ) {
-
-            hostedEvents.add( uid );
-
-        }
-        long[] past = in.createLongArray();
-        pastHosted = new ArrayList<Long>( past.length );
-        for ( long uid : past ) {
-
-            pastHosted.add( uid );
-
-        }
+        hostedEvents = in.createStringArrayList();
+        pastHosted = in.createStringArrayList();
 
     }
 
@@ -109,7 +111,7 @@ public class User implements Parcelable {
      * @return true if successfully added;
      *         false if was already in the list.
      */
-    public boolean addHosted( long uid ) {
+    public boolean addHosted( String uid ) {
 
         return hostedEvents.add( uid );
 
@@ -122,7 +124,7 @@ public class User implements Parcelable {
      * @return true if successfully removed;
      *         false if not found.
      */
-    public boolean removeHosted( long uid ) {
+    public boolean removeHosted( String uid ) {
 
         return hostedEvents.remove( uid );
 
@@ -135,7 +137,7 @@ public class User implements Parcelable {
      * @return true if successfully moved;
      *         false if not found as a hosted.
      */
-    public boolean eventDone( long uid ) {
+    public boolean eventDone( String uid ) {
 
         boolean success = hostedEvents.remove( uid );
         if ( success ) {
@@ -146,6 +148,81 @@ public class User implements Parcelable {
 
     }
 
+    /**
+     * Fills in the data (other than UID) for this instance from a given database.
+     * The root of the database should be the node that corresponds to this object as a
+     * whole.
+     *
+     * This method also attaches a change listener to the database, so this object will
+     * always have the most recent data from server.
+     *
+     * @param mDatabase Database where the data is to be read from.
+     */
+    public void updateFromDatabase( final DatabaseReference mDatabase ) {
+
+        // Listener that reads the data initially and every time something changes.
+        ValueEventListener postListener = new ValueEventListener() {
+
+            /**
+             * Fills in the fields of the corresponding instance with the data from server
+             * when any of it is updated in the server.
+             *
+             * @param data Snapshot of the data on the server.
+             * @throws NullPointerException if the snapshot received is null.
+             * @throws IllegalArgumentException when the snapshot received corresponds to data
+             *                                  from a different UID.
+             */
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onDataChange( DataSnapshot data ) throws NullPointerException,
+                    IllegalArgumentException {
+
+                if ( data == null ) {
+                    throw new NullPointerException();
+                }
+
+                if ( !data.getKey().equals( uid ) ) {
+                    Log.wtf( TAG, "Reading data from a different UID." );
+                    throw new IllegalArgumentException( "UID mismatch" );
+                }
+
+                name = (String) data.child( NAME_CHILD ).getValue();
+                List<String> list = (List<String>) data.child( HOSTED_CHILD ).getValue();
+                List<String> list2 = (List<String>) data.child( PAST_CHILD ).getValue();
+                if ( list != null ) {
+                    for (String s : list) {
+
+                        hostedEvents.add(s);
+
+                    }
+                }
+                if ( list2 != null ) {
+                    for (String s : list2) {
+
+                        pastHosted.add(s);
+
+                    }
+                }
+
+            }
+
+            /**
+             * If fails to read from database, logs an error.
+             *
+             * @param databaseError Error received.
+             */
+            @Override
+            public void onCancelled( DatabaseError databaseError ) {
+
+                // Failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+
+            }
+        };
+        mDatabase.addValueEventListener( postListener );
+
+    }
+
     /* Getters */
 
     /**
@@ -153,7 +230,7 @@ public class User implements Parcelable {
      *
      * @return The UID of this instance.
      */
-    public long getUid() {
+    public String getUid() {
 
         return uid;
 
@@ -175,7 +252,7 @@ public class User implements Parcelable {
      *
      * @return The events being hosted.
      */
-    public ArrayList<Long> getHostedEvents() {
+    public ArrayList<String> getHostedEvents() {
 
         return new ArrayList<>( hostedEvents );
 
@@ -186,7 +263,7 @@ public class User implements Parcelable {
      *
      * @return The events hosted by the user in the past.
      */
-    public ArrayList<Long> getPastHosted() {
+    public ArrayList<String> getPastHosted() {
 
         return new ArrayList<>( pastHosted );
 
@@ -217,25 +294,11 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel( Parcel dest, int flags ) {
 
-        dest.writeLong( uid );
+        dest.writeString( uid );
         dest.writeString( name );
 
-        long[] hosted = new long[hostedEvents.size()];
-        int i = 0;
-        for ( long uid : hostedEvents ) {
-
-            hosted[i++] = uid;
-
-        }
-        dest.writeLongArray( hosted );
-        long[] past = new long[pastHosted.size()];
-        i = 0;
-        for ( long uid : pastHosted ) {
-
-            past[i++] = uid;
-
-        }
-        dest.writeLongArray( past );
+        dest.writeStringList( hostedEvents );
+        dest.writeStringList( pastHosted );
 
     }
 
@@ -264,6 +327,93 @@ public class User implements Parcelable {
 
         }
 
+    };
+
+    /**
+     * Creates a new User instance from the data stored in the given database.
+     * The root of the database corresponds to the node containing to the desired User object.
+     *
+     * @param mDatabase Database to be read.
+     * @return The User stored in the database.
+     */
+    public static User readFromFirebase( final DatabaseReference mDatabase ) {
+
+        // Listener that reads the UID and host, and creates the new instance.
+        UserBuilder userListener = new UserBuilder( mDatabase );
+        mDatabase.addListenerForSingleValueEvent( userListener );
+        return userListener.getNewUser();
+
+    }
+
+    /**
+     * Listener class that performs the initial read of an User from the database.
+     *
+     * @author Thiago Marback
+     * @version 1.0
+     * @since 2016-11-13
+     */
+    private static class UserBuilder implements ValueEventListener {
+
+        User newUser;
+        final DatabaseReference mDatabase;
+
+        /**
+         * Creates a new builder with the given database.
+         *
+         * @param mDatabase database to be read.
+         */
+        UserBuilder( final DatabaseReference mDatabase ) {
+
+            this.mDatabase = mDatabase;
+
+        }
+
+        /**
+         * Reads the UID of the User in the database given, making a new User object with
+         * that UID. Then fills it in with the remaining data in the database.
+         *
+         * @param data Snapshot of the data on the server.
+         * @throws NullPointerException if the snapshot received is null.
+         */
+        @Override
+        @SuppressWarnings("unchecked")
+        public synchronized void onDataChange( DataSnapshot data ) throws NullPointerException {
+
+            if ( data == null ) {
+                throw new NullPointerException();
+            }
+
+            String uid = (String) data.child( UID_CHILD ).getValue();
+            newUser = new User( uid );
+            newUser.updateFromDatabase( mDatabase );
+
+        }
+
+        /**
+         * Gets the User that was created by this instance.
+         * If the user is currently being built, this will wait for it to be completed
+         * (sychronized method).
+         *
+         * @return The newly created User.
+         */
+        public synchronized User getNewUser() {
+
+            return newUser;
+
+        }
+
+        /**
+         * If fails to read from database, logs an error.
+         *
+         * @param databaseError Error received.
+         */
+        @Override
+        public void onCancelled( DatabaseError databaseError ) {
+
+            // Failed, log a message
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+
+        }
     };
 
 }

@@ -32,8 +32,12 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;;import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleApiClient.OnConnectionFailedListener  {
@@ -42,6 +46,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     private String mUsername;
     private GoogleApiClient mGoogleApiClient;
 
+
+    String uid;
 
     // Firebase instance variables
     public static FirebaseAuth mFirebaseAuth;
@@ -68,8 +74,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
         }
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
-
-
 
 
 

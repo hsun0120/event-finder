@@ -24,11 +24,11 @@ public class UserTester {
     @Before
     public void setUp() {
 
-        user = new User( 1337, "A new user" );
-        user.addHosted( 42 );
-        user.addHosted( 1000 );
-        user.addHosted( 1 );
-        user.addHosted( 66 );
+        user = new User( "1337", "A new user" );
+        user.addHosted( "42" );
+        user.addHosted( "1000" );
+        user.addHosted( "1" );
+        user.addHosted( "66" );
 
     }
 
@@ -38,12 +38,12 @@ public class UserTester {
     @Test
     public void testAddHosted() {
 
-        ArrayList<Long> hosted = user.getHostedEvents();
-        assertTrue( "Event not hosted.", hosted.contains( (long) 42 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 1000 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 1 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 66 ) );
-        assertFalse( "Event should not be hosted.", hosted.contains( (long) 999 ) );
+        ArrayList<String> hosted = user.getHostedEvents();
+        assertTrue( "Event not hosted.", hosted.contains( "42" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "1000" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "1" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "66" ) );
+        assertFalse( "Event should not be hosted.", hosted.contains( "999" ) );
 
     }
 
@@ -53,13 +53,13 @@ public class UserTester {
     @Test
     public void testRemoveHosted() {
 
-        user.removeHosted( 1000 );
+        user.removeHosted( "1000" );
 
-        ArrayList<Long> hosted = user.getHostedEvents();
-        assertTrue( "Event not hosted.", hosted.contains( (long) 42 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 1 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 66 ) );
-        assertFalse( "Event should not be hosted.", hosted.contains( (long) 1000 ) );
+        ArrayList<String> hosted = user.getHostedEvents();
+        assertTrue( "Event not hosted.", hosted.contains( "42" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "1" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "66" ) );
+        assertFalse( "Event should not be hosted.", hosted.contains( "1000" ) );
 
     }
 
@@ -69,22 +69,22 @@ public class UserTester {
     @Test
     public void testEventDone() {
 
-        user.eventDone( 66 );
-        user.eventDone( 1 );
+        user.eventDone( "66" );
+        user.eventDone( "1" );
 
         // Checks still to be hosted events.
-        ArrayList<Long> hosted = user.getHostedEvents();
-        assertTrue( "Event not hosted.", hosted.contains( (long) 42 ) );
-        assertTrue( "Event not hosted.", hosted.contains( (long) 1000 ) );
-        assertFalse( "Event should not be hosted.", hosted.contains( (long) 66 ) );
-        assertFalse( "Event should not be hosted.", hosted.contains( (long) 1 ) );
+        ArrayList<String> hosted = user.getHostedEvents();
+        assertTrue( "Event not hosted.", hosted.contains( "42" ) );
+        assertTrue( "Event not hosted.", hosted.contains( "1000" ) );
+        assertFalse( "Event should not be hosted.", hosted.contains( "66" ) );
+        assertFalse( "Event should not be hosted.", hosted.contains( "1" ) );
 
         // Checks past events.
-        ArrayList<Long> past = user.getPastHosted();
-        assertTrue( "Event not past.", past.contains( (long) 66 ) );
-        assertTrue( "Event not past.", past.contains( (long) 1 ) );
-        assertFalse( "Event should not be past.", past.contains( (long) 42 ) );
-        assertFalse( "Event should not be past.", past.contains( (long) 1000 ) );
+        ArrayList<String> past = user.getPastHosted();
+        assertTrue( "Event not past.", past.contains( "66" ) );
+        assertTrue( "Event not past.", past.contains( "1" ) );
+        assertFalse( "Event should not be past.", past.contains( "42" ) );
+        assertFalse( "Event should not be past.", past.contains( "1000" ) );
 
     }
 

@@ -1,11 +1,17 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.SystemClock;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class that stores the data for a single event.
@@ -13,15 +19,15 @@ import java.util.Arrays;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 1.0
+ * @version 2.0
  */
 public class Event implements Parcelable {
 
     /* Instance fields */
 
-    private final long uid;
+    private final String uid;
     private String name;
-    private final long host;
+    private final String host;
 
     private byte hour;
     private byte minute;
@@ -31,7 +37,7 @@ public class Event implements Parcelable {
     private short year;
 
     private String address;
-    // private ?? location; (coordinates)
+    //private Uri location;
 
     private boolean hasPassword;
     private String password;
@@ -47,6 +53,28 @@ public class Event implements Parcelable {
     private static final String TIME_SEPARATOR = ":";
     private static final String DATE_SEPARATOR = "/";
 
+    private static final String UID_CHILD = "uid";
+    private static final String NAME_CHILD = "name";
+    private static final String HOST_CHILD = "host";
+
+    private static final String HOUR_CHILD = "hour";
+    private static final String MINUTE_CHILD = "minute";
+
+    private static final String DAY_CHILD = "day";
+    private static final String MONTH_CHILD = "month";
+    private static final String YEAR_CHILD = "year";
+
+    private static final String ADDRESS_CHILD = "address";
+    private static final String LOCATION_CHILD = "location";
+
+    private static final String HAS_PASSWORD_CHILD = "hasPassword";
+    private static final String PASSWORD_CHILD = "password";
+    private static final String HAS_RESTRICTIONS_CHILD = "hasRestrictions";
+    private static final String RESTRICTIONS_CHILD = "restrictions";
+    private static final String DESCRIPTION_CHILD = "description";
+
+    private static final String TAG = "User";
+
     /* Ctors */
 
     /**
@@ -55,7 +83,7 @@ public class Event implements Parcelable {
      * @param uid UID of this instance.
      * @param host UID of the host of this instance.
      */
-    public Event( long uid, long host ) {
+    public Event(String uid, String host ) {
 
         this( uid, "", host );
 
@@ -68,7 +96,7 @@ public class Event implements Parcelable {
      * @param name Initial name of this instance.
      * @param host UID of the host of this instance.
      */
-    public Event( long uid, String name, long host ) {
+    public Event(String uid, String name, String host ) {
 
         this.uid = uid;
         this.name = name;
@@ -127,9 +155,9 @@ public class Event implements Parcelable {
      */
     private Event( Parcel in ) {
 
-        uid = in.readLong();
+        uid = in.readString();
         name = in.readString();
-        host = in.readLong();
+        host = in.readString();
 
         hour = in.readByte();
         minute = in.readByte();
@@ -139,6 +167,7 @@ public class Event implements Parcelable {
         year = (short) in.readInt();
 
         address = in.readString();
+        //location = in.readParcelable( Uri.class.getClassLoader() );
 
         if ( in.readByte() == FALSE ) {
             hasPassword = false;
@@ -236,6 +265,89 @@ public class Event implements Parcelable {
 
     }
 
+    /**
+     * Fills in the data (other than UID) for this instance from a given database.
+     * The root of the database should be the node that corresponds to this object as a
+     * whole.
+     *
+     * This method also attaches a change listener to the database, so this object will
+     * always have the most recent data from server.
+     *
+     * @param mDatabase Database where the data is to be read from.
+     */
+    public void updateFromDatabase( final DatabaseReference mDatabase ) {
+
+        // Listener that reads the data initially and every time something changes.
+        ValueEventListener postListener = new ValueEventListener() {
+
+            /**
+             * Fills in the fields of the corresponding instance with the data from server
+             * when any of it is updated in the server.
+             *
+             * @param data Snapshot of the data on the server.
+             * @throws NullPointerException if the snapshot received is null.
+             * @throws IllegalArgumentException when the snapshot received corresponds to data
+             *                                  from a different UID.
+             */
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onDataChange( DataSnapshot data ) throws NullPointerException,
+                    IllegalArgumentException {
+
+                if ( data == null ) {
+                    throw new NullPointerException();
+                }
+
+                if ( !data.getKey().equals( uid ) ) {
+                    Log.wtf( TAG, "Reading data from a different UID." );
+                    throw new IllegalArgumentException( "UID mismatch" );
+                }
+
+                name = (String) data.child( NAME_CHILD ).getValue();
+
+                hour = (byte) data.child( HOUR_CHILD ).getValue();
+                minute = (byte) data.child( MINUTE_CHILD ).getValue();
+
+                day = (byte) data.child( DAY_CHILD ).getValue();
+                month = (byte) data.child( MONTH_CHILD ).getValue();
+                year = (short) data.child( YEAR_CHILD ).getValue();
+
+                address = (String) data.child( ADDRESS_CHILD ).getValue();
+                //location = (Uri) data.child( LOCATION_CHILD ).getValue();
+
+                hasPassword = (boolean) data.child( HAS_PASSWORD_CHILD ).getValue();
+                password = (String) data.child( PASSWORD_CHILD ).getValue();
+                hasRestrictions = (boolean) data.child( HAS_RESTRICTIONS_CHILD ).getValue();
+                restrictions = new ArrayList<>();
+                List<String> list = (List<String>) data.child( RESTRICTIONS_CHILD ).getValue();
+                if ( list != null ) {
+                    for (String s : list) {
+
+                        restrictions.add(s);
+
+                    }
+                }
+                description = (String) data.child( DESCRIPTION_CHILD ).getValue();
+
+            }
+
+            /**
+             * If fails to read from database, logs an error.
+             *
+             * @param databaseError Error received.
+             */
+            @Override
+            public void onCancelled( DatabaseError databaseError ) {
+
+                // Failed, log a message
+                Log.w(TAG, "Failed to load Event.", databaseError.toException());
+
+            }
+        };
+        mDatabase.addValueEventListener( postListener );
+
+    }
+
     /* Getters */
 
     /**
@@ -243,7 +355,7 @@ public class Event implements Parcelable {
      *
      * @return The UID of this instance.
      */
-    public long getUid() {
+    public String getUid() {
 
         return uid;
 
@@ -265,7 +377,7 @@ public class Event implements Parcelable {
      *
      * @return The host of this event.
      */
-    public long getHost() {
+    public String getHost() {
 
         return host;
 
@@ -541,9 +653,9 @@ public class Event implements Parcelable {
     @Override
     public void writeToParcel( Parcel dest, int flags ) {
 
-        dest.writeLong( uid );
+        dest.writeString( uid );
         dest.writeString( name );
-        dest.writeLong( host );
+        dest.writeString( host );
 
         dest.writeByte( hour );
         dest.writeByte( minute );
@@ -553,6 +665,7 @@ public class Event implements Parcelable {
         dest.writeInt( year );
 
         dest.writeString( address );
+        //dest.writeParcelable( location, 0 );
 
         if ( hasPassword ) {
             dest.writeByte( TRUE );
@@ -595,6 +708,94 @@ public class Event implements Parcelable {
 
         }
 
+    };
+
+    /**
+     * Creates a new Event instance from the data stored in the given database.
+     * The root of the database corresponds to the node containing to the desired Event object.
+     *
+     * @param mDatabase Database to be read.
+     * @return The Event stored in the database.
+     */
+    public static Event readFromFirebase( final DatabaseReference mDatabase ) {
+
+        // Listener that reads the UID and host, and creates the new instance.
+        EventBuilder eventListener = new EventBuilder( mDatabase );
+        mDatabase.addListenerForSingleValueEvent( eventListener );
+        return eventListener.getNewEvent();
+
+    }
+
+    /**
+     * Listener class that performs the initial read of an Event from the database.
+     *
+     * @author Thiago Marback
+     * @version 1.0
+     * @since 2016-11-13
+     */
+    private static class EventBuilder implements ValueEventListener {
+
+        Event newEvent;
+        final DatabaseReference mDatabase;
+
+        /**
+         * Creates a new builder with the given database.
+         *
+         * @param mDatabase database to be read.
+         */
+        EventBuilder( final DatabaseReference mDatabase ) {
+
+            this.mDatabase = mDatabase;
+
+        }
+
+        /**
+         * Reads the UID of the User in the database given, making a new User object with
+         * that UID. Then fills it in with the remaining data in the database.
+         *
+         * @param data Snapshot of the data on the server.
+         * @throws NullPointerException if the snapshot received is null.
+         */
+        @Override
+        @SuppressWarnings("unchecked")
+        public synchronized void onDataChange( DataSnapshot data ) throws NullPointerException {
+
+            if ( data == null ) {
+                throw new NullPointerException();
+            }
+
+            String uid = (String) data.child( UID_CHILD ).getValue();
+            String host = (String) data.child( HOST_CHILD ).getValue();
+            newEvent = new Event( uid, host );
+            newEvent.updateFromDatabase( mDatabase );
+
+        }
+
+        /**
+         * Gets the User that was created by this instance.
+         * If the user is currently being built, this will wait for it to be completed
+         * (sychronized method).
+         *
+         * @return The newly created User.
+         */
+        public synchronized Event getNewEvent() {
+
+            return newEvent;
+
+        }
+
+        /**
+         * If fails to read from database, logs an error.
+         *
+         * @param databaseError Error received.
+         */
+        @Override
+        public void onCancelled( DatabaseError databaseError ) {
+
+            // Failed, log a message
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+
+        }
     };
 
 }

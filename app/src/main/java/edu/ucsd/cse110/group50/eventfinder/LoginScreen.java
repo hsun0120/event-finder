@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -164,6 +165,9 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             } else {
                 // Google Sign In failed
                 Log.e(TAG, "Google Sign In failed.");
+                Log.e(TAG, "Status code: " + result.getStatus().getStatusCode() + " >> " +
+                        GoogleSignInStatusCodes.getStatusCodeString(
+                                result.getStatus().getStatusCode() ) );
             }
         }
     }

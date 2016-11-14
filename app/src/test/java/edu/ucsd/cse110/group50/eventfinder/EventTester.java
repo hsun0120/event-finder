@@ -24,7 +24,7 @@ public class EventTester {
     @Before
     public void setUp() {
 
-        event = new Event( 420, "A new world", 1337 );
+        event = new Event( "420", "A new world", "1337" );
 
         event.setHour( (byte) 10 );
         event.setMinute( (byte) 2 );
