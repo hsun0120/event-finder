@@ -191,7 +191,8 @@ public class User implements Parcelable {
 
                 if ( !data.getKey().equals( uid ) ) {
                     Log.wtf( TAG, "Reading data from a different UID." );
-                    throw new IllegalArgumentException( "UID mismatch" );
+                    Log.wtf( TAG, "Was reading " + uid + ", got " + data.getKey() );
+                    throw new IllegalArgumentException( "UID mismatch: " + uid + " | " + data.getKey() );
                 }
 
                 name = (String) data.child( NAME_CHILD ).getValue();
