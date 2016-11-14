@@ -62,24 +62,9 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
         //Get events from firebase
         mFirebaseReference = MapView.mFirebaseReference;
-        Event.loadAllEvents(mFirebaseReference.child(Identifiers.FIREBASE_EVENTS),
-                new LoadListener() {
-
-                    @Override
-                    public void onLoadComplete(Object data) {
-                        ArrayList<Event> unprocessed_events =(ArrayList<Event>)data;
-
-                        ArrayList<Event> processed_events = processSearch((ArrayList<Event>)data, MapView.curUser.getUid());
-
-                        EventAdapter ca = new EventAdapter(processed_events);
-                        recList.setAdapter(ca);
-//                        Bundle unprocessed_bundle = new Bundle();
-//                        unprocessed_bundle.putParcelableArrayList(unprocessed_events);
-
-
-                    }
-
-                });
+        EventList eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
+        EventAdapter ca = new EventAdapter( eventList );
+        recList.setAdapter( ca );
 
 
         // Example event card manually created
@@ -99,21 +84,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     }
 
-    // Manually create example event card list
-    // Should be removed after connection to firebase is successful
-    // Hardcoded test function
-    private List<EventCard> createList(int size) {
-        List<EventCard> result = new ArrayList<>();
-        for (int i=1; i <= size; i++) {
-            EventCard ci = new EventCard();
-            ci.name = EventCard.NAME_PREFIX + i;
-            ci.description = EventCard.DESC_PREFIX + i;
-            ci.address = EventCard.ADDRESS_PREFIX + i;
-
-            result.add(ci);
-        }
-        return result;
-    }
     //Yining: Dummy Local Search Functions:
     public ArrayList<Event> processSearch(ArrayList<Event> curr_list, String hostID)
     {

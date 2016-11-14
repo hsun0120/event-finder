@@ -11,10 +11,10 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private List<Event> eventList;
+    private EventList eventList;
 
-    // Constructer
-    public EventAdapter(List<Event> contactList) {
+    // Constructor
+    public EventAdapter(EventList contactList) {
         this.eventList = contactList;
     }
 
@@ -30,14 +30,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         contactViewHolder.vAddress.setText(ci.getAddress());
         contactViewHolder.vDescription.setText(ci.getDescription());
         ci.addListener(new LoadListener() {
-            EventViewHolder viewHolder = contactViewHolder;
+
             @Override
             public void onLoadComplete(Object data) {
+
                 Event ci = (Event) data;
                 contactViewHolder.vName.setText(ci.getName());
                 contactViewHolder.vAddress.setText(ci.getAddress());
                 contactViewHolder.vDescription.setText(ci.getDescription());
+
             }
+
         });
     }
 

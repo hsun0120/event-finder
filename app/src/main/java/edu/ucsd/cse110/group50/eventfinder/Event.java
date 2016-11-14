@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 2.1
+ * @version 2.5
  */
 public class Event implements Parcelable {
 
@@ -74,7 +74,7 @@ public class Event implements Parcelable {
     private static final String RESTRICTIONS_CHILD = "restrictions";
     private static final String DESCRIPTION_CHILD = "description";
 
-    private static final String TAG = "User";
+    private static final String TAG = "Event";
 
     /* Ctors */
 
@@ -838,69 +838,7 @@ public class Event implements Parcelable {
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
 
         }
-    }
 
-    public static void loadAllEvents( final DatabaseReference mDatabase, LoadListener listener ) {
-
-        ListLoader loader = new ListLoader( mDatabase, listener );
-        mDatabase.addListenerForSingleValueEvent( loader );
-
-    }
-
-    private static class ListLoader implements ValueEventListener {
-
-        final DatabaseReference mDatabase;
-        LoadListener listener;
-        ArrayList<Event> eventList;
-        long count;
-
-        ListLoader( DatabaseReference mDatabase, LoadListener listener ) {
-
-            this.mDatabase = mDatabase;
-            this.listener = listener;
-            this.eventList = new ArrayList<>();
-
-        }
-
-        private synchronized void oneLoaded() {
-
-            count--;
-            if ( count == 0 ) {
-                listener.onLoadComplete( eventList );
-            }
-
-        }
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-
-            this.count = dataSnapshot.getChildrenCount();
-            Iterable<DataSnapshot> dataList = dataSnapshot.getChildren();
-            for ( DataSnapshot data : dataList ) {
-
-                readFromFirebase( data.getRef(),
-                        new LoadListener() {
-
-                            @Override
-                            public void onLoadComplete( Object data ) {
-
-                                eventList.add( (Event) data );
-                                oneLoaded();
-
-                            }
-
-                        },
-                        (String) data.child( UID_CHILD ).getValue(),
-                        (String) data.child( HOST_CHILD ).getValue() );
-
-            }
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
     }
 
 }
