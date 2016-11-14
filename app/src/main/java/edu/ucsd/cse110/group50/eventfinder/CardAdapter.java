@@ -96,4 +96,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         cards.remove(position);
         notifyItemRemoved(position);
     }
+
+    public int getEventsSize()
+    {
+     return cards.size();
+    }
 }

@@ -60,14 +60,14 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_events);
 
-        if(savedInstanceState == null)
-        {
-            System.out.println("savedinstance is NULL!!!!");
-        }
-        else
-        {
-            System.out.println("Savedinstance is NOT NULL");
-        }
+//        if(savedInstanceState == null)
+//        {
+//            System.out.println("savedinstance is NULL!!!!");
+//        }
+//        else
+//        {
+//            System.out.println("Savedinstance is NOT NULL");
+//        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
@@ -99,7 +99,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //            mUsername = mFirebaseUser.getDisplayName();
 //        }
 
-
+        System.out.println("ENTERS on Create!!!");
 
 //        //SETUP RV
 //        rv= (RecyclerView) findViewById(R.id.rv);
@@ -111,6 +111,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         //ADAPTER
         mMessageRecyclerView.setAdapter(adapter);
         adapter=new CardAdapter(this,helper.retrieve());
+        System.out.println("IN OnCreate, events size is "+adapter.getEventsSize());
 
 
 
@@ -121,83 +122,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         setupRecyclerView((RecyclerView) mMessageRecyclerView);
 
 
-
-
-
-//
-//
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API)
-//                .build();
-
-        // Initialize ProgressBar and RecyclerView.
-//        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        //mLinearLayoutManager = new LinearLayoutManager(this);
-        //mLinearLayoutManager.setStackFromEnd(false);
-
-
-
-
-
-//        // New child entries
-//        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference()
-//       helper = new FirebaseHelper(mFirebaseDatabaseReference);
-//        //mFirebaseDatabaseReference = new DatabaseReference("https://windy-oxide-146019.firebaseio.com/");
-//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
-//                Card.class,
-//                R.layout.event_list,
-//                CardAdapter.ViewHolder.class,
-//                mFirebaseDatabaseReference.child("events")) {
-//
-//            @Override
-//            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
-//                                              Card eventCard, int position) {
-////                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-//                    viewHolder.eventName.setText(eventCard.getEventName());
-//                    viewHolder.eventDate.setText(eventCard.getEventDate());
-//                    viewHolder.eventDes.setText(eventCard.getEventDescription());
-//
-//            }
-//        };
-//        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-//        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-
-
-
-        //ADAPTER
-
-
-
-
-
-
-
-
-
-
-//        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-//            @Override
-//            public void onItemRangeInserted(int positionStart, int itemCount) {
-//                super.onItemRangeInserted(positionStart, itemCount);
-//                int numOfEvents = mFirebaseAdapter.getItemCount();
-//                int lastVisiblePosition =
-//                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                // If the recycler view is initially being loaded or the
-//                // user is at the bottom of the list, scroll to the bottom
-//                // of the list to show the newly added message.
-//                if (lastVisiblePosition == -1 ||
-//                        (positionStart >= (numOfEvents - 1) &&
-//                                lastVisiblePosition == (positionStart - 1))) {
-//                    mMessageRecyclerView.scrollToPosition(positionStart);
-//                }
-//            }
-//        });
-        //super.onCreate(savedInstanceState);
-
-
-
+        System.out.println("LEAVES on Create!!!");
     }
 
     @Override
@@ -247,7 +172,7 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         ArrayList<Card> events = helper.events;
 
         recyclerView.setHasFixedSize(true);
-        //CardAdapter adapter = new CardAdapter(this,events);
+        CardAdapter adapter = new CardAdapter(this,events);
         //adapter=new CardAdapter(this,this.helper.retrieve());
 
 
@@ -280,17 +205,14 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
     @Override
     public void onResume()
     {
-        super.onResume();
-//        mFirebaseAuth = FirebaseAuth.getInstance();
-//        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-//        //SETUP FB
-//        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-//        helper = new FirebaseHelper(mFirebaseDatabaseReference);
-//        //ADAPTER
-//        mMessageRecyclerView.setAdapter(adapter);
-        adapter=new CardAdapter(this,helper.retrieve());
-        setupRecyclerView((RecyclerView) mMessageRecyclerView);
         System.out.println("On Resume Called!");
+        super.onResume();
+
+       //mMessageRecyclerView.setAdapter(adapter);
+        //adapter=new CardAdapter(this,helper.retrieve());
+        System.out.println("Adapter:EVENT SIZE "  +  adapter.getEventsSize());
+        setupRecyclerView((RecyclerView) mMessageRecyclerView);
+        System.out.println("LEAVES On Resume!");
     }
 
 
