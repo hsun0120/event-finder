@@ -21,20 +21,13 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +47,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -102,6 +97,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
+
+    User curUser;
 
 
     @Override
@@ -189,8 +186,35 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                             Toast.makeText(LoginScreen.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            startActivity(new Intent(LoginScreen.this, MapViewActivity.class));
-                            finish();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            String user = mFirebaseAuth.getCurrentUser().getUid();
+                            User.readFromFirebase(
+                                    databaseReference.child( Identifiers.FIREBASE_USERS ).child( user ),
+                                    new LoadListener() {
+
+                                        @Override
+                                        public void onLoadComplete(Object data) {
+
+                                            curUser = (User) data;
+                                            curUser.addListener(new LoadListener() {
+
+                                                @Override
+                                                public void onLoadComplete( Object data ) {
+
+                                                    curUser.removeListener( this );
+                                                    Intent intent = new Intent(LoginScreen.this, MapViewActivity.class);
+                                                    intent.putExtra( Identifiers.USER, curUser );
+                                                    startActivity( intent );
+                                                    finish();
+
+                                                }
+
+                                            });
+
+                                        }
+
+                                    },
+                                    user );
                         }
                     }
                 });

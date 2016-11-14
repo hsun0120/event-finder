@@ -1,27 +1,14 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -31,15 +18,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
-import com.google.android.gms.location.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;;import java.util.ArrayList;
-import java.util.List;
+;
 
 
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleApiClient.OnConnectionFailedListener  {
@@ -47,6 +30,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public static final String ANONYMOUS = "anonymous";
     private String mUsername;
     private GoogleApiClient mGoogleApiClient;
+    private User curUser;
 
 
     String uid;
@@ -77,7 +61,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         }
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
 
-
+        Intent intent = getIntent();
+        curUser = intent.getParcelableExtra( Identifiers.USER );
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
