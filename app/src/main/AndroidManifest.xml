@@ -11,14 +11,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name="edu.ucsd.cse110.group50.eventfinder.LoginScreen">
+
+        </activity>
+        <activity android:name="edu.ucsd.cse110.group50.eventfinder.OpenFilter" />
+        <activity android:name="edu.ucsd.cse110.group50.eventfinder.MapView" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="edu.ucsd.cse110.group50.eventfinder.OpenFilter" />
-        <activity android:name="edu.ucsd.cse110.group50.eventfinder.MapView" />
         <activity android:name="edu.ucsd.cse110.group50.eventfinder.CreateEvent" />
         <activity android:name="edu.ucsd.cse110.group50.eventfinder.EventDetailActivity" />
 
