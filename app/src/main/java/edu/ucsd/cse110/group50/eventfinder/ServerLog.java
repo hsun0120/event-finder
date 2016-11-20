@@ -2,7 +2,6 @@ package edu.ucsd.cse110.group50.eventfinder;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +11,7 @@ import java.util.logging.Level;
 
 /**
  * Class used to send logs to the server.
- * Logs contain the time they were sent, a specified level a tag (usually where it was sent
+ * Logs contain the time they were sent, a specified level, a tag (usually where it was sent
  * from) and a message.
  *
  * @author Thiago Marback
