@@ -186,6 +186,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                             Toast.makeText(LoginScreen.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            ServerLog.loadDatabase();
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                             String user = mFirebaseAuth.getCurrentUser().getUid();
                             User.readFromFirebase(

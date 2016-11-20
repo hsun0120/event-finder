@@ -115,9 +115,26 @@ public class MapView extends AppCompatActivity
             return;
         }
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
+        ServerLog.loadDatabase();
 
         Intent intent = getIntent();
         curUser = intent.getParcelableExtra( Identifiers.USER );
+        if ( curUser == null ) {
+            String user = mFirebaseAuth.getCurrentUser().getUid();
+            User.readFromFirebase(
+                    mFirebaseReference.child( Identifiers.FIREBASE_USERS ).child( user ),
+                    new LoadListener() {
+
+                        @Override
+                        public void onLoadComplete(Object data) {
+
+                            curUser = (User) data;
+
+                        }
+
+                    },
+                    user );
+        }
 
         // Initialize the drawer list
         mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
