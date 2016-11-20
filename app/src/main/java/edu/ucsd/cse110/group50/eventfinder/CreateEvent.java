@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,10 @@ import android.widget.Toast;
 
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -49,6 +54,7 @@ public class CreateEvent extends AppCompatActivity {
     private int selectedHour, selectedMinute;
 
     private User curUser;
+    int REQUEST_PLACE_PICKER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,10 +153,20 @@ public class CreateEvent extends AppCompatActivity {
     }
 
     public void pickPlace( View v ) {
-        Intent intent = new Intent(v.getContext(), MapView.class);
-        v.getContext().startActivity(intent);
+        // Construct an intent for the place picker
+        try {
+            PlacePicker.IntentBuilder intentBuilder =
+                    new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(this);
+            // Start the intent by requesting a result,
+            // identified by a request code.
+            startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
-
+        } catch (GooglePlayServicesRepairableException e) {
+            // ...
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // ...
+        }
     }
 
     public void closeTime( View v ) {
@@ -256,6 +272,19 @@ public class CreateEvent extends AppCompatActivity {
         description.setEnabled( clickable );
         finish.setClickable( clickable );
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_PLACE_PICKER) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, data);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                EditText address = (EditText) findViewById(R.id.eventAddress);
+                address.setText(place.getAddress());
+            }
+        }
     }
 
 }
