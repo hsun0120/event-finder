@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 2.5
+ * @version 3.0
  */
 public class Event implements Parcelable {
 
@@ -188,6 +189,13 @@ public class Event implements Parcelable {
         restrictions = in.createStringArrayList();
         description = in.readString();
 
+        listeners = new ArrayList<>();
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        updateFromDatabase( database.child( Identifiers.FIREBASE_EVENTS ).child( uid ) );
+
+        Log.v( TAG, "Extracted Event " + name + " (" + uid + ") from Parcel." );
+
     }
 
     /* Utility methods */
@@ -340,6 +348,8 @@ public class Event implements Parcelable {
                     listeners.get( i ).onLoadComplete( Event.this );
 
                 }
+
+                Log.v( TAG, "Updated Event " + name + " (" + uid + ")." );
 
             }
 
@@ -715,6 +725,8 @@ public class Event implements Parcelable {
         dest.writeStringList( restrictions );
         dest.writeString( description );
 
+        Log.v( TAG, "Flattened Event " + name + " (" + uid + ") to Parcel." );
+
     }
 
     @Override
@@ -751,7 +763,7 @@ public class Event implements Parcelable {
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the Event is completed.
-     * @param uid UID of the user being read.
+     * @param uid UID of the event being read.
      * @param host UID of the host of the event.
      */
     public static void readFromFirebase( final DatabaseReference mDatabase,
@@ -774,7 +786,6 @@ public class Event implements Parcelable {
      */
     private static class EventBuilder implements ValueEventListener {
 
-        Event newEvent;
         final DatabaseReference mDatabase;
         LoadListener listener;
         String uid;
@@ -813,16 +824,22 @@ public class Event implements Parcelable {
                 throw new NullPointerException();
             }
 
+            Event newEvent = new Event( uid, host );
             if ( data.exists() ) {
-                String uid = (String) data.child(UID_CHILD).getValue();
-                String host = (String) data.child(HOST_CHILD).getValue();
-                newEvent = new Event(uid, host);
+                if ( !data.child( UID_CHILD ).getValue().equals( uid ) ) {
+                    Log.e( TAG, "ID MISMATCH ON DATABASE - NODE IS " + uid + ", OBJECT IS " +
+                            data.child( UID_CHILD ).getValue() );
+                    ServerLog.s( TAG, "EVENT ID MISMATCH ON " + " DATABASE - NODE IS " + uid +
+                            ", OBJECT IS " + data.child( UID_CHILD ).getValue() );
+                    mDatabase.child( UID_CHILD ).setValue( uid );
+                }
             } else {
-                newEvent = new Event( this.uid, this.host );
                 mDatabase.setValue( newEvent );
             }
             newEvent.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newEvent );
+
+            Log.v( TAG, "Reading Event ID " + uid + " from database." );
 
         }
 

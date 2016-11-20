@@ -12,5 +12,6 @@ public interface Identifiers {
 
     String FIREBASE_USERS = "users";
     String FIREBASE_EVENTS = "events";
+    String FIREBASE_LOGS = "logs";
 
 }

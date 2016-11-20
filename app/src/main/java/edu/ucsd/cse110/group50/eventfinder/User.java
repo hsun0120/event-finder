@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -8,20 +7,18 @@ import android.util.Log;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-
 /**
  * Class that stores the data for a single user.
  * Is identified by an UID that is defined at creation and cannot be changed.
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 2.1
+ * @version 3.0
  */
 public class User implements Parcelable {
 
@@ -107,6 +104,13 @@ public class User implements Parcelable {
 
         hostedEvents = in.createStringArrayList();
         pastHosted = in.createStringArrayList();
+
+        listeners = new ArrayList<>();
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        updateFromDatabase( database.child( Identifiers.FIREBASE_USERS ).child( uid ) );
+
+        Log.v( TAG, "Extracted User " + name + " (" + uid + ") from Parcel." );
 
     }
 
@@ -218,6 +222,8 @@ public class User implements Parcelable {
                     listeners.get( i ).onLoadComplete( User.this );
 
                 }
+
+                Log.v( TAG, "Updated User " + name + " (" + uid + ")." );
 
             }
 
@@ -337,6 +343,8 @@ public class User implements Parcelable {
         dest.writeStringList( hostedEvents );
         dest.writeStringList( pastHosted );
 
+        Log.v( TAG, "Flattened User " + name + " (" + uid + ") to Parcel." );
+
     }
 
     @Override
@@ -394,7 +402,6 @@ public class User implements Parcelable {
      */
     private static class UserBuilder implements ValueEventListener {
 
-        private User newUser;
         final DatabaseReference mDatabase;
         LoadListener listener;
         String uid;
@@ -423,24 +430,29 @@ public class User implements Parcelable {
          * @throws NullPointerException if the snapshot received is null.
          */
         @Override
-        @SuppressWarnings("unchecked")
         public void onDataChange( DataSnapshot data ) throws NullPointerException {
 
-            System.out.println( "CHANGE" );
             if ( data == null ) {
                 throw new NullPointerException();
             }
 
+            User newUser = new User( uid );
             if ( data.exists() ) {
-                String uid = (String) data.child( UID_CHILD ).getValue();
-                newUser = new User( uid );
+                if ( !data.child( UID_CHILD ).getValue().equals( uid ) ) {
+                    Log.e( TAG, "ID MISMATCH ON DATABASE - NODE IS " + uid + ", OBJECT IS " +
+                            data.child( UID_CHILD ).getValue() );
+                    ServerLog.s( TAG, "USER ID MISMATCH ON " + " DATABASE - NODE IS " + uid +
+                            ", OBJECT IS " + data.child( UID_CHILD ).getValue() );
+                    mDatabase.child( UID_CHILD ).setValue( uid );
+                }
             } else {
-                newUser = new User( this.uid );
                 mDatabase.setValue( newUser );
             }
 
             newUser.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newUser );
+
+            Log.v( TAG, "Reading User ID " + uid + " from database." );
 
         }
 
