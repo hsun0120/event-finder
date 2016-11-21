@@ -28,6 +28,10 @@ public class EventDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(MapView.user_on_all_events_flag)
+             userEnteredCorrectPassword = false;
+        else
+            userEnteredCorrectPassword = true;
         setContentView(R.layout.activity_event_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
