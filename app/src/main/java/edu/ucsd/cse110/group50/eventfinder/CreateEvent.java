@@ -54,6 +54,7 @@ public class CreateEvent extends AppCompatActivity {
     private int selectedHour, selectedMinute;
 
     private User curUser;
+    private Place place;
     int REQUEST_PLACE_PICKER = 1;
 
     @Override
@@ -209,6 +210,7 @@ public class CreateEvent extends AppCompatActivity {
         newEvent.setName( name.getText().toString() );
 
         newEvent.setAddress( address.getText().toString() );
+        newEvent.setLocId((place.getId()));
 
         newEvent.setTime( (byte) selectedHour, (byte) selectedMinute );
         newEvent.setDate( (byte) selectedDay, (byte) selectedMonth, (short) selectedYear );
@@ -279,6 +281,7 @@ public class CreateEvent extends AppCompatActivity {
         if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
+                this.place = place;
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
                 EditText address = (EditText) findViewById(R.id.eventAddress);
