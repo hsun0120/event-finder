@@ -4,4 +4,8 @@
     <item name="event_detail_date_view" type="id" />
     <item name="event_detail_description_view" type="id" />
     <item name="event_detail_address_text_view" type="id" />
+    <item name="check_password_done_button" type="id">check_password_done_button</item>
+    <item name="promp_user_enter_password" type="id">promp_user_enter_password</item>
+    <item name="event_detail_user_entered_password" type="id">event_detail_user_entered_password
+    </item>
 </resources>

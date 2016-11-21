@@ -22,6 +22,8 @@ import org.w3c.dom.Text;
  * in a {}.
  */
 public class EventDetailActivity extends AppCompatActivity {
+    public static boolean userEnteredCorrectPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class EventDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-        setData();
+
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +49,19 @@ public class EventDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        setData();
+
     }
+
+//    @Override
+//    public void onResume()
+//    {
+//        System.out.println("EventDetail onResume called");
+//        super.onResume();
+//        setData();
+//    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -82,6 +96,20 @@ public class EventDetailActivity extends AppCompatActivity {
 
     private void setData(){
         Event card = getIntent().getParcelableExtra("event_card");
+        String eventPassword = card.getPassword();
+
+        if(!userEnteredCorrectPassword) {
+            if (!eventPassword.equals("")) {
+                Intent checkpasswordIntent = new Intent(this, CheckEventPassword.class);
+                checkpasswordIntent.putExtra("password", eventPassword);
+                startActivity(checkpasswordIntent);
+            }
+        }
+
+
+
+
+
         //Set data here
         setTitle(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);

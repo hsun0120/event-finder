@@ -46,5 +46,7 @@
     <string name="register_button_text">Register!</string>
 
     <string name="locked_event_data">[LOCKED]</string>
+    <string name="prompt_user_to_enter_password">Please enter the password for this event.</string>
+    <string name="button_see_detial">Done</string>
 
 </resources>
