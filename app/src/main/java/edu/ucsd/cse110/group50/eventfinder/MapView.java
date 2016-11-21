@@ -38,6 +38,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -443,6 +444,7 @@ public class MapView extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap map) {
+        Log.v( TAG, "Map ready." );
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
@@ -454,19 +456,24 @@ public class MapView extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
+            Log.e( TAG, "Location permissions not set." );
             return;
         }
         map.setMyLocationEnabled(true);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        map.addMarker(new MarkerOptions()
+        LatLng loc;
+        if( mLastLocation == null ) {
+            loc = new LatLng( 32.8801, -117.2340 );
+        } else {
+            loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        }
+        map.addMarker( new MarkerOptions()
                 .position(loc)
                 .title("You're here")
-                .draggable(true));
-        if (map != null) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-        }
+                .draggable(true) );
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
     }
 
 
