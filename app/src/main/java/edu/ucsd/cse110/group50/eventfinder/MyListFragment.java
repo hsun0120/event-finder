@@ -30,9 +30,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     RecyclerView recList;
 
-    ArrayList<Event> events_to_adapt;
-
-    DatabaseReference mFirebaseReference;
 
     private static String TAG = "MyListFragment";
 
@@ -60,11 +57,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
 
 
-        //Get events from firebase
-        mFirebaseReference = MapView.mFirebaseReference;
-        EventList eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
-        EventAdapter ca = new EventAdapter( eventList );
-        recList.setAdapter( ca );
 
 
         // Example event card manually created
@@ -107,17 +99,61 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
 
 
-//    @Override
-//    public void onStart()
-//    {
-//        super.onStart();
+    @Override
+    public void onStart()
+    {
+        super.onStart();
 //        on_all_events_flag = MapView.user_on_all_events_flag;
-//    }
-//
-//    @Override
-//    public void onResume()
-//    {
-//        super.onResume();
-//        on_all_events_flag = MapView.user_on_all_events_flag;
-//    }
+
+
+        //Get events from MapView
+        ArrayList<Event> eventList = MapView.eventList.getEventList();
+        //Update event base on Flag
+        //eventList.eventList.clear();
+        EventAdapter ca = new EventAdapter( eventList );
+        recList.setAdapter( ca );
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        System.out.println("My List OnResume Called!!");
+        //Get events from MapView
+        ArrayList<Event> eventList = MapView.eventList.getEventList();
+        //Update event base on Flag
+        if(MapView.user_on_all_events_flag == 0)
+        {
+            eventList = processSearch(eventList, MapView.currUid);
+        }
+
+        if(MapView.user_on_earch_event_flag == 1)
+        {
+            //eventList = processSearch()
+        }
+
+        EventAdapter ca = new EventAdapter( eventList);
+        recList.setAdapter( ca );
+    }
+
+
+    //Yining: Dummy Local Search Functions:
+    public ArrayList<Event> searchEventsForCurrUser(ArrayList<Event> eventList,  String hostID)
+    {
+        ArrayList<Event> new_list = new ArrayList<>();
+
+        for(Event e : eventList)
+        {
+            if(e.getHost().equals(hostID))
+            {
+                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
+                new_list.add(e);
+            }
+            else
+            {
+                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
+            }
+        }
+        return new_list;
+    }
 }

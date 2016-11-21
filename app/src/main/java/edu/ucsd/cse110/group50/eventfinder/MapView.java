@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -52,6 +53,7 @@ public class MapView extends AppCompatActivity
     Location mLastLocation;
 
     public static User curUser;
+    public static String currUid;
 
     // Firebase instance variables
     public static FirebaseAuth mFirebaseAuth;
@@ -65,10 +67,14 @@ public class MapView extends AppCompatActivity
 
     //Flag used to determine which page the user is on. 0 for my_events, 1 for all_events_list;
     public static int user_on_all_events_flag;
+    public static int user_on_earch_event_flag;
 
-    ArrayList<Event> unprocessed_events;
 
-    ArrayList<Event> processed_events;
+    //Search text entered by user.
+    String searchedText;
+
+    public static EventList eventList;
+    MyListFragment nearbyEventListFragment = null;
 
 
     // inner class for drawer item listener
@@ -121,6 +127,7 @@ public class MapView extends AppCompatActivity
         curUser = intent.getParcelableExtra( Identifiers.USER );
         if ( curUser == null ) {
             String user = mFirebaseAuth.getCurrentUser().getUid();
+            currUid = user;
             User.readFromFirebase(
                     mFirebaseReference.child( Identifiers.FIREBASE_USERS ).child( user ),
                     new LoadListener() {
@@ -168,7 +175,9 @@ public class MapView extends AppCompatActivity
 
 
         // Setting up list
-        final MyListFragment listFragment = new MyListFragment();
+        eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
+        nearbyEventListFragment = new MyListFragment();
+        //myListFragPointer = nearbyEventListFragment;
         //final MyListFragment myListFragment = new MyListFragment();
 
         // Setting up toolbar
@@ -189,21 +198,20 @@ public class MapView extends AppCompatActivity
                 switch (tabId){
                     case R.id.my_event_item:
                         user_on_all_events_flag = 0;
+                        popFragment(supportMapFragment);
+                        pushFragment(nearbyEventListFragment);
                         Log.d("TAB","My Event Item Selected");
 
-                        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
-                        intent1.putExtra( Identifiers.USER, curUser );
-                        startActivity( intent1 );
                         break;
                     case R.id.list_item:
                         user_on_all_events_flag = 1;
                         Log.d("TAB","List Item Selected");
                         popFragment(supportMapFragment);
-                        pushFragment(listFragment);
+                        pushFragment(nearbyEventListFragment);
                         break;
                     case R.id.location_item:
                         Log.d("TAB","Location Item Selected");
-                        popFragment(listFragment);
+                        popFragment(nearbyEventListFragment);
                         pushFragment(supportMapFragment);
                         break;
                 }
@@ -234,6 +242,34 @@ public class MapView extends AppCompatActivity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(1000);
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        //Attach search text listener.
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String query) {
+                // this is your adapter that will be filtered
+                searchedText = query;
+                System.out.println("Searched TEXT is "+ searchedText);
+                if(!query .equals(""))
+                {
+                    user_on_earch_event_flag = 1;
+
+                    System.out.println("User entered SOMETHING!");
+                    nearbyEventListFragment.onResume();
+                }
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+
+                //Hee u can get the value "query" which is entered in the search box.
+
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
+
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -292,24 +328,14 @@ public class MapView extends AppCompatActivity
                 .position(new LatLng(0, 0))
                 .title("Marker"));
     }
-//    //Yining: Dummy Local Search Functions:
-//    public ArrayList<Event> processSearch(ArrayList<Event> curr_list,  String hostID)
-//    {
-//        ArrayList<Event> new_list = new ArrayList<>();
-//
-//        for(Event e : curr_list)
-//        {
-//            if(e.getHost().equals(hostID))
-//            {
-//                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
-//                new_list.add(e);
-//            }
-//            else
-//            {
-//                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
-//            }
-//        }
-//
-//        return new_list;
-//    }
+
+
+    public void gotoCreateEvent(View view)
+    {
+
+        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
+        intent1.putExtra( Identifiers.USER, curUser );
+        startActivity( intent1 );
+    }
+
 }

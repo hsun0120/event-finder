@@ -37,7 +37,7 @@ public class EventList implements Iterable<Event>, List<Event> {
      *
      * @param mDatabase Database to read the Events from. Must be the root of a list of Events.
      */
-    public EventList( DatabaseReference mDatabase ) {
+    public EventList( DatabaseReference mDatabase) {
 
         eventList = new ArrayList<>();
         listeners = new ArrayList<>();
@@ -277,5 +277,11 @@ public class EventList implements Iterable<Event>, List<Event> {
     public Iterator<Event> iterator() {
         return eventList.iterator();
     }
+
+
+    public ArrayList<Event> getEventList(){
+        return eventList;
+    }
+
 
 }
