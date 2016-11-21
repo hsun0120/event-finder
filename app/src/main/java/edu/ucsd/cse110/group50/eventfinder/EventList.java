@@ -18,12 +18,11 @@ import java.util.ListIterator;
  * Wrapper class that stores a list of events.
  *
  * @author Thiago Marback
- * @version 1.0
+ * @version 2.0
  * @since 2016-11-14
  */
-public class EventList implements Iterable<Event>, List<Event> {
+public class EventList extends ArrayList<Event> {
 
-    private ArrayList<Event> eventList;
     private ArrayList<LoadListener> listeners;
 
     private static final String UID_CHILD = "uid";
@@ -39,7 +38,7 @@ public class EventList implements Iterable<Event>, List<Event> {
      */
     public EventList( DatabaseReference mDatabase ) {
 
-        eventList = new ArrayList<>();
+        super();
         listeners = new ArrayList<>();
 
         ChildEventListener childListener = new ChildEventListener() {
@@ -59,7 +58,7 @@ public class EventList implements Iterable<Event>, List<Event> {
                             @Override
                             public void onLoadComplete( Object data ) {
 
-                                eventList.add( (Event) data );
+                                add( (Event) data );
                                 notifyListeners( EventList.this );
 
                             }
@@ -97,7 +96,7 @@ public class EventList implements Iterable<Event>, List<Event> {
                             @Override
                             public void onLoadComplete( Object data ) {
 
-                                eventList.remove( (Event) data );
+                                remove( (Event) data );
                                 notifyListeners( EventList.this );
 
                             }
@@ -157,125 +156,6 @@ public class EventList implements Iterable<Event>, List<Event> {
 
         }
 
-    }
-
-    @Override
-    public int size() {
-        return eventList.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return eventList.isEmpty();
-    }
-
-    @Override
-    public boolean contains( Object o ) {
-        return eventList.contains( o );
-    }
-
-    @NonNull
-    @Override
-    public Object[] toArray() {
-        return eventList.toArray();
-    }
-
-    @NonNull
-    @Override
-    public <T> T[] toArray( T[] a ) {
-        return eventList.toArray( a );
-    }
-
-    @Override
-    public boolean remove( Object o ) {
-        return eventList.remove( o );
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return eventList.containsAll( c );
-    }
-
-    @Override
-    public boolean addAll( Collection<? extends Event> c ) {
-        return eventList.addAll( c );
-    }
-
-    @Override
-    public boolean addAll( int index, Collection<? extends Event> c ) {
-        return eventList.addAll( index, c );
-    }
-
-    @Override
-    public boolean removeAll( Collection<?> c ) {
-        return eventList.removeAll( c );
-    }
-
-    @Override
-    public boolean retainAll( Collection<?> c ) {
-        return eventList.retainAll( c );
-    }
-
-    @Override
-    public void clear() {
-        eventList.clear();
-    }
-
-    @Override
-    public Event get( int index ) {
-        return eventList.get( index );
-    }
-
-    @Override
-    public Event set( int index, Event element ) {
-        return eventList.set( index, element );
-    }
-
-    @Override
-    public boolean add( Event e ) {
-        return eventList.add( e );
-    }
-
-    @Override
-    public void add( int index, Event element ) {
-        eventList.add( index, element );
-    }
-
-    @Override
-    public Event remove( int index ) {
-        return eventList.remove( index );
-    }
-
-    @Override
-    public int indexOf( Object o ) {
-        return eventList.indexOf( o );
-    }
-
-    @Override
-    public int lastIndexOf( Object o ) {
-        return eventList.lastIndexOf( o );
-    }
-
-    @Override
-    public ListIterator<Event> listIterator() {
-        return eventList.listIterator();
-    }
-
-    @NonNull
-    @Override
-    public ListIterator<Event> listIterator( int index ) {
-        return eventList.listIterator( index );
-    }
-
-    @NonNull
-    @Override
-    public List<Event> subList( int fromIndex, int toIndex ) {
-        return eventList.subList( fromIndex, toIndex );
-    }
-
-    @Override
-    public Iterator<Event> iterator() {
-        return eventList.iterator();
     }
 
 }
