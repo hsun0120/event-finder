@@ -14,7 +14,8 @@
         android:title="@string/action_add_event"
         android:orderInCategory="3"
         android:icon="@drawable/ic_note_add_black_48dp"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:onClick="gotoCreateEvent" />
 
     <item android:id="@+id/action_filter_toolbar"
         android:title="@string/action_filter"

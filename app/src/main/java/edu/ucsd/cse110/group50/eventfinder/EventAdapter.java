@@ -11,10 +11,10 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private ArrayList<Event> eventList;
+    private EventList eventList;
 
     // Constructor
-    public EventAdapter(ArrayList<Event> contactList) {
+    public EventAdapter(EventList contactList) {
         this.eventList = contactList;
     }
 

@@ -76,26 +76,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     }
 
-    //Yining: Dummy Local Search Functions:
-    public ArrayList<Event> processSearch(ArrayList<Event> curr_list, String hostID)
-    {
-        ArrayList<Event> new_list = new ArrayList<>();
-
-        for(Event e : curr_list)
-        {
-            if(e.getHost().equals(hostID))
-            {
-                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
-                new_list.add(e);
-            }
-            else
-            {
-                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
-            }
-        }
-
-        return new_list;
-    }
 
 
 
@@ -107,7 +87,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
 
         //Get events from MapView
-        ArrayList<Event> eventList = MapView.eventList.getEventList();
+        EventList eventList = new EventList(MapView.eventList.getEventList());
         //Update event base on Flag
         //eventList.eventList.clear();
         EventAdapter ca = new EventAdapter( eventList );
@@ -120,16 +100,16 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         super.onResume();
         System.out.println("My List OnResume Called!!");
         //Get events from MapView
-        ArrayList<Event> eventList = MapView.eventList.getEventList();
+        EventList eventList = new EventList(MapView.eventList.getEventList());
         //Update event base on Flag
         if(MapView.user_on_all_events_flag == 0)
         {
-            eventList = processSearch(eventList, MapView.currUid);
+            eventList = processSearch(0 ,eventList, MapView.currUid);
         }
 
         if(MapView.user_on_earch_event_flag == 1)
         {
-            //eventList = processSearch()
+            eventList = processSearch(1,eventList, MapView.searchedText);
         }
 
         EventAdapter ca = new EventAdapter( eventList);
@@ -138,22 +118,45 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
 
     //Yining: Dummy Local Search Functions:
-    public ArrayList<Event> searchEventsForCurrUser(ArrayList<Event> eventList,  String hostID)
+    //searchModeFlag: 0 for check user, 1 for searched String
+    public EventList processSearch( int searchModeFlag, EventList eventList,  String key)
     {
         ArrayList<Event> new_list = new ArrayList<>();
 
         for(Event e : eventList)
         {
-            if(e.getHost().equals(hostID))
-            {
-                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
-                new_list.add(e);
+            if(searchModeFlag == 0) {
+                if (e.getHost().equals(key)) {
+                    System.out.println("In MYEVENTS, UID MATCH\n userid is " + e.getUid());
+                    new_list.add(e);
+                } else {
+                    System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is " + key + "\nHOst UID in data is " + e.getHost());
+                }
             }
-            else
+
+            if(searchModeFlag == 1)
             {
-                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
+                String currEventName = e.getName().toLowerCase();
+                if(currEventName.contains(key.toLowerCase()))
+                {
+                    new_list.add(e);
+                    continue;
+                }
+
+                String currDes = e.getDescription().toLowerCase();
+                if(currDes.contains(key.toLowerCase()))
+                {
+                    new_list.add(e);
+                    continue;
+                }
+
+                String currAddress = e.getAddress().toLowerCase();
+                if(currAddress.contains(key.toLowerCase()))
+                {
+                    new_list.add(e);
+                }
             }
         }
-        return new_list;
+        return new EventList(new_list);
     }
 }

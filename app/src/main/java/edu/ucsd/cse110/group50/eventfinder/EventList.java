@@ -31,6 +31,17 @@ public class EventList implements Iterable<Event>, List<Event> {
 
     private static final String TAG = "EventList";
 
+
+    /**
+     * Create a list of events using the parameter events.
+     * @param events An arrayList of events.
+     */
+    public EventList(ArrayList<Event> events)
+    {
+        this.eventList = events;
+    }
+
+
     /**
      * Creates a new list of events that contains all Event objects that are stored
      * directly under the given Database node.

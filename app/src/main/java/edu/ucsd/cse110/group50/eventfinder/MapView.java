@@ -74,7 +74,7 @@ public class MapView extends AppCompatActivity
 
 
     //Search text entered by user.
-    String searchedText;
+    public static String searchedText;
 
     public static EventList eventList;
     MyListFragment nearbyEventListFragment = null;
@@ -276,6 +276,12 @@ public class MapView extends AppCompatActivity
                     System.out.println("User entered SOMETHING!");
                     nearbyEventListFragment.onResume();
                 }
+                else
+                {
+                    user_on_earch_event_flag = 0;
+                    System.out.println("User entered NOTHING!");
+                    nearbyEventListFragment.onResume();
+                }
                 return true;
             }
 
@@ -287,7 +293,6 @@ public class MapView extends AppCompatActivity
             }
         };
         searchView.setOnQueryTextListener(queryTextListener);
-
 
 
 
@@ -350,12 +355,15 @@ public class MapView extends AppCompatActivity
     }
 
 
-    public void gotoCreateEvent(View view)
+    public boolean gotoCreateEvent(MenuItem item)
     {
 
         Intent intent1 = new Intent(MapView.this, CreateEvent.class);
         intent1.putExtra( Identifiers.USER, curUser );
         startActivity( intent1 );
+
+        return true;
     }
+
 
 }
