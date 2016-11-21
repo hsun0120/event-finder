@@ -63,8 +63,10 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "Login";
     private static final int RC_SIGN_IN = 9001;
+    private static final int NEW_USER = 1337;
+    static int LOGGED_IN = 42;
 
 
 
@@ -103,9 +105,11 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
+        Log.d( TAG, "User sign-in requested." );
 
         //Initialize firebase authenification
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -149,7 +153,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
@@ -166,11 +170,24 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                         GoogleSignInStatusCodes.getStatusCodeString(
                                 result.getStatus().getStatusCode() ) );
             }
+        } else if ( requestCode == NEW_USER ) {
+            if ( resultCode == NewUser.CREATED ) {
+                Log.d( TAG, "New user created." );
+                String newName = data.getStringExtra( Identifiers.USER_NAME );
+                curUser.setName( newName );
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                database.child( Identifiers.FIREBASE_USERS ).child( curUser.getUid() )
+                        .setValue( curUser );
+                loggedIn();
+            } else {
+                Log.i( TAG, "New user creation aborted." );
+                mFirebaseAuth.signOut();
+            }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGooogle:" + acct.getId());
+        Log.d(TAG, "Authenticating Firebase with Google:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -203,10 +220,13 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                                                 public void onLoadComplete( Object data ) {
 
                                                     curUser.removeListener( this );
-                                                    Intent intent = new Intent(LoginScreen.this, MapView.class);
-                                                    intent.putExtra( Identifiers.USER, curUser );
-                                                    startActivity( intent );
-                                                    finish();
+                                                    if ( curUser.getName().isEmpty() ) {
+                                                        Intent intent = new Intent( LoginScreen.this,
+                                                                NewUser.class );
+                                                        startActivityForResult( intent, NEW_USER );
+                                                    } else {
+                                                        loggedIn();
+                                                    }
 
                                                 }
 
@@ -221,6 +241,15 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                 });
     }
 
+    private void loggedIn() {
+
+
+        Intent data = new Intent();
+        data.putExtra( Identifiers.USER, curUser );
+        setResult( LOGGED_IN, data );
+        finish();
+
+    }
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {

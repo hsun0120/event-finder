@@ -22,6 +22,10 @@ public interface Identifiers {
      * Name used to pass a list of Event objects in an Intent.
      */
     String EVENTS = "events";
+    /**
+     * Name used to pass a username in an intent.
+     */
+    String USER_NAME = "userName";
 
     /**
      * Node in Firebase that contains user data.

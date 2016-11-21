@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/newUserTitle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="#8C9EFF"
@@ -29,7 +29,7 @@
             android:text="Addresss"
             android:gravity="center_vertical"
             android:textSize="16dp"
-            android:layout_below="@id/name"
+            android:layout_below="@id/newUserTitle"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"/>
 

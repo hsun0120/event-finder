@@ -52,6 +52,8 @@ public class MapView extends AppCompatActivity
     Location mLastLocation;
 
     public static User curUser;
+    boolean starting;
+    boolean loggedIn;
 
     // Firebase instance variables
     public static FirebaseAuth mFirebaseAuth;
@@ -69,6 +71,9 @@ public class MapView extends AppCompatActivity
     ArrayList<Event> unprocessed_events;
 
     ArrayList<Event> processed_events;
+
+    private static final int SIGN_IN_REQUEST = 9000;
+    private static final String TAG = "MapView";
 
 
     // inner class for drawer item listener
@@ -103,26 +108,50 @@ public class MapView extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_view);
+        starting = true;
+
+        setContentView( R.layout.activity_map_view );
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser == null) {
+        if ( mFirebaseUser == null ) {
             // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, LoginScreen.class));
-            finish();
-            return;
+            loggedIn = false;
+            startActivityForResult( new Intent( this, LoginScreen.class ), SIGN_IN_REQUEST );
+        } else {
+            Log.i( TAG, "User already signed in." );
+            loggedIn = true;
+            startup();
         }
+
+    }
+
+    @Override
+    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
+
+        if ( requestCode == SIGN_IN_REQUEST ) {
+            if ( resultCode == LoginScreen.LOGGED_IN ) {
+                Log.i( TAG, "User sign-in successful." );
+                loggedIn = true;
+                startup();
+            } else {
+                Log.i( TAG, "User sign-in aborted." );
+                startActivityForResult( new Intent( this, LoginScreen.class ), SIGN_IN_REQUEST );
+            }
+        }
+
+    }
+
+    public void startup() {
+
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         ServerLog.loadDatabase();
 
-        Intent intent = getIntent();
-        curUser = intent.getParcelableExtra( Identifiers.USER );
         if ( curUser == null ) {
-            String user = mFirebaseAuth.getCurrentUser().getUid();
+            String userID = mFirebaseAuth.getCurrentUser().getUid();
             User.readFromFirebase(
-                    mFirebaseReference.child( Identifiers.FIREBASE_USERS ).child( user ),
+                    mFirebaseReference.child( Identifiers.FIREBASE_USERS ).child( userID ),
                     new LoadListener() {
 
                         @Override
@@ -133,7 +162,7 @@ public class MapView extends AppCompatActivity
                         }
 
                     },
-                    user );
+                    userID );
         }
 
         // Initialize the drawer list
@@ -147,77 +176,76 @@ public class MapView extends AppCompatActivity
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-
-        // Setting up map
-        FragmentManager fm = getSupportFragmentManager();
-        final SupportMapFragment supportMapFragment =  SupportMapFragment.newInstance();
-        fm.beginTransaction().replace(R.id.container, supportMapFragment).commit();
-
-
-
-
-
-
-
-        // Setting up list
-        final MyListFragment listFragment = new MyListFragment();
-        //final MyListFragment myListFragment = new MyListFragment();
-
         // Setting up toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Setting up bottombar
-        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+    }
 
-        // Set default tab to location_item
-        bottomBar.setDefaultTabPosition(2);
+    @Override
+    protected void onPostResume() {
 
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                int current=bottomBar.getCurrentTabId();
-                switch (tabId){
-                    case R.id.my_event_item:
-                        user_on_all_events_flag = 0;
-                        Log.d("TAB","My Event Item Selected");
+        super.onPostResume();
 
-                        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
-                        intent1.putExtra( Identifiers.USER, curUser );
-                        startActivity( intent1 );
-                        break;
-                    case R.id.list_item:
-                        user_on_all_events_flag = 1;
-                        Log.d("TAB","List Item Selected");
-                        popFragment(supportMapFragment);
-                        pushFragment(listFragment);
-                        break;
-                    case R.id.location_item:
-                        Log.d("TAB","Location Item Selected");
-                        popFragment(listFragment);
-                        pushFragment(supportMapFragment);
-                        break;
+        if ( starting && loggedIn ) {
+
+            // Setting up list
+            final MyListFragment listFragment = new MyListFragment();
+
+            // Setting up bottombar
+            final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+
+            // Set default tab to location_item
+            bottomBar.setDefaultTabPosition(1);
+
+            final SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
+            bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+
+                @Override
+                public void onTabSelected( @IdRes int tabId ) {
+
+                    int current = bottomBar.getCurrentTabId();
+                    switch ( tabId ) {
+                        case R.id.my_event_item:
+                            user_on_all_events_flag = 0;
+                            Log.d( "TAB", "My Event Item Selected" );
+
+                            Intent intent1 = new Intent( MapView.this, CreateEvent.class );
+                            intent1.putExtra( Identifiers.USER, curUser );
+                            startActivity( intent1 );
+                            break;
+                        case R.id.list_item:
+                            user_on_all_events_flag = 1;
+                            Log.d( "TAB", "List Item Selected" );
+                            popFragment( supportMapFragment );
+                            pushFragment( listFragment );
+                            break;
+                        case R.id.location_item:
+                            Log.d( "TAB", "Location Item Selected" );
+                            popFragment( listFragment );
+                            pushFragment( supportMapFragment );
+                            break;
+                    }
+
                 }
-            }
-        });
 
-        bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
-            @Override
-            public void onTabReSelected(@IdRes int tabId) {
-            }
-        });
+            });
 
-        // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
-        //bottomBar.setActiveTabColor(0xC2185B);
+            bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+
+                @Override
+                public void onTabReSelected(@IdRes int tabId) { }
+
+            });
+
+            // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
+            //bottomBar.setActiveTabColor(0xC2185B);
+
+            starting = false;
+
+        }
+
 
     }
 
@@ -239,8 +267,19 @@ public class MapView extends AppCompatActivity
     }
 
     protected void onStart() {
+
+        // Create an instance of GoogleAPIClient.
+        if ( mGoogleApiClient == null ) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
         mGoogleApiClient.connect();
         super.onStart();
+
     }
 
     protected void onStop() {

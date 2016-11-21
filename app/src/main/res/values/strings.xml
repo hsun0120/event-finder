@@ -52,5 +52,8 @@
     <string name="to_my_activities">Go to My Activities</string>
     <string name="to_nearby_events">Go to nearby events</string>
     <string name="save_filter">Save filter</string>
+    <string name="new_name_hint">Display name</string>
+    <string name="new_user_title">Register as a new user!</string>
+    <string name="register_button_text">Register!</string>
 
 </resources>

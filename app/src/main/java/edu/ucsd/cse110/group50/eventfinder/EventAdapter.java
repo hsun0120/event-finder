@@ -6,9 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private EventList eventList;
@@ -63,7 +60,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         public EventViewHolder(View v) {
             super(v);
-            vName =  (TextView) v.findViewById(R.id.name);
+            vName =  (TextView) v.findViewById(R.id.newUserTitle);
             vAddress = (TextView)  v.findViewById(R.id.txtAddress);
             vDescription = (TextView)  v.findViewById(R.id.txtDescrip);
         }
