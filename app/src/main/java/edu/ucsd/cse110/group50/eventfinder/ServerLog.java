@@ -32,7 +32,7 @@ public class ServerLog {
      */
     static void loadDatabase() {
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child( Identifiers.FIREBASE_LOGS );
 
     }
 
@@ -45,12 +45,13 @@ public class ServerLog {
      */
     public static void log( Level level, String tag, String message ) {
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US );
-        String date = df.format(Calendar.getInstance().getTime());
-        mDatabase.child( LEVEL ).setValue( level.toString() );
-        mDatabase.child( DATE ).setValue( date );
-        mDatabase.child( TAG ).setValue( tag );
-        mDatabase.child( MESSAGE ).setValue( message );
+        DatabaseReference data = mDatabase.push();
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss z", Locale.US );
+        String date = df.format( Calendar.getInstance().getTime() );
+        data.child( LEVEL ).setValue( level.toString() );
+        data.child( DATE ).setValue( date );
+        data.child( TAG ).setValue( tag );
+        data.child( MESSAGE ).setValue( message );
 
     }
 

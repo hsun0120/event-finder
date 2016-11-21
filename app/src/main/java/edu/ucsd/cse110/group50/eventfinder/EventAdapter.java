@@ -4,66 +4,117 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private EventList eventList;
+    private ArrayList<Event> eventList;
+    private ArrayList<EventViewHolder> cards;
 
     // Constructor
-    public EventAdapter(EventList contactList) {
+    public EventAdapter( ArrayList<Event> contactList) {
+
         this.eventList = contactList;
+        this.cards = new ArrayList<>();
+
     }
 
     @Override
     public int getItemCount() {
+
         return eventList.size();
+
     }
 
     @Override
-    public void onBindViewHolder(final EventViewHolder contactViewHolder, int i) {
-        Event ci = eventList.get(i);
-        contactViewHolder.vName.setText(ci.getName());
-        contactViewHolder.vAddress.setText(ci.getAddress());
-        contactViewHolder.vDescription.setText(ci.getDescription());
-        ci.addListener(new LoadListener() {
+    public void onBindViewHolder( final EventViewHolder contactViewHolder, int i ) {
 
-            @Override
-            public void onLoadComplete(Object data) {
+        Event ci = eventList.get( i );
+        contactViewHolder.setEvent( ci );
+        cards.add( contactViewHolder );
 
-                Event ci = (Event) data;
-                contactViewHolder.vName.setText(ci.getName());
-                contactViewHolder.vAddress.setText(ci.getAddress());
-                contactViewHolder.vDescription.setText(ci.getDescription());
-
-            }
-
-        });
     }
 
     @Override
-    public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public EventViewHolder onCreateViewHolder( ViewGroup viewGroup, int i ) {
         View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.card_layout, viewGroup, false);
+                from( viewGroup.getContext() ).
+                inflate( R.layout.card_layout, viewGroup, false );
 
-        return new EventViewHolder(itemView);
+        return new EventViewHolder( itemView );
+    }
+
+    void destroyCards() {
+
+        for ( EventViewHolder card : cards ) {
+
+            card.removeEvent();
+
+        }
+
     }
 
     // Inner class ViewHolder
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
         // Event information. Expected to be enriched in the future
-        protected TextView vName;
-        protected TextView vAddress;
-        protected TextView vDescription;
+        private TextView vName;
+        private TextView vAddress;
+        private TextView vDescription;
 
-        public EventViewHolder(View v) {
+        private Event data;
+        private LoadListener listener;
+
+        EventViewHolder( View v ) {
+
             super(v);
-            vName =  (TextView) v.findViewById(R.id.newUserTitle);
-            vAddress = (TextView)  v.findViewById(R.id.txtAddress);
-            vDescription = (TextView)  v.findViewById(R.id.txtDescrip);
+            vName =  (TextView) v.findViewById( R.id.newUserTitle );
+            vAddress = (TextView) v.findViewById( R.id.txtAddress );
+            vDescription = (TextView) v.findViewById( R.id.txtDescrip );
+
         }
+
+        void setEvent( Event e ) {
+
+            this.data = e;
+            listener = new LoadListener() {
+
+                @Override
+                public void onLoadComplete( Object data ) {
+
+                    EventViewHolder.this.update();
+
+                }
+
+            };
+            e.addListener( listener );
+            update();
+
+        }
+
+        void removeEvent() {
+
+            data.removeListener( listener );
+            listener = null;
+
+        }
+
+        void update() {
+
+            vName.setText( data.getName() );
+            if ( !data.getHasPassword() || !MapView.user_on_all_events_flag ) {
+                vAddress.setText( data.getAddress() );
+                vDescription.setText( data.getDescription() );
+            } else {
+                vAddress.setText( R.string.locked_event_data );
+                vDescription.setText( R.string.locked_event_data );
+            }
+
+        }
+
     }
 
 

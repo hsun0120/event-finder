@@ -37,7 +37,7 @@ public class Event implements Parcelable {
     private int year;
 
     private String address;
-    //private Uri location;
+    private String locId;
 
     private boolean hasPassword;
     private String password;
@@ -112,6 +112,7 @@ public class Event implements Parcelable {
         this.year = 0;
 
         this.address = "";
+        this.locId = "";
 
         this.hasPassword = false;
         this.password = "";
@@ -142,6 +143,7 @@ public class Event implements Parcelable {
         this.year = u.year;
 
         this.address = u.address;
+        this.locId = u.locId;
 
         this.hasPassword = u.hasPassword;
         this.password = u.password;
@@ -173,7 +175,7 @@ public class Event implements Parcelable {
         year = in.readInt();
 
         address = in.readString();
-        //location = in.readParcelable( Uri.class.getClassLoader() );
+        locId = in.readString();
 
         if ( in.readByte() == FALSE ) {
             hasPassword = false;
@@ -327,7 +329,7 @@ public class Event implements Parcelable {
                 year = (int) ( (long) data.child( YEAR_CHILD ).getValue() );
 
                 address = (String) data.child( ADDRESS_CHILD ).getValue();
-                //location = (Uri) data.child( LOCATION_CHILD ).getValue();
+                locId = (String) data.child( LOCATION_CHILD ).getValue();
 
                 hasPassword = (boolean) data.child( HAS_PASSWORD_CHILD ).getValue();
                 password = (String) data.child( PASSWORD_CHILD ).getValue();
@@ -494,6 +496,16 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Retrieves the unique ID for places
+     * @return Location ID of this Event.
+     */
+    public String getLocId() {
+
+        return locId;
+
+    }
+
+    /**
      * Checks if this event requires a password.
      *
      * @return true if password is required; false otherwise.
@@ -627,6 +639,16 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Sets the location ID for this event
+     * @param locId New location ID.
+     */
+    public void setLocId( String locId ) {
+
+        this.locId = locId;
+
+    }
+
+    /**
      * Sets whether this event requires a password.
      *
      * @param hasPassword Whether this event requires a password.
@@ -709,7 +731,7 @@ public class Event implements Parcelable {
         dest.writeInt( year );
 
         dest.writeString( address );
-        //dest.writeParcelable( location, 0 );
+        dest.writeString( locId );
 
         if ( hasPassword ) {
             dest.writeByte( TRUE );

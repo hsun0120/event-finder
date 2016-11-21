@@ -24,27 +24,27 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MyListFragment extends Fragment implements OnItemClickListener {
 
 
     RecyclerView recList;
 
-    ArrayList<Event> events_to_adapt;
-
-    DatabaseReference mFirebaseReference;
+    boolean ready;
 
     private static String TAG = "MyListFragment";
 
-    public MyListFragment()
-    {
+    public MyListFragment() {
+
+        ready = false;
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("MYLISTFRAGMENT ONCREATE Called");
+        Log.v( TAG, "MYLISTFRAGMENT ONCREATE Called" );
         // Get the view of the fragment
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
@@ -58,17 +58,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-
-
-        //Get events from firebase
-        mFirebaseReference = MapView.mFirebaseReference;
-        EventList eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
-        EventAdapter ca = new EventAdapter( eventList );
-        recList.setAdapter( ca );
-
-
-        // Example event card manually created
-
+        ready = true;
 
         return view;
     }
@@ -84,40 +74,122 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     }
 
-    //Yining: Dummy Local Search Functions:
-    public ArrayList<Event> processSearch(ArrayList<Event> curr_list, String hostID)
-    {
-        ArrayList<Event> new_list = new ArrayList<>();
 
-        for(Event e : curr_list)
-        {
-            if(e.getHost().equals(hostID))
-            {
-                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
-                new_list.add(e);
-            }
-            else
-            {
-                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
-            }
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+//        on_all_events_flag = MapView.user_on_all_events_flag;
+
+        update();
+
+    }
+
+    void update()
+    {
+
+        if ( !ready ) {
+            return;
         }
 
-        return new_list;
+        EventAdapter oldAdapter = (EventAdapter) recList.getAdapter();
+        if ( oldAdapter != null ) {
+            oldAdapter.destroyCards();
+        }
+
+        Log.d( TAG, "Updating." );
+        //Get events from MapView
+        ArrayList<Event> eventList = MapView.eventList;
+        //Update event base on Flag
+        if( !MapView.user_on_all_events_flag )
+        {
+            eventList = processSearch( false, MapView.eventList );
+        }
+
+        if( MapView.user_on_search_event_flag )
+        {
+            eventList = processSearch( true , eventList );
+        }
+
+        EventAdapter ca = new EventAdapter( eventList );
+        recList.setAdapter( ca );
+        Log.v( TAG, "Updated." );
+
     }
 
 
+    //Yining: Dummy Local Search Functions:
+    //searchModeFlag: false for check user, true for searched String
+    private ArrayList<Event> processSearch( boolean searchModeFlag, ArrayList<Event> eventList )
+    {
+        ArrayList<Event> new_list = new ArrayList<>();
 
-//    @Override
-//    public void onStart()
-//    {
-//        super.onStart();
-//        on_all_events_flag = MapView.user_on_all_events_flag;
-//    }
-//
-//    @Override
-//    public void onResume()
-//    {
-//        super.onResume();
-//        on_all_events_flag = MapView.user_on_all_events_flag;
-//    }
+        if ( searchModeFlag )
+        {
+            String key = MapView.searchedText;
+            for ( Event e : eventList ) {
+                String currEventName = e.getName().toLowerCase();
+                if ( currEventName.contains( key.toLowerCase() ) )
+                {
+                    new_list.add( e );
+                    continue;
+                }
+
+                String currDes = e.getDescription().toLowerCase();
+                if ( currDes.contains( key.toLowerCase() ) &&
+                        ( !e.getHasPassword() || !MapView.user_on_all_events_flag ) ) {
+                    new_list.add( e );
+                    continue;
+                }
+
+                String currAddress = e.getAddress().toLowerCase();
+                if ( currAddress.contains( key.toLowerCase() ) &&
+                        ( !e.getHasPassword() || !MapView.user_on_all_events_flag ) ) {
+                    new_list.add( e );
+                    continue;
+                }
+
+                if ( e.getUid().isEmpty() ) {
+                    new_list.add( e );
+                }
+            }
+        } else {
+            User user = MapView.curUser;
+            ArrayList<Event> oldList = new ArrayList<>();
+            for ( Event e : eventList ) {
+
+                if ( e.getHost().equals( user.getUid() ) ) {
+                    Log.v( TAG, "In MYEVENTS, UID MATCH - userid is " + e.getUid() + "." );
+                    if ( user.getHostedEvents().contains( e.getUid() ) ) {
+                        Log.v( TAG, "Scheduled event." );
+                        new_list.add( e );
+                    } else if ( user.getPastHosted().contains( e.getUid() ) ) {
+                        Log.v( TAG, "Past event." );
+                        oldList.add( e );
+                    } else {
+                        Log.w( TAG, "EVENT HAS A HOST, WHO DOES NOT HAVE THE EVENT - " +
+                                "User: " + user.getUid() + " | Event: " + e.getUid() );
+                        ServerLog.s( TAG, "EVENT HAS A HOST, WHO DOES NOT HAVE THE EVENT - " +
+                                "User: " + user.getUid() + " | Event: " + e.getUid() );
+                    }
+                }
+
+            }
+            new_list.add( new Event( "", "=====PAST EVENTS=====", "" ) );
+            new_list.addAll( oldList );
+
+        }
+        return new_list;
+    }
+
+    @Override
+    public void onStop() {
+
+        super.onStop();
+        EventAdapter adapter = (EventAdapter) recList.getAdapter();
+        adapter.destroyCards();
+
+    }
 }

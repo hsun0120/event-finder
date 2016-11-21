@@ -31,6 +31,7 @@ public class NewUser extends AppCompatActivity {
                     Toast.LENGTH_SHORT ).show();
             return;
         }
+        name = name.trim();
 
         Intent data = new Intent();
         data.putExtra( Identifiers.USER_NAME, name );

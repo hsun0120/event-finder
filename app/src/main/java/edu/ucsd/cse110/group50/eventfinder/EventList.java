@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
@@ -9,13 +8,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
- * Wrapper class that stores a list of events.
+ * List class that stores a list of events.
  *
  * @author Thiago Marback
  * @version 2.0

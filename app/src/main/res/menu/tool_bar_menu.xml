@@ -2,18 +2,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_filters"
-        android:title="@string/action_filter"
-        android:onClick="openFilter"
-        android:orderInCategory="2"
-        app:showAsAction="always"/>
-
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="Search"
         app:actionViewClass="android.support.v7.widget.SearchView"
+        android:paddingRight="50dp"
         android:orderInCategory="1"
         app:showAsAction="always" />
+    <item android:id="@+id/action_add_event"
+        android:title="@string/action_add_event"
+        android:orderInCategory="3"
+        android:icon="@drawable/ic_note_add_black_48dp"
+        app:showAsAction="always"
+        android:onClick="gotoCreateEvent" />
 
+    <item android:id="@+id/action_filter_toolbar"
+        android:title="@string/action_filter"
+        android:onClick="openFilter"
+        android:orderInCategory="2"
+        app:showAsAction="always"/>
 </menu>

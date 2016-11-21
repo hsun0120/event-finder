@@ -1,14 +1,18 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 
+import android.*;
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,11 +27,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -48,10 +56,16 @@ public class MapView extends AppCompatActivity
         GoogleApiClient.OnConnectionFailedListener,
         OnMapReadyCallback {
 
+    private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 1;
+
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
+    LocationRequest mLocationRequest;
 
-    public static User curUser;
+    final static int UPDATE_INTERVAL = 300;
+    final static int FASTEST_INTERVAL = 100;
+
+    static User curUser;
     boolean starting;
     boolean loggedIn;
 
@@ -65,16 +79,23 @@ public class MapView extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
+    // menu
+    private Menu mOptionsMenu;
+
     //Flag used to determine which page the user is on. 0 for my_events, 1 for all_events_list;
-    public static int user_on_all_events_flag;
+    static boolean user_on_all_events_flag;
+    static boolean user_on_search_event_flag;
 
-    ArrayList<Event> unprocessed_events;
 
-    ArrayList<Event> processed_events;
+    //Search text entered by user.
+    static String searchedText;
 
     private static final int SIGN_IN_REQUEST = 9000;
     private static final String TAG = "MapView";
 
+    static EventList eventList;
+    MyListFragment nearbyEventListFragment = null;
+    private Fragment curFragment;
 
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
@@ -99,7 +120,6 @@ public class MapView extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in);
-
         ft.replace(R.id.container, myFragment);
         ft.commit();
     }
@@ -177,7 +197,7 @@ public class MapView extends AppCompatActivity
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // Setting up toolbar
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -191,40 +211,48 @@ public class MapView extends AppCompatActivity
         if ( starting && loggedIn ) {
 
             // Setting up list
-            final MyListFragment listFragment = new MyListFragment();
+            eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
+            nearbyEventListFragment = new MyListFragment();
+            final SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
 
             // Setting up bottombar
             final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
             // Set default tab to location_item
             bottomBar.setDefaultTabPosition(1);
+            curFragment = supportMapFragment;
 
-            final SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
-            bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            bottomBar.setOnTabSelectListener( new OnTabSelectListener() {
 
                 @Override
                 public void onTabSelected( @IdRes int tabId ) {
 
-                    int current = bottomBar.getCurrentTabId();
                     switch ( tabId ) {
                         case R.id.my_event_item:
-                            user_on_all_events_flag = 0;
-                            Log.d( "TAB", "My Event Item Selected" );
-
-                            Intent intent1 = new Intent( MapView.this, CreateEvent.class );
-                            intent1.putExtra( Identifiers.USER, curUser );
-                            startActivity( intent1 );
-                            break;
-                        case R.id.list_item:
-                            user_on_all_events_flag = 1;
-                            Log.d( "TAB", "List Item Selected" );
-                            popFragment( supportMapFragment );
-                            pushFragment( listFragment );
+                            Log.d("TAB", "My Event Item Selected");
+                            user_on_all_events_flag = false;
+                            invalidateOptionsMenu();
+                            popFragment( curFragment );
+                            pushFragment( nearbyEventListFragment );
+                            curFragment = nearbyEventListFragment;
+                            nearbyEventListFragment.update();
                             break;
                         case R.id.location_item:
-                            Log.d( "TAB", "Location Item Selected" );
-                            popFragment( listFragment );
+                            Log.d("TAB", "Location Item Selected");
+                            invalidateOptionsMenu();
+                            popFragment( curFragment );
                             pushFragment( supportMapFragment );
+                            curFragment = supportMapFragment;
+                            supportMapFragment.getMapAsync(MapView.this);
+                            break;
+                        case R.id.list_item:
+                            Log.d("TAB", "List Item Selected");
+                            user_on_all_events_flag = true;
+                            invalidateOptionsMenu();
+                            popFragment( curFragment );
+                            pushFragment( nearbyEventListFragment );
+                            curFragment = nearbyEventListFragment;
+                            nearbyEventListFragment.update();
                             break;
                     }
 
@@ -235,7 +263,21 @@ public class MapView extends AppCompatActivity
             bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
 
                 @Override
-                public void onTabReSelected(@IdRes int tabId) { }
+                public void onTabReSelected(@IdRes int tabId) {
+
+                    switch (tabId) {
+                        case R.id.my_event_item:
+                            Log.d("TAB", "My Event Item Reselected");
+                            nearbyEventListFragment.update();
+                        case R.id.location_item:
+                            Log.d("TAB", "Location Item Reselected");
+                        case R.id.list_item:
+                            Log.d("TAB", "List Item Reselected");
+                            nearbyEventListFragment.update();
+                            break;
+                    }
+
+                }
 
             });
 
@@ -250,9 +292,23 @@ public class MapView extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu( Menu menu ) {
         // Inflate the options menu from XML
         getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+        mOptionsMenu = menu;
+
+        MenuItem b_filter = mOptionsMenu.findItem(R.id.action_filter_toolbar);
+        MenuItem b_add = mOptionsMenu.findItem(R.id.action_add_event);
+
+        final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        if ( bottomBar.getCurrentTabId() != 0 ) {
+            b_add.setVisible(false);
+            b_filter.setVisible(true);
+
+        } else {
+            b_add.setVisible(true);
+            b_filter.setVisible(false);
+        }
 
 
         // Get the SearchView and set the searchable configuration
@@ -262,6 +318,40 @@ public class MapView extends AppCompatActivity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(1000);
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        //Attach search text listener.
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String query) {
+                // this is your adapter that will be filtered
+                searchedText = query;
+                Log.d( TAG, "Searched TEXT is "+ searchedText );
+                if(!query .equals(""))
+                {
+                    user_on_search_event_flag = true;
+
+                    Log.v( TAG, "User entered SOMETHING!" );
+                    nearbyEventListFragment.update();
+                }
+                else
+                {
+                    user_on_search_event_flag = false;
+                    Log.v( TAG, "User entered NOTHING!" );
+                    nearbyEventListFragment.update();
+                }
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+
+                //Hee u can get the value "query" which is entered in the search box.
+
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
+
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -283,7 +373,10 @@ public class MapView extends AppCompatActivity
     }
 
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+        // only stop if it's connected, otherwise we crash
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
         super.onStop();
     }
 
@@ -300,37 +393,141 @@ public class MapView extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d("CONNECT","onConnecting......");
+        Log.d("CONNECT", "onConnecting......");
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                //mLocationRequest, this);
 
-        try{
+        try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
-        } catch (SecurityException e){
-            Log.d("SE",e.getMessage());
+        } catch (SecurityException e) {
+            Log.d("SE", e.getMessage());
         }
 
         if (mLastLocation != null) {
-            Log.d("LATITUDE",String.valueOf(mLastLocation.getLatitude()));
-            Log.d("LONGITUDE",String.valueOf(mLastLocation.getLongitude()));
+            Log.d("LATITUDE", String.valueOf(mLastLocation.getLatitude()));
+            Log.d("LONGITUDE", String.valueOf(mLastLocation.getLongitude()));
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        if (i == CAUSE_SERVICE_DISCONNECTED) {
+            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+        } else if (i == CAUSE_NETWORK_LOST) {
+            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.i("CONNECTION_FAILED","onConnectionFailed:"+connectionResult.getErrorCode()+","
+                +connectionResult.getErrorMessage());
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        map.setMyLocationEnabled(true);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        LatLng loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
+                .position(loc)
+                .title("You're here")
+                .draggable(true));
+        if (map != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
+        }
     }
+
+
+    public boolean gotoCreateEvent(MenuItem item)
+    {
+
+        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
+        intent1.putExtra( Identifiers.USER, curUser );
+        startActivity( intent1 );
+
+        return true;
+    }
+
+
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_GET_LOCATION);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_GET_LOCATION);
+
+            return;
+        }
+        //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_GET_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    onStop();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 //    //Yining: Dummy Local Search Functions:
 //    public ArrayList<Event> processSearch(ArrayList<Event> curr_list,  String hostID)
 //    {
