@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private EventList eventList;
+    private static EventList eventList;
 
     // Constructor
     public EventAdapter(EventList contactList) {
@@ -42,6 +43,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
 
         });
+
+
+
     }
 
     @Override
@@ -63,9 +67,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         public EventViewHolder(View v) {
             super(v);
-            vName =  (TextView) v.findViewById(R.id.name);
-            vAddress = (TextView)  v.findViewById(R.id.txtAddress);
-            vDescription = (TextView)  v.findViewById(R.id.txtDescrip);
+            vName = (TextView) v.findViewById(R.id.name);
+            vAddress = (TextView) v.findViewById(R.id.txtAddress);
+            vDescription = (TextView) v.findViewById(R.id.txtDescrip);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+                    int position = getAdapterPosition();
+                    intent.putExtra("event_card", eventList.get(position));
+                    v.getContext().startActivity(intent);
+                }
+            });
+
         }
     }
 
