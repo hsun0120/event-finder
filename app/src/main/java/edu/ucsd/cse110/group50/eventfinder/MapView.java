@@ -215,6 +215,7 @@ public class MapView extends AppCompatActivity
                         user_on_all_events_flag = 0;
                         currentTab=0;
                         invalidateOptionsMenu();
+                        popFragment(nearbyEventListFragment);
                         popFragment(supportMapFragment);
                         pushFragment(nearbyEventListFragment);
                         Log.d("TAB","My Event Item Selected");
@@ -224,6 +225,7 @@ public class MapView extends AppCompatActivity
                         Log.d("TAB","List Item Selected");
                         currentTab=1;
                         invalidateOptionsMenu();
+                        popFragment(nearbyEventListFragment);
                         popFragment(supportMapFragment);
                         pushFragment(nearbyEventListFragment);
                         break;

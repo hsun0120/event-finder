@@ -83,14 +83,21 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
     public void onStart()
     {
         super.onStart();
-//        on_all_events_flag = MapView.user_on_all_events_flag;
-
-
+        System.out.println("My List OnStart Called!!");
         //Get events from MapView
         EventList eventList = new EventList(MapView.eventList.getEventList());
         //Update event base on Flag
-        //eventList.eventList.clear();
-        EventAdapter ca = new EventAdapter( eventList );
+        if(MapView.user_on_all_events_flag == 0)
+        {
+            eventList = processSearch(0 ,eventList, MapView.currUid);
+        }
+
+        if(MapView.user_on_earch_event_flag == 1)
+        {
+            eventList = processSearch(1,eventList, MapView.searchedText);
+        }
+
+        EventAdapter ca = new EventAdapter( eventList);
         recList.setAdapter( ca );
     }
 
