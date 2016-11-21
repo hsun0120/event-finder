@@ -10,10 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.net.Uri;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 /**
- * An activity representing a single Event detail screen.
+ * An activity representing a single Event detail screen. This
+ * activity is only used narrow width devices. On tablet-size devices,
+ * item details are presented side-by-side with a list of items
+ * in a {}.
  */
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -41,28 +47,6 @@ public class EventDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
-        /*
-        if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(EventDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(EventDetailFragment.ARG_ITEM_ID));
-            EventDetailFragment fragment = new EventDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.event_detail_container, fragment)
-                    .commit();
-        }*/
     }
 
     @Override
@@ -81,6 +65,8 @@ public class EventDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public void createEvent( View v ){
         finish();
     }
@@ -94,17 +80,16 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void setData() {
-        Event event = (Event) getIntent().getParcelableExtra( Identifiers.EVENT );
+    private void setData(){
+        Event card = getIntent().getParcelableExtra("event_card");
         //Set data here
-        setTitle(event.getName());
-        TextView date = (TextView) findViewById(R.id.textView6);
-        date.setText(event.getDate());
-        TextView location= (TextView) findViewById(R.id.textView7);
-        //Not sure whether uri information should be passed in. Tian
-        location.setText(event.getAddress());
-        TextView description = (TextView) findViewById(R.id.textView8);
-        description.setText(event.getDescription());
+        setTitle(card.getName());
+        TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
+        dateView.setText(card.getDate());
+        TextView desView = (TextView) findViewById(R.id.event_detail_description_view);
+        desView.setText(card.getDescription());
+        TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
+        addressView.setText(card.getAddress());
     }
 
 }

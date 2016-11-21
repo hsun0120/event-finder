@@ -1,14 +1,12 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 
-import android.*;
 import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="sign_out" type="id">sign out</item>
+    <item name="event_detail_date_view" type="id" />
+    <item name="event_detail_description_view" type="id" />
+    <item name="event_detail_address_text_view" type="id" />
 </resources>

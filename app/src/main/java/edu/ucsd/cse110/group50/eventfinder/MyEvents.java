@@ -137,61 +137,8 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 
 
 
-
-//        // New child entries
-//        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference()
-//       helper = new FirebaseHelper(mFirebaseDatabaseReference);
-//        //mFirebaseDatabaseReference = new DatabaseReference("https://windy-oxide-146019.firebaseio.com/");
-//        mFirebaseAdapter = new FirebaseRecyclerAdapter<Card, CardAdapter.ViewHolder>(
-//                Card.class,
-//                R.layout.event_list,
-//                CardAdapter.ViewHolder.class,
-//                mFirebaseDatabaseReference.child("events")) {
-//
-//            @Override
-//            protected void populateViewHolder(CardAdapter.ViewHolder viewHolder,
-//                                              Card eventCard, int position) {
-////                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-//                    viewHolder.eventName.setText(eventCard.getEventName());
-//                    viewHolder.eventDate.setText(eventCard.getEventDate());
-//                    viewHolder.eventDes.setText(eventCard.getEventDescription());
-//
-//            }
-//        };
-//        mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-//        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
-
-
-
         //ADAPTER
 
-
-
-
-
-
-
-
-
-
-//        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-//            @Override
-//            public void onItemRangeInserted(int positionStart, int itemCount) {
-//                super.onItemRangeInserted(positionStart, itemCount);
-//                int numOfEvents = mFirebaseAdapter.getItemCount();
-//                int lastVisiblePosition =
-//                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                // If the recycler view is initially being loaded or the
-//                // user is at the bottom of the list, scroll to the bottom
-//                // of the list to show the newly added message.
-//                if (lastVisiblePosition == -1 ||
-//                        (positionStart >= (numOfEvents - 1) &&
-//                                lastVisiblePosition == (positionStart - 1))) {
-//                    mMessageRecyclerView.scrollToPosition(positionStart);
-//                }
-//            }
-//        });
-        //super.onCreate(savedInstanceState);
 
 
 
