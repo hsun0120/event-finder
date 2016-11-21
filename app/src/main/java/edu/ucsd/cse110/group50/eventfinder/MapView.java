@@ -65,6 +65,9 @@ public class MapView extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
+    // menu
+    private Menu mOptionsMenu;
+
     //Flag used to determine which page the user is on. 0 for my_events, 1 for all_events_list;
     public static int user_on_all_events_flag;
     public static int user_on_earch_event_flag;
@@ -75,6 +78,7 @@ public class MapView extends AppCompatActivity
 
     public static EventList eventList;
     MyListFragment nearbyEventListFragment = null;
+    private int currentTab=1;
 
 
     // inner class for drawer item listener
@@ -181,7 +185,7 @@ public class MapView extends AppCompatActivity
         //final MyListFragment myListFragment = new MyListFragment();
 
         // Setting up toolbar
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -189,28 +193,33 @@ public class MapView extends AppCompatActivity
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 
         // Set default tab to location_item
-        bottomBar.setDefaultTabPosition(2);
+        bottomBar.setDefaultTabPosition(1);
+        currentTab=1;
 
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                int current=bottomBar.getCurrentTabId();
                 switch (tabId){
                     case R.id.my_event_item:
                         user_on_all_events_flag = 0;
+                        currentTab=0;
+                        invalidateOptionsMenu();
                         popFragment(supportMapFragment);
                         pushFragment(nearbyEventListFragment);
                         Log.d("TAB","My Event Item Selected");
-
                         break;
                     case R.id.list_item:
                         user_on_all_events_flag = 1;
                         Log.d("TAB","List Item Selected");
+                        currentTab=1;
+                        invalidateOptionsMenu();
                         popFragment(supportMapFragment);
                         pushFragment(nearbyEventListFragment);
                         break;
                     case R.id.location_item:
                         Log.d("TAB","Location Item Selected");
+                        currentTab=2;
+                        invalidateOptionsMenu();
                         popFragment(nearbyEventListFragment);
                         pushFragment(supportMapFragment);
                         break;
@@ -233,6 +242,18 @@ public class MapView extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the options menu from XML
         getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+        mOptionsMenu = menu;
+
+        MenuItem b_filter=mOptionsMenu.findItem(R.id.action_filter_toolbar);
+        MenuItem b_add=mOptionsMenu.findItem(R.id.action_add_event);
+        if (currentTab!=0){
+            b_add.setVisible(false);
+            b_filter.setVisible(true);
+
+        } else{
+            b_add.setVisible(true);
+            b_filter.setVisible(false);
+        }
 
 
         // Get the SearchView and set the searchable configuration
