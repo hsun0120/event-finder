@@ -10,4 +10,72 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.ucsd.cse110.group50.eventfinder.OpenFilter">
 
+    <TextView
+        android:text="@string/event_filter_within_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="21dp"
+        android:id="@+id/textView3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="normal|bold"
+        android:textSize="18sp"
+        android:textColor="@color/bodyTextColor" />
+
+    <Button
+        android:text="A Week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_marginTop="19dp"
+        android:id="@+id/filter_event_within_a_week" />
+
+    <Button
+        android:text="A Month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/filter_event_within_a_week"
+        android:layout_toEndOf="@+id/filter_event_within_a_week"
+        android:id="@+id/filter_event_within_a_month" />
+
+    <Button
+        android:text="6 Months"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/filter_event_within_6_months"
+        android:layout_alignTop="@+id/filter_event_within_a_month"
+        android:layout_toEndOf="@+id/filter_event_within_a_month" />
+
+    <TextView
+        android:text="Filter events within distance:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/filter_event_within_a_week"
+        android:layout_alignStart="@+id/filter_event_within_a_week"
+        android:layout_marginTop="42dp"
+        android:id="@+id/textView4"
+        android:textStyle="normal|bold"
+        android:textSize="18sp"
+        android:textColor="@color/bodyTextColor" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="20dp"
+        android:id="@+id/seekBar3"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar3"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="16dp"
+        android:id="@+id/filter_events_within_meters"
+        android:textStyle="normal|bold"
+        android:textColor="@color/colorAccent" />
+
 </RelativeLayout>

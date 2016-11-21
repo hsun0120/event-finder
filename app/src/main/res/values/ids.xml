@@ -8,4 +8,8 @@
     <item name="promp_user_enter_password" type="id">promp_user_enter_password</item>
     <item name="event_detail_user_entered_password" type="id">event_detail_user_entered_password
     </item>
+    <item name="filter_event_within_a_week" type="id" />
+    <item name="filter_event_within_a_month" type="id" />
+    <item name="filter_event_within_6_months" type="id" />
+    <item name="filter_events_within_meters" type="id" />
 </resources>
