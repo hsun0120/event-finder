@@ -104,7 +104,6 @@ public class MapView extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_in);
-
         ft.replace(R.id.container, myFragment);
         ft.commit();
     }
