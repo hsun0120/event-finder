@@ -63,7 +63,7 @@ public class CreateEvent extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
         Calendar calendar = Calendar.getInstance();
         selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
-        selectedMonth = calendar.get(Calendar.MONTH);
+        selectedMonth = calendar.get(Calendar.MONTH) + 1;
         selectedYear = calendar.get(Calendar.YEAR);
         selectedHour = calendar.get(Calendar.HOUR_OF_DAY);
         selectedMinute = calendar.get(Calendar.MINUTE);
@@ -82,7 +82,7 @@ public class CreateEvent extends AppCompatActivity {
         setFormClickable( false );
 
         DatePicker datePicker = (DatePicker) findViewById( R.id.datePicker );
-        datePicker.init( selectedYear, selectedMonth, selectedDay, new DateChangeListener() );
+        datePicker.init( selectedYear, selectedMonth - 1, selectedDay, new DateChangeListener() );
 
     }
 
@@ -92,7 +92,7 @@ public class CreateEvent extends AppCompatActivity {
         public void onDateChanged( DatePicker datePicker, int year, int month, int day ) {
 
             selectedDay = day;
-            selectedMonth = month;
+            selectedMonth = ++month;
             selectedYear = year;
 
             String date = month + "/" + day + "/" + year;
@@ -184,8 +184,52 @@ public class CreateEvent extends AppCompatActivity {
 
         TextView errorMessage = (TextView) findViewById( R.id.invalidDateMessage );
         if ( errorMessage.getVisibility() == View.VISIBLE ) {
-            Toast.makeText(CreateEvent.this, "Invalid date/time.",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText( CreateEvent.this, "Invalid date/time.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+
+        // Gets all the data fields.
+        EditText nameBox = (EditText) findViewById( R.id.eventName );
+        String name = nameBox.getText().toString().trim();
+
+        EditText addressBox = (EditText) findViewById( R.id.eventAddress );
+        String address = addressBox.getText().toString().trim();
+
+        Switch passwordToggle = (Switch) findViewById( R.id.passOption );
+        EditText passwordBox = (EditText) findViewById( R.id.eventPassword );
+        String password = passwordBox.getText().toString().trim();
+        Switch restrictionsToggle = (Switch) findViewById( R.id.restrictionsToggle );
+        EditText restrictionsBox = (EditText) findViewById( R.id.eventRestrictions );
+        String restrictions = restrictionsBox.getText().toString().trim();
+
+        EditText descriptionBox = (EditText) findViewById( R.id.eventDescription );
+        String description = descriptionBox.getText().toString().trim();
+
+        // Checks for input errors.
+        if ( name.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Name field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( address.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Address field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( passwordToggle.isChecked() && ( password.isEmpty() ) ) {
+            Toast.makeText( CreateEvent.this, "Password is enabled, but none was chosen.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( restrictionsToggle.isChecked() && ( restrictions.isEmpty() ) ) {
+            Toast.makeText( CreateEvent.this, "Restrictions are enabled, but none was chosen.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( description.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Description field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
             return;
         }
 
@@ -194,36 +238,27 @@ public class CreateEvent extends AppCompatActivity {
         String uid = eventInDatabase.getKey();
         Event newEvent = new Event( uid, curUser.getUid() );
 
-        // Gets all the data fields.
-        EditText name = (EditText) findViewById( R.id.eventName );
-
-        EditText address = (EditText) findViewById( R.id.eventAddress );
-
-        Switch passwordToggle = (Switch) findViewById( R.id.passOption );
-        EditText password = (EditText) findViewById( R.id.eventPassword );
-        Switch restrictionsToggle = (Switch) findViewById( R.id.restrictionsToggle );
-        EditText restrictions = (EditText) findViewById( R.id.eventRestrictions );
-
-        EditText description = (EditText) findViewById( R.id.eventDescription );
-
         // Records the data in the Event.
-        newEvent.setName( name.getText().toString() );
+        newEvent.setName( name );
 
-        newEvent.setAddress( address.getText().toString() );
-        newEvent.setLocId((place.getId()));
+        newEvent.setAddress( address );
+        newEvent.setLocId( place.getId() );
 
-        newEvent.setTime( (byte) selectedHour, (byte) selectedMinute );
-        newEvent.setDate( (byte) selectedDay, (byte) selectedMonth, (short) selectedYear );
+        newEvent.setTime( selectedHour, selectedMinute );
+        newEvent.setDate( selectedDay, selectedMonth, selectedYear );
 
         newEvent.setHasPassword( passwordToggle.isChecked() );
-        newEvent.setPassword( password.getText().toString() );
+        newEvent.setPassword( password );
         newEvent.setHasRestrictions( restrictionsToggle.isChecked() );
-        String[] restrictionList = restrictions.getText().toString().split("\n");
+        String[] restrictionList = restrictions.split( "\n" );
         newEvent.setRestrictions( Arrays.asList( restrictionList ) );
 
-        newEvent.setDescription( description.getText().toString() );
+        newEvent.setDescription( description );
 
         eventInDatabase.setValue( newEvent );
+
+        curUser.addHosted( newEvent.getUid() );
+        mDatabase.child( Identifiers.FIREBASE_USERS ).child( curUser.getUid() ).setValue( curUser );
 
         finish();
 

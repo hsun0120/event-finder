@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -81,6 +82,7 @@ public class MapView extends AppCompatActivity
 
     // menu
     private Menu mOptionsMenu;
+    static ProgressBar spinner;
 
     //Flag used to determine which page the user is on. 0 for my_events, 1 for all_events_list;
     static boolean user_on_all_events_flag;
@@ -131,6 +133,8 @@ public class MapView extends AppCompatActivity
         starting = true;
 
         setContentView( R.layout.activity_map_view );
+
+        spinner = (ProgressBar) findViewById(R.id.loading_spinner);
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -301,7 +305,7 @@ public class MapView extends AppCompatActivity
         MenuItem b_add = mOptionsMenu.findItem(R.id.action_add_event);
 
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        if ( bottomBar.getCurrentTabId() != 0 ) {
+        if ( bottomBar.getCurrentTabId() != R.id.my_event_item ) {
             b_add.setVisible(false);
             b_filter.setVisible(true);
 
