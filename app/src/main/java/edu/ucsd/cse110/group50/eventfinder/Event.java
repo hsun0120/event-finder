@@ -276,7 +276,7 @@ public class Event implements Parcelable {
                 duration = (int) dur;
 
                 address = (String) data.child( ADDRESS_CHILD ).getValue();
-                locId = (String) data.child( LOCATION_CHILD ).getValue();
+                locId    = (String) data.child( LOCATION_CHILD ).getValue();
 
                 hasPassword = (boolean) data.child( HAS_PASSWORD_CHILD ).getValue();
                 password = (String) data.child( PASSWORD_CHILD ).getValue();
