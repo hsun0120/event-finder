@@ -85,7 +85,7 @@ public class EventDetailActivity extends AppCompatActivity {
         //Set data here
         setTitle(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
-        dateView.setText(card.getDate());
+        dateView.setText( card.getDate().getDate() );
         TextView desView = (TextView) findViewById(R.id.event_detail_description_view);
         desView.setText(card.getDescription());
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);

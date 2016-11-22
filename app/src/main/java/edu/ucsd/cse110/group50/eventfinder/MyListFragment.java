@@ -33,6 +33,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
     RecyclerView recList;
 
     boolean ready;
+    private int curEvents;
 
     private static String TAG = "MyListFragment";
 
@@ -115,7 +116,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
             eventList = processSearch( true , eventList );
         }
 
-        EventAdapter ca = new EventAdapter( eventList );
+        EventAdapter ca = new EventAdapter( eventList, curEvents );
         recList.setAdapter( ca );
         Log.v( TAG, "Updated." );
         MapView.spinner.setVisibility( View.GONE );
@@ -151,37 +152,30 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
                 if ( currAddress.contains( key.toLowerCase() ) &&
                         ( !e.getHasPassword() || !MapView.user_on_all_events_flag ) ) {
                     new_list.add( e );
-                    continue;
                 }
 
-                if ( e.getUid().isEmpty() ) {
-                    new_list.add( e );
-                }
             }
+            curEvents = new_list.size();
         } else {
             User user = MapView.curUser;
-            ArrayList<Event> oldList = new ArrayList<>();
+            ArrayList<Event> old_list = new ArrayList<>();
+            curEvents = 0;
             for ( Event e : eventList ) {
 
                 if ( e.getHost().equals( user.getUid() ) ) {
                     Log.v( TAG, "In MYEVENTS, UID MATCH - userid is " + e.getUid() + "." );
-                    if ( user.getHostedEvents().contains( e.getUid() ) ) {
+                    if ( !e.getDate().isPast() ) {
                         Log.v( TAG, "Scheduled event." );
                         new_list.add( e );
-                    } else if ( user.getPastHosted().contains( e.getUid() ) ) {
-                        Log.v( TAG, "Past event." );
-                        oldList.add( e );
+                        curEvents++;
                     } else {
-                        Log.w( TAG, "EVENT HAS A HOST, WHO DOES NOT HAVE THE EVENT - " +
-                                "User: " + user.getUid() + " | Event: " + e.getUid() );
-                        ServerLog.s( TAG, "EVENT HAS A HOST, WHO DOES NOT HAVE THE EVENT - " +
-                                "User: " + user.getUid() + " | Event: " + e.getUid() );
+                        Log.v( TAG, "Past event." );
+                        old_list.add( e );
                     }
                 }
 
             }
-            new_list.add( new Event( "", "=====PAST EVENTS=====", "" ) );
-            new_list.addAll( oldList );
+            new_list.addAll( old_list );
 
         }
         return new_list;

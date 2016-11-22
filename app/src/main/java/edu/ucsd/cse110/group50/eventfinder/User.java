@@ -27,8 +27,6 @@ public class User implements Parcelable {
     private final String uid;
     private String name;
 
-    private ArrayList<String> hostedEvents;
-    private ArrayList<String> pastHosted;
     // private float score;
 
     private ArrayList<LoadListener> listeners;
@@ -37,8 +35,6 @@ public class User implements Parcelable {
 
     private static final String UID_CHILD = "uid";
     private static final String NAME_CHILD = "name";
-    private static final String HOSTED_CHILD = "hostedEvents";
-    private static final String PAST_CHILD = "pastHosted";
     private static final String TAG = "User";
 
     /* Ctors */
@@ -65,8 +61,6 @@ public class User implements Parcelable {
         this.uid = uid;
         this.name = name;
 
-        this.hostedEvents = new ArrayList<>();
-        this.pastHosted = new ArrayList<>();
         //this.score = 0.0;
 
         this.listeners = new ArrayList<>();
@@ -83,8 +77,6 @@ public class User implements Parcelable {
         this.uid = u.uid;
         this.name = u.name;
 
-        this.hostedEvents = new ArrayList<>( u.hostedEvents );
-        this.pastHosted = new ArrayList<>( u.pastHosted );
         //this.score = u.score;
 
         this.listeners = u.listeners;
@@ -102,61 +94,12 @@ public class User implements Parcelable {
         uid = in.readString();
         name = in.readString();
 
-        hostedEvents = in.createStringArrayList();
-        pastHosted = in.createStringArrayList();
-
         listeners = new ArrayList<>();
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         updateFromDatabase( database.child( Identifiers.FIREBASE_USERS ).child( uid ) );
 
         Log.v( TAG, "Extracted User " + name + " (" + uid + ") from Parcel." );
-
-    }
-
-    /* Event-list methods */
-
-    /**
-     * Adds a new event to the list of hosted events.
-     *
-     * @param uid UID of the hosted event.
-     * @return true if successfully added;
-     *         false if was already in the list.
-     */
-    public boolean addHosted( String uid ) {
-
-        return hostedEvents.add( uid );
-
-    }
-
-    /**
-     * Removes an event from the list of hosted events.
-     *
-     * @param uid UID of the cancelled event.
-     * @return true if successfully removed;
-     *         false if not found.
-     */
-    public boolean removeHosted( String uid ) {
-
-        return hostedEvents.remove( uid );
-
-    }
-
-    /**
-     * Moves an event from the "going to host" list to the "hosted in the past" list.
-     *
-     * @param uid UID of the completed event.
-     * @return true if successfully moved;
-     *         false if not found as a hosted.
-     */
-    public boolean eventDone( String uid ) {
-
-        boolean success = hostedEvents.remove( uid );
-        if ( success ) {
-            pastHosted.add( uid );
-        }
-
-        return success;
 
     }
 
@@ -200,22 +143,6 @@ public class User implements Parcelable {
                 }
 
                 name = (String) data.child( NAME_CHILD ).getValue();
-                List<String> list = (List<String>) data.child( HOSTED_CHILD ).getValue();
-                List<String> list2 = (List<String>) data.child( PAST_CHILD ).getValue();
-                if ( list != null ) {
-                    for (String s : list) {
-
-                        hostedEvents.add(s);
-
-                    }
-                }
-                if ( list2 != null ) {
-                    for (String s : list2) {
-
-                        pastHosted.add(s);
-
-                    }
-                }
 
                 for ( int i = 0; i < listeners.size(); i++ ) {
 
@@ -290,28 +217,6 @@ public class User implements Parcelable {
 
     }
 
-    /**
-     * Retrieves the UIDs of the events being hosted by this user.
-     *
-     * @return The events being hosted.
-     */
-    public ArrayList<String> getHostedEvents() {
-
-        return new ArrayList<>( hostedEvents );
-
-    }
-
-    /**
-     * Retrieves the UIDs of the events hosted by this user in the past.
-     *
-     * @return The events hosted by the user in the past.
-     */
-    public ArrayList<String> getPastHosted() {
-
-        return new ArrayList<>( pastHosted );
-
-    }
-
     /* Setters */
 
     /**
@@ -340,9 +245,6 @@ public class User implements Parcelable {
         dest.writeString( uid );
         dest.writeString( name );
 
-        dest.writeStringList( hostedEvents );
-        dest.writeStringList( pastHosted );
-
         Log.v( TAG, "Flattened User " + name + " (" + uid + ") to Parcel." );
 
     }
@@ -352,7 +254,7 @@ public class User implements Parcelable {
         return 0;
     }
 
-    /*
+    /**
      * Used to generate an instance of this class from a Parcel.
      */
     public static final Parcelable.Creator<User> CREATOR

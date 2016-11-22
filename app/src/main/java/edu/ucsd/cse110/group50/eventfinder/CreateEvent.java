@@ -1,30 +1,20 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -33,11 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-import java.sql.Array;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,9 +36,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CreateEvent extends AppCompatActivity {
     private static final  int NAME_LENGTH_MAX = 30;
     private static final  int NAME_LENGTH_TOREAD = 30;
+    private static final String TAG = "CreateEvent";
 
-    private int selectedDay, selectedMonth, selectedYear;
-    private int selectedHour, selectedMinute;
+    private EvDate selected;
 
     private User curUser;
     private Place place;
@@ -61,12 +48,8 @@ public class CreateEvent extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
-        Calendar calendar = Calendar.getInstance();
-        selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
-        selectedMonth = calendar.get(Calendar.MONTH) + 1;
-        selectedYear = calendar.get(Calendar.YEAR);
-        selectedHour = calendar.get(Calendar.HOUR_OF_DAY);
-        selectedMinute = calendar.get(Calendar.MINUTE);
+
+        selected = new EvDate();
 
         Intent intent = getIntent();
         curUser = intent.getParcelableExtra( Identifiers.USER );
@@ -82,7 +65,9 @@ public class CreateEvent extends AppCompatActivity {
         setFormClickable( false );
 
         DatePicker datePicker = (DatePicker) findViewById( R.id.datePicker );
-        datePicker.init( selectedYear, selectedMonth - 1, selectedDay, new DateChangeListener() );
+        Log.v( TAG, "Init date picker with date " + selected.getDate() );
+        datePicker.init( selected.getYear(), selected.getMonth() - 1, selected.getDay(),
+                new DateChangeListener() );
 
     }
 
@@ -91,11 +76,9 @@ public class CreateEvent extends AppCompatActivity {
         @Override
         public void onDateChanged( DatePicker datePicker, int year, int month, int day ) {
 
-            selectedDay = day;
-            selectedMonth = ++month;
-            selectedYear = year;
+            selected.setDate( day, month + 1, year );
 
-            String date = month + "/" + day + "/" + year;
+            String date = selected.getDate();
             Date selectedDate = new Date();
             try {
                 selectedDate = new SimpleDateFormat("MM/dd/yyyy").parse( date );
@@ -131,21 +114,19 @@ public class CreateEvent extends AppCompatActivity {
         setFormClickable( false );
 
         TimePicker timePicker = (TimePicker) findViewById( R.id.timePicker );
-        timePicker.setHour( selectedHour );
-        timePicker.setMinute( selectedMinute );
+        Log.v( TAG, "Init time picker with date " + selected.getTime() );
+        timePicker.setHour( selected.getHour() );
+        timePicker.setMinute( selected.getMinute() );
 
     }
 
     public void setTime( View v ) {
 
-        TimePicker selected = (TimePicker) findViewById( R.id.timePicker );
-        int hour = selected.getHour();
-        int minute = selected.getMinute();
+        TimePicker picked = (TimePicker) findViewById( R.id.timePicker );
 
-        selectedHour = hour;
-        selectedMinute = minute;
+        selected.setTime( picked.getHour(), picked.getMinute() );
 
-        String time = String.format( "%02d:%02d", hour, minute );
+        String time = selected.getTime();
         TextView eventTime = (TextView) findViewById( R.id.eventTime );
         eventTime.setText( time );
         checkValidDate();
@@ -182,6 +163,7 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
 
+        checkValidDate();
         TextView errorMessage = (TextView) findViewById( R.id.invalidDateMessage );
         if ( errorMessage.getVisibility() == View.VISIBLE ) {
             Toast.makeText( CreateEvent.this, "Invalid date/time.",
@@ -244,8 +226,7 @@ public class CreateEvent extends AppCompatActivity {
         newEvent.setAddress( address );
         newEvent.setLocId( place.getId() );
 
-        newEvent.setTime( selectedHour, selectedMinute );
-        newEvent.setDate( selectedDay, selectedMonth, selectedYear );
+        newEvent.setDate( selected );
 
         newEvent.setHasPassword( passwordToggle.isChecked() );
         newEvent.setPassword( password );
@@ -257,9 +238,6 @@ public class CreateEvent extends AppCompatActivity {
 
         eventInDatabase.setValue( newEvent );
 
-        curUser.addHosted( newEvent.getUid() );
-        mDatabase.child( Identifiers.FIREBASE_USERS ).child( curUser.getUid() ).setValue( curUser );
-
         finish();
 
     }
@@ -269,11 +247,8 @@ public class CreateEvent extends AppCompatActivity {
         TextView eventDate = (TextView) findViewById( R.id.eventDate );
         TextView eventTime = (TextView) findViewById( R.id.eventTime );
         TextView errorMessage = (TextView) findViewById( R.id.invalidDateMessage );
-        Calendar selected = Calendar.getInstance();
-        selected.set( selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute );
-        Calendar current = Calendar.getInstance();
 
-        if ( !selected.before( current ) ) {
+        if ( !selected.isPast() ) {
             eventDate.setTextColor( 0xFF000000 );
             eventTime.setTextColor( 0xFF000000 );
             errorMessage.setVisibility( View.INVISIBLE );

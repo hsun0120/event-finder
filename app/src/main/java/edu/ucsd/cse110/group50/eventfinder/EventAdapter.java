@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private static ArrayList<Event> eventList;
     private ArrayList<EventViewHolder> cards;
+    private int curEvents;
 
     // Constructor
-    public EventAdapter( ArrayList<Event> contactList) {
+    public EventAdapter( ArrayList<Event> contactList, int curEvents ) {
 
         eventList = contactList;
         this.cards = new ArrayList<>();
+        this.curEvents = curEvents;
 
     }
 
@@ -35,6 +38,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         Event ci = eventList.get( i );
         contactViewHolder.setEvent( ci );
+        if (  i >= curEvents ) {
+            contactViewHolder.setPast();
+        }
         cards.add( contactViewHolder );
 
     }
@@ -112,6 +118,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             data.removeListener( listener );
             listener = null;
+
+        }
+
+        void setPast() {
+
+            vName.setBackgroundColor( Color.RED );
 
         }
 

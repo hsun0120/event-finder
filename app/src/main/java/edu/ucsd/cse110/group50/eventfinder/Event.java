@@ -29,12 +29,8 @@ public class Event implements Parcelable {
     private String name;
     private final String host;
 
-    private int hour;
-    private int minute;
-
-    private int day;
-    private int month;
-    private int year;
+    private EvDate date;
+    private int duration;
 
     private String address;
     private String locId;
@@ -52,19 +48,12 @@ public class Event implements Parcelable {
     private static final byte TRUE = 1;
     private static final byte FALSE = 0;
 
-    private static final String TIME_SEPARATOR = ":";
-    private static final String DATE_SEPARATOR = "/";
-
     private static final String UID_CHILD = "uid";
     private static final String NAME_CHILD = "name";
     private static final String HOST_CHILD = "host";
 
-    private static final String HOUR_CHILD = "hour";
-    private static final String MINUTE_CHILD = "minute";
-
-    private static final String DAY_CHILD = "day";
-    private static final String MONTH_CHILD = "month";
-    private static final String YEAR_CHILD = "year";
+    private static final String DATE_CHILD = "date";
+    private static final String DURATION_CHILD = "duration";
 
     private static final String ADDRESS_CHILD = "address";
     private static final String LOCATION_CHILD = "location";
@@ -85,7 +74,7 @@ public class Event implements Parcelable {
      * @param uid UID of this instance.
      * @param host UID of the host of this instance.
      */
-    public Event(String uid, String host ) {
+    public Event( String uid, String host ) {
 
         this( uid, "", host );
 
@@ -98,18 +87,14 @@ public class Event implements Parcelable {
      * @param name Initial name of this instance.
      * @param host UID of the host of this instance.
      */
-    public Event(String uid, String name, String host ) {
+    public Event( String uid, String name, String host ) {
 
         this.uid = uid;
         this.name = name;
         this.host = host;
 
-        this.hour = 0;
-        this.minute = 0;
-
-        this.day = 0;
-        this.month = 0;
-        this.year = 0;
+        this.date = new EvDate();
+        this.duration = 0;
 
         this.address = "";
         this.locId = "";
@@ -135,12 +120,8 @@ public class Event implements Parcelable {
         this.name = u.name;
         this.host = u.host;
 
-        this.hour = u.hour;
-        this.minute = u.minute;
-
-        this.day = u.day;
-        this.month = u.month;
-        this.year = u.year;
+        this.date = new EvDate( u.date );
+        this.duration = u.duration;
 
         this.address = u.address;
         this.locId = u.locId;
@@ -167,12 +148,8 @@ public class Event implements Parcelable {
         name = in.readString();
         host = in.readString();
 
-        hour = in.readInt();
-        minute = in.readInt();
-
-        day = in.readInt();
-        month = in.readInt();
-        year = in.readInt();
+        date = in.readParcelable( EvDate.class.getClassLoader() );
+        duration = in.readInt();
 
         address = in.readString();
         locId = in.readString();
@@ -203,80 +180,53 @@ public class Event implements Parcelable {
     /* Utility methods */
 
     /**
-     * Creates a String that represents the time this event will be held.
+     * Gets the time when the event ends.
      *
-     * @return The time when this event will be held.
+     * @return End time of the event.
      */
-    public String getTime() {
+    public EvDate getEndTime() {
 
-        return String.format( "%02d" + TIME_SEPARATOR + "%02d", hour, minute );
+        int minutes = date.getMinute() + duration;
+        int hours = ( date.getHour() + ( minutes / 60 ) );
+        minutes %= 60;
 
-    }
+        int days = ( date.getDay() + ( hours / 24 ) );
+        hours %= 24;
+        int month = date.getMonth();
+        int year = date.getYear();
+        switch ( month ) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                month += days / 31;
+                days %= 31;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                month += days / 30;
+                days %= 30;
+                break;
+            case 2:
+                if ( ( year % 4) == 0 ) {
+                    month += days / 29;
+                    days %= 29;
+                } else {
+                    month += days / 28;
+                    days %= 28;
+                }
+                break;
 
-    /**
-     * Creates a String that represents the date this event will be held.
-     *
-     * @return The date when this event will be held.
-     */
-    public String getDate() {
+        }
+        year += month / 12;
+        month %= 12;
 
-        return String.format( "%02d" + DATE_SEPARATOR + "%02d" + DATE_SEPARATOR + "%04d",
-                              month, day, year );
-
-    }
-
-    /**
-     * Sets the time of this event.
-     *
-     * @param hour Hour when this event will be held.
-     * @param minute Minute when this event will be held.
-     */
-    public void setTime( int hour, int minute ) {
-
-        this.hour = hour;
-        this.minute = minute;
-
-    }
-
-    /**
-     * Sets the time of this event.
-     *
-     * @param time Time the event will be held, in the format hour:minute
-     */
-    public void setTime( String time ) {
-
-        String[] timePieces = time.split( TIME_SEPARATOR );
-        hour = Byte.valueOf( timePieces[0] );
-        minute = Byte.valueOf( timePieces[1] );
-
-    }
-
-    /**
-     * Sets the date of this event.
-     *
-     * @param day Day when this event will be held.
-     * @param month Month when this event will be held.
-     * @param year Year when this event will be held.
-     */
-    public void setDate( int day, int month, int year ) {
-
-        this.day = day;
-        this.month = month;
-        this.year = year;
-
-    }
-
-    /**
-     * Sets the date of this event.
-     *
-     * @param date Date the event will be held, in the format month/day/year
-     */
-    public void setDate( String date ) {
-
-        String[] datePieces = date.split( DATE_SEPARATOR );
-        month = Byte.valueOf( datePieces[0] );
-        day = Byte.valueOf( datePieces[1] );
-        year = Short.valueOf( datePieces[2] );
+        return new EvDate( hours, minutes, days, month, year );
 
     }
 
@@ -321,12 +271,9 @@ public class Event implements Parcelable {
 
                 name = (String) data.child( NAME_CHILD ).getValue();
 
-                hour = (int) ( (long) data.child( HOUR_CHILD ).getValue() );
-                minute = (int) ( (long) data.child( MINUTE_CHILD ).getValue() );
-
-                day = (int) ( (long) data.child( DAY_CHILD ).getValue() );
-                month = (int) ( (long) data.child( MONTH_CHILD ).getValue() );
-                year = (int) ( (long) data.child( YEAR_CHILD ).getValue() );
+                date = data.child( DATE_CHILD ).getValue( EvDate.class );
+                long dur = (Long) data.child( DURATION_CHILD ).getValue();
+                duration = (int) dur;
 
                 address = (String) data.child( ADDRESS_CHILD ).getValue();
                 locId = (String) data.child( LOCATION_CHILD ).getValue();
@@ -430,57 +377,24 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Retrieves the hour of this event.
+     * Retrieves the date of this event.
      *
-     * @return The hour of this event.
+     * @return The date of this event.
      */
-    public int getHour() {
+    public EvDate getDate() {
 
-        return hour;
+        return date;
 
     }
 
     /**
-     * Retrieves the minute of this event.
+     * Retrieves the duration of this event.
      *
-     * @return The minute of this event.
+     * @return The duration of this event.
      */
-    public int getMinute() {
+    public int getDuration() {
 
-        return minute;
-
-    }
-
-    /**
-     * Retrieves the day of this event.
-     *
-     * @return The day of this event.
-     */
-    public int getDay() {
-
-        return day;
-
-    }
-
-    /**
-     * Retrieves the month of this event.
-     *
-     * @return The month of this event.
-     */
-    public int getMonth() {
-
-        return month;
-
-    }
-
-    /**
-     * Retrieves the year of this event.
-     *
-     * @return The year of this event.
-     */
-    public int getYear() {
-
-        return year;
+        return duration;
 
     }
 
@@ -574,57 +488,24 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Sets the hour of this event.
+     * Sets the date of this event.
      *
-     * @param hour New hour of this event.
+     * @param date New date of this event.
      */
-    public void setHour( int hour ) {
+    public void setDate( EvDate date ) {
 
-        this.hour = hour;
+        this.date = new EvDate( date );
 
     }
 
     /**
-     * Sets the minute of this event.
+     * Sets the duration of this event.
      *
-     * @param minute New minute of this event.
+     * @param duration New duration of this event.
      */
-    public void setMinute( int minute ) {
+    public void setDuration( int duration ) {
 
-        this.minute = minute;
-
-    }
-
-    /**
-     * Sets the day of this event.
-     *
-     * @param day New day of this event.
-     */
-    public void setDay( int day ) {
-
-        this.day = day;
-
-    }
-
-    /**
-     * Sets the month of this event.
-     *
-     * @param month New month of this event.
-     */
-    public void setMonth( int month ) {
-
-        this.month = month;
-
-    }
-
-    /**
-     * Sets the year of this event.
-     *
-     * @param year New year of this event.
-     */
-    public void setYear( int year ) {
-
-        this.year = year;
+        this.duration = duration;
 
     }
 
@@ -723,12 +604,8 @@ public class Event implements Parcelable {
         dest.writeString( name );
         dest.writeString( host );
 
-        dest.writeInt( hour );
-        dest.writeInt( minute );
-
-        dest.writeInt( day );
-        dest.writeInt( month );
-        dest.writeInt( year );
+        dest.writeParcelable( date, 0 );
+        dest.writeInt( duration );
 
         dest.writeString( address );
         dest.writeString( locId );
@@ -756,7 +633,7 @@ public class Event implements Parcelable {
         return 0;
     }
 
-    /*
+    /**
      * Used to generate an instance of this class from a Parcel.
      */
     public static final Parcelable.Creator<Event> CREATOR
@@ -782,6 +659,8 @@ public class Event implements Parcelable {
      * Creates a new Event instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired Event object.
      * If the Event does not currently exist, initializes it.
+     * If the host ID in the database is different from the expected ID, cancels the read,
+     * and the listener will receive null instead of the loaded Event.
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the Event is completed.
@@ -803,7 +682,7 @@ public class Event implements Parcelable {
      * Creates the Event in the database if it did not exist.
      *
      * @author Thiago Marback
-     * @version 1.1
+     * @version 1.2
      * @since 2016-11-13
      */
     private static class EventBuilder implements ValueEventListener {
@@ -834,6 +713,7 @@ public class Event implements Parcelable {
         /**
          * Reads the UID of the User in the database given, making a new User object with
          * that UID. Then fills it in with the remaining data in the database.
+         * If the host ID in the database is different from the expected ID, cancels the read.
          *
          * @param data Snapshot of the data on the server.
          * @throws NullPointerException if the snapshot received is null.
@@ -849,11 +729,17 @@ public class Event implements Parcelable {
             Event newEvent = new Event( uid, host );
             if ( data.exists() ) {
                 if ( !data.child( UID_CHILD ).getValue().equals( uid ) ) {
-                    Log.e( TAG, "ID MISMATCH ON DATABASE - NODE IS " + uid + ", OBJECT IS " +
+                    Log.e( TAG, "EVENT ID MISMATCH ON DATABASE - NODE IS " + uid + ", OBJECT IS " +
                             data.child( UID_CHILD ).getValue() );
                     ServerLog.s( TAG, "EVENT ID MISMATCH ON " + " DATABASE - NODE IS " + uid +
                             ", OBJECT IS " + data.child( UID_CHILD ).getValue() );
                     mDatabase.child( UID_CHILD ).setValue( uid );
+                }
+                if ( !data.child( HOST_CHILD ).getValue().equals( host ) ) {
+                    Log.wtf( TAG, "HOST ID MISMATCH - EXPECTED " + host + ", GOT " +
+                            data.child( HOST_CHILD ).getValue() );
+                    listener.onLoadComplete( null );
+                    return;
                 }
             } else {
                 mDatabase.setValue( newEvent );
