@@ -1,10 +1,12 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MyListFragment extends Fragment implements OnItemClickListener {
-
 
     RecyclerView recList;
 
@@ -58,7 +59,15 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         // Layour manager for RecyclerView
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
+
+        EventAdapter adapter = new EventAdapter(MapView.eventList, curEvents);
+        recList.setAdapter(adapter);
         recList.setLayoutManager(llm);
+
+        /* Swipe and dismiss configuarations */
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recList);
 
         ready = true;
 

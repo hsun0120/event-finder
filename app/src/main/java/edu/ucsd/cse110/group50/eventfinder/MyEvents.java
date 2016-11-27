@@ -191,24 +191,8 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
         ArrayList<Object> events = helper.events;
 
         recyclerView.setHasFixedSize(true);
-        //CardAdapter adapter = new CardAdapter(this,events);
-        //adapter=new CardAdapter(this,this.helper.retrieve());
-
-
-
-        //recyclerView.setLayoutManager(mLinearLayoutManager);
-
-        /* Swipe and dismiss configuarations */
-
-        //CardAdapter adapter = new CardAdapter(this,cards);
-        //adapter=new CardAdapter(this,this.helper.retrieve());
-
-
-
-
-        //mMessageRecyclerView.setAdapter(adapter);
-
     }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     // An unresolvable error has occurred and Google APIs (including Sign-In) will not
@@ -238,5 +222,4 @@ public class MyEvents extends AppCompatActivity implements GoogleApiClient.OnCon
 //        super.onDestroy();
 //        adapter.cleanup();
 //    }
-
 }
