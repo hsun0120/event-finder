@@ -126,6 +126,12 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
         EventAdapter ca = new EventAdapter( eventList, curEvents );
         recList.setAdapter( ca );
+
+        /* Swipe and dismiss configuarations */
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(ca);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recList);
+
         Log.v( TAG, "Updated." );
         MapView.spinner.setVisibility( View.GONE );
 

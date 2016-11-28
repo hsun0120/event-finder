@@ -64,6 +64,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     }
 
+    public void removeOnSwipe(int position) {
+        eventList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     // Inner class ViewHolder
     public static class EventViewHolder extends RecyclerView.ViewHolder {
 
