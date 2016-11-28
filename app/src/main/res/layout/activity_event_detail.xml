@@ -72,6 +72,7 @@
                 android:layout_toEndOf="@+id/imageView7"
                 android:textStyle="normal|bold" />
 
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,6 +82,18 @@
                 android:layout_marginTop="20dp"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="34dp"/>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_detail_address_text_view"
+                android:onClick="showMap"
+                android:textSize="24sp"
+                android:textColor="?android:attr/textColorPrimaryDisableOnly"
+                android:layout_alignTop="@id/imageView8"
+                android:layout_alignStart="@+id/event_detail_date_view" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -93,7 +106,6 @@
                 android:layout_marginRight="30dp"/>
 
             <TextView
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/event_detail_description_view"
@@ -101,18 +113,6 @@
                 android:layout_alignStart="@id/event_detail_address_text_view"
                 android:layout_alignTop="@+id/imageView9"
                 android:layout_marginRight="30dp"/>
-
-            <TextView
-                android:text="View location in map"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_detail_address_text_view"
-                android:onClick="showMap"
-                android:textSize="24sp"
-                android:textColor="?android:attr/textColorPrimaryDisableOnly"
-                android:layout_alignBottom="@+id/imageView8"
-                android:layout_alignStart="@+id/event_detail_date_view" />
-
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 

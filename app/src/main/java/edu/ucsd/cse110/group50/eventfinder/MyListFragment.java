@@ -37,13 +37,8 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     private static String TAG = "MyListFragment";
 
-
-
-
     public MyListFragment() {
-
         ready = false;
-
     }
 
     @Override
@@ -86,9 +81,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         Log.d("LIST", "Item: " + position + "selected");
 
     }
-
-
-
 
     @Override
     public void onStart()
