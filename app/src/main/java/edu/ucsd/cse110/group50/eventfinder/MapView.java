@@ -124,8 +124,13 @@ public class MapView extends AppCompatActivity
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("DRAWER", "position "+position+" selected!");
+        public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
+            Log.d( "DRAWER", "position " + position + " selected!" );
+            if ( position == 1 ) {
+                FirebaseAuth.getInstance().signOut();
+                recreate();
+            }
+
         }
     }
 
@@ -230,7 +235,7 @@ public class MapView extends AppCompatActivity
         mDrawerList.setAdapter(new ArrayAdapter<>(this,
                 R.layout.drawer_list_item, mDrawerTitles));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener( new DrawerItemClickListener() );
 
         // Setting up toolbar
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);

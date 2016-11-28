@@ -194,6 +194,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        Auth.GoogleSignInApi.signOut( mGoogleApiClient );
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
