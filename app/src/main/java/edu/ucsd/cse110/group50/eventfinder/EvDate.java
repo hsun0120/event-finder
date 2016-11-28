@@ -308,6 +308,19 @@ public class EvDate implements Parcelable {
 
     }
 
+    /**
+     * Compares two dates using rough estimation.
+     * @param
+     * @return negative if this<other, 0 if this ==other, positive if this >other
+     */
+    public int compareTo(EvDate other)
+    {
+        return this.year*365 + this.month * 30 + this.day - (other.year*365 + other.month * 30 + other.day);
+    }
+
+
+
+
     /* Getters */
 
     /**

@@ -37,6 +37,9 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     private static String TAG = "MyListFragment";
 
+
+
+
     public MyListFragment() {
 
         ready = false;
@@ -114,15 +117,22 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         //Get events from MapView
         ArrayList<Event> eventList = MapView.eventList;
         //Update event base on Flag
+        if(MapView.date_filtered != null)
+        {
+            eventList = processFilter(MapView.date_filtered, eventList);
+        }
+
         if( !MapView.user_on_all_events_flag )
         {
-            eventList = processSearch( false, MapView.eventList );
+            eventList = processSearch( false, eventList );
         }
 
         if( MapView.user_on_search_event_flag )
         {
             eventList = processSearch( true , eventList );
         }
+
+
 
         EventAdapter ca = new EventAdapter( eventList, curEvents );
         recList.setAdapter( ca );
@@ -135,6 +145,21 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         Log.v( TAG, "Updated." );
         MapView.spinner.setVisibility( View.GONE );
 
+    }
+
+
+    private ArrayList<Event> processFilter(EvDate d, ArrayList<Event> eventList)
+    {
+        ArrayList<Event> new_list = new ArrayList<>();
+
+        for(Event e : eventList){
+            if(e.getDate().compareTo(d) <=0 )
+            {
+                new_list.add(e);
+            }
+        }
+
+        return new_list;
     }
 
 
@@ -202,5 +227,14 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         EventAdapter adapter = (EventAdapter) recList.getAdapter();
         adapter.destroyCards();
 
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Log.v(TAG, "ON resume Called");
+        update();
     }
 }
