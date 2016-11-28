@@ -676,13 +676,8 @@ public class MapView extends AppCompatActivity
         System.out.println("Position to delete is "+swiped_position);
 //        mFirebaseReference.child("events").child(swiped_item_uid).
 //                removeValue();
-        for(Event e : eventList)
-        {
-            if(e.getUid().equals(swiped_item_uid))
-            {
-                eventList.remove(e);
-            }
-        }
+
+        Log.d( TAG, "REMOVE: " + eventList.remove( new Event(swiped_item_uid, "") ) );
 
     }
 
