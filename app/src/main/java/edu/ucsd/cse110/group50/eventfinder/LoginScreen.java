@@ -447,24 +447,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         int IS_PRIMARY = 1;
     }
 
-
-
-
-
-    //    public void OnClickButtonListner(){
-//        Button mEmail_User_signInButton = (Button) findViewById(R.id.btn_login);
-//
-//        mEmail_User_signInButton.setOnClickListener(
-//                new View.OnClickListener(){
-//                    @Override
-//                    public void onClick(View v){
-//                        Intent intent = new Intent(LoginScreen.this, MapViewActivity.class);
-//                        startActivity(intent);
-//                    }
-//                }
-//        );
-//
-//    }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not

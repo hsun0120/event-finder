@@ -14,9 +14,6 @@ public class CheckEventPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         password_to_match = getIntent().getStringExtra("password");
-        //System.out.println("Password to match is "+ password_to_match);
-
-
 
         setContentView(R.layout.activity_check_event_password);
 
