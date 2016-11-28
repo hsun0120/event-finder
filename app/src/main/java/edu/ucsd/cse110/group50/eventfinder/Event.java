@@ -33,7 +33,9 @@ public class Event implements Parcelable {
     private int duration;
 
     private String address;
-    private String locId;
+    //private String locId;
+    private double lng;
+    private double lat;
 
     private boolean hasPassword;
     private String password;
@@ -56,7 +58,9 @@ public class Event implements Parcelable {
     private static final String DURATION_CHILD = "duration";
 
     private static final String ADDRESS_CHILD = "address";
-    private static final String LOCATION_CHILD = "location";
+    private static final String LNG_CHILD = "lng";
+    private static final String LAT_CHILD = "lat";
+    //private static final String LOCATION_CHILD = "locId";
 
     private static final String HAS_PASSWORD_CHILD = "hasPassword";
     private static final String PASSWORD_CHILD = "password";
@@ -97,7 +101,8 @@ public class Event implements Parcelable {
         this.duration = 0;
 
         this.address = "";
-        this.locId = "";
+        this.lat = 0;
+        this.lng = 0;
 
         this.hasPassword = false;
         this.password = "";
@@ -124,7 +129,8 @@ public class Event implements Parcelable {
         this.duration = u.duration;
 
         this.address = u.address;
-        this.locId = u.locId;
+        this.lng = u.lng;
+        this.lat = u.lat;
 
         this.hasPassword = u.hasPassword;
         this.password = u.password;
@@ -152,7 +158,8 @@ public class Event implements Parcelable {
         duration = in.readInt();
 
         address = in.readString();
-        locId = in.readString();
+        lng = in.readDouble();
+        lat = in.readDouble();
 
         if ( in.readByte() == FALSE ) {
             hasPassword = false;
@@ -276,7 +283,8 @@ public class Event implements Parcelable {
                 duration = (int) dur;
 
                 address = (String) data.child( ADDRESS_CHILD ).getValue();
-                locId    = (String) data.child( LOCATION_CHILD ).getValue();
+                lng = (double) data.child(LNG_CHILD).getValue();
+                lat = (double) data.child(LAT_CHILD).getValue();
 
                 hasPassword = (boolean) data.child( HAS_PASSWORD_CHILD ).getValue();
                 password = (String) data.child( PASSWORD_CHILD ).getValue();
@@ -410,13 +418,19 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Retrieves the unique ID for places
-     * @return Location ID of this Event.
+     * Retrieves the longitude
+     * @return
      */
-    public String getLocId() {
+    public double getLng() {
+        return this.lng;
+    }
 
-        return locId;
-
+    /**
+     * Retrieves the latitude
+     * @return
+     */
+    public double getLat() {
+        return this.lat;
     }
 
     /**
@@ -520,13 +534,15 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Sets the location ID for this event
-     * @param locId New location ID.
+     * Set the longitude of this event
+     * @param lng
      */
-    public void setLocId( String locId ) {
+    public void setLng( Double lng) {
+        this.lng = lng;
+    }
 
-        this.locId = locId;
-
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 
     /**
@@ -608,7 +624,8 @@ public class Event implements Parcelable {
         dest.writeInt( duration );
 
         dest.writeString( address );
-        dest.writeString( locId );
+        dest.writeDouble(lng);
+        dest.writeDouble(lat);
 
         if ( hasPassword ) {
             dest.writeByte( TRUE );

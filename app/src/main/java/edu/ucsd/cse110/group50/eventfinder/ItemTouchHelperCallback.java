@@ -22,7 +22,6 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT); //Allow swipe in left and right direction
         this.eventAdapter = eventAdapter;
-        Log.v("Callback", "attached!");
     }
 
     /**
@@ -46,6 +45,5 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         //Remove
-        Log.v("Callback", "Swiped!");
     }
 }

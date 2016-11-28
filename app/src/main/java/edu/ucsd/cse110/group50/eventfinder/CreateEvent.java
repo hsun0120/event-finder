@@ -224,7 +224,8 @@ public class CreateEvent extends AppCompatActivity {
         newEvent.setName( name );
 
         newEvent.setAddress( address );
-        newEvent.setLocId( place.getId() );
+        newEvent.setLng( place.getLatLng().longitude );
+        newEvent.setLat( place.getLatLng().latitude);
 
         newEvent.setDate( selected );
 

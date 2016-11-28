@@ -33,8 +33,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -60,6 +65,7 @@ public class MapView extends AppCompatActivity
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 1;
 
     GoogleApiClient mGoogleApiClient;
+    GoogleApiClient geoInfo;
     Location mLastLocation;
     LocationRequest mLocationRequest;
 
@@ -371,7 +377,15 @@ public class MapView extends AppCompatActivity
                     .build();
         }
 
+        if (geoInfo == null) {
+            geoInfo = new GoogleApiClient.Builder(this)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build();
+        }
+
         mGoogleApiClient.connect();
+        geoInfo.connect();
         super.onStart();
 
     }
@@ -381,6 +395,8 @@ public class MapView extends AppCompatActivity
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        if(geoInfo.isConnected())
+            geoInfo.disconnect();
         super.onStop();
     }
 
@@ -473,7 +489,9 @@ public class MapView extends AppCompatActivity
         map.addMarker( new MarkerOptions()
                 .position(loc)
                 .title("You're here")
-                .draggable(true) );
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        markAllEvent(map);
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
     }
 
@@ -558,4 +576,23 @@ public class MapView extends AppCompatActivity
 //
 //        return new_list;
 //    }
+
+      private void markAllEvent(GoogleMap map) {
+          ArrayList<Event> event_list = eventList;
+          if(event_list.size() == 0) return;
+
+          for(int i = 0; i < event_list.size(); i++){
+              Event event = event_list.get(i);
+              if ( event.getHost().equals( curUser.getUid() ) ) {
+                  if (!event.getDate().isPast()) {
+                      LatLng loc = new LatLng(event.getLat(), event.getLng());
+                      map.addMarker(new MarkerOptions()
+                              .position(loc)
+                              .title(event.getName()));
+                  }
+              }
+          }
+      }
+
+
 }
