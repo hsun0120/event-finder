@@ -100,7 +100,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>edu.ucsd.cse110.group50.eventfinder.User</li>
+<li>edu.ucsd.cse110.group50.eventfinder.storage.User</li>
 </ul>
 </li>
 </ul>
@@ -196,7 +196,7 @@ implements android.os.Parcelable</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#User-edu.ucsd.cse110.group50.eventfinder.User-">User</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html" title="class in edu.ucsd.cse110.group50.eventfinder">User</a>&nbsp;u)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#User-edu.ucsd.cse110.group50.eventfinder.storage.User-">User</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html" title="class in edu.ucsd.cse110.group50.eventfinder">User</a>&nbsp;u)</code>
 <div class="block">Makes a copy of an existing instance.</div>
 </td>
 </tr>
@@ -223,7 +223,7 @@ implements android.os.Parcelable</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#addListener-edu.ucsd.cse110.group50.eventfinder.LoadListener-">addListener</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/LoadListener.html" title="interface in edu.ucsd.cse110.group50.eventfinder">LoadListener</a>&nbsp;listener)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#addListener-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-">addListener</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/LoadListener.html" title="interface in edu.ucsd.cse110.group50.eventfinder">LoadListener</a>&nbsp;listener)</code>
 <div class="block">Adds a new listener to be notified when the data on this instance is updated.</div>
 </td>
 </tr>
@@ -263,7 +263,7 @@ implements android.os.Parcelable</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#readFromFirebase-com.google.firebase.database.DatabaseReference-edu.ucsd.cse110.group50.eventfinder.LoadListener-java.lang.String-">readFromFirebase</a></span>(com.google.firebase.database.DatabaseReference&nbsp;mDatabase,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#readFromFirebase-com.google.firebase.database.DatabaseReference-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-java.lang.String-">readFromFirebase</a></span>(com.google.firebase.database.DatabaseReference&nbsp;mDatabase,
                 <a href="../../../../../edu/ucsd/cse110/group50/eventfinder/LoadListener.html" title="interface in edu.ucsd.cse110.group50.eventfinder">LoadListener</a>&nbsp;listener,
                 java.lang.String&nbsp;uid)</code>
 <div class="block">Creates a new User instance from the data stored in the given database.</div>
@@ -277,7 +277,7 @@ implements android.os.Parcelable</pre>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#removeListener-edu.ucsd.cse110.group50.eventfinder.LoadListener-">removeListener</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/LoadListener.html" title="interface in edu.ucsd.cse110.group50.eventfinder">LoadListener</a>&nbsp;listener)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ucsd/cse110/group50/eventfinder/User.html#removeListener-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-">removeListener</a></span>(<a href="../../../../../edu/ucsd/cse110/group50/eventfinder/LoadListener.html" title="interface in edu.ucsd.cse110.group50.eventfinder">LoadListener</a>&nbsp;listener)</code>
 <div class="block">Removes a listener from the notification list.</div>
 </td>
 </tr>
@@ -369,7 +369,7 @@ implements android.os.Parcelable</pre>
 </dl>
 </li>
 </ul>
-<a name="User-edu.ucsd.cse110.group50.eventfinder.User-">
+<a name="User-edu.ucsd.cse110.group50.eventfinder.storage.User-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -461,7 +461,7 @@ implements android.os.Parcelable</pre>
 </dl>
 </li>
 </ul>
-<a name="addListener-edu.ucsd.cse110.group50.eventfinder.LoadListener-">
+<a name="addListener-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -475,7 +475,7 @@ implements android.os.Parcelable</pre>
 </dl>
 </li>
 </ul>
-<a name="removeListener-edu.ucsd.cse110.group50.eventfinder.LoadListener-">
+<a name="removeListener-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -590,7 +590,7 @@ implements android.os.Parcelable</pre>
 </dl>
 </li>
 </ul>
-<a name="readFromFirebase-com.google.firebase.database.DatabaseReference-edu.ucsd.cse110.group50.eventfinder.LoadListener-java.lang.String-">
+<a name="readFromFirebase-com.google.firebase.database.DatabaseReference-edu.ucsd.cse110.group50.eventfinder.utility.LoadListener-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockListLast">

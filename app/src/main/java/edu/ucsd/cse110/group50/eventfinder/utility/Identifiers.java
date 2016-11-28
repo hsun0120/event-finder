@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.utility;
 
 /**
  * Constants for identifying project-wide messages or locales (Firebase nodes, Intent extra names,

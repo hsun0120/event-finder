@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
 import android.os.Parcel;
 import android.os.Parcelable;

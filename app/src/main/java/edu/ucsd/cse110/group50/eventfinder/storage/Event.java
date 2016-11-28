@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,6 +12,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
 
 /**
  * Class that stores the data for a single event.

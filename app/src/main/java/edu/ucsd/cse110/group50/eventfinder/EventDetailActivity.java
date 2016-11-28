@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.net.Uri;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -127,17 +122,11 @@ public class EventDetailActivity extends AppCompatActivity {
         user_editting_flag = 1;
 
         //System.out.println("Event position is "+ eventPosition);
+        MapView.swiped_position = currentPosition;
+        MapView.swiped_item_uid = card.getUid();
         Intent in = new Intent(this, CreateEvent.class);
         in.putExtra( "event_card", getIntent().getParcelableExtra("event_card") );
         startActivity(in);
-    }
-
-    public static void userEdited()
-    {
-        System.out.println("User edited, deleting... position "+currentPosition);
-        MapView.swiped_position = currentPosition;
-        MapView.swiped_item_uid = card.getUid();
-        MapView.deleteItem();
     }
 
     @Override

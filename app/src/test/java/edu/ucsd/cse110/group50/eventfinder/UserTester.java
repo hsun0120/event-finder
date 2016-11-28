@@ -1,11 +1,8 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import java.util.ArrayList;
-
-import static org.junit.Assert.*;
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
 
 /**
  * Test suite for the User class.

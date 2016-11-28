@@ -51,6 +51,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
