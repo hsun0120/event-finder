@@ -149,19 +149,10 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         EventAdapter ca = new EventAdapter( eventList, curEvents );
         recList.setAdapter( ca );
 
-
-        System.out.println("user on all events is "+ MapView.user_on_all_events_flag);
-
-        /* Swipe and dismiss configuarations */
-            callback = new ItemTouchHelperCallback(ca);
-            helper = new ItemTouchHelper(callback);
-            if(!MapView.user_on_all_events_flag) {
-                helper.attachToRecyclerView(recList);
-            }
-            else
-            {
-                helper.attachToRecyclerView(null);
-            }
+        /* Swipe and dismiss configurations */
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(ca);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recList);
 
         Log.v( TAG, "Updated." );
         MapView.spinner.setVisibility( View.GONE );

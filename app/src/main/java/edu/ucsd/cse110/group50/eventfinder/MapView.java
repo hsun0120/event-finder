@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +58,10 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 
+/**
+ * The main activity of the app.The main screen will be the mapView, with the ability to switch
+ * to MyEvent list and All Event list.
+ */
 public class MapView extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -64,13 +69,9 @@ public class MapView extends AppCompatActivity
 
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 1;
 
-    GoogleApiClient mGoogleApiClient;
-    GoogleApiClient geoInfo;
+    GoogleApiClient mGoogleApiClient; //Google Map Api client
+    GoogleApiClient geoInfo; //Google Geo Info Api client
     Location mLastLocation;
-    LocationRequest mLocationRequest;
-
-    final static int UPDATE_INTERVAL = 300;
-    final static int FASTEST_INTERVAL = 100;
 
     static User curUser;
     boolean starting;
@@ -127,17 +128,22 @@ public class MapView extends AppCompatActivity
         }
     }
 
-    // Push a fragment into the container
+    /**
+     * Push fragment to the container
+     * @param myFragment fragment used to replace
+     */
     public void pushFragment(Fragment myFragment){
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-
-        ft.replace(R.id.container, myFragment);
+        ft.replace(R.id.container, myFragment); //Replace fragment
         ft.commit();
     }
 
-    // Pop a fragment into the container
+    /**
+     * Pop a fragment from the container
+     * @param myFragment fragment used to replace
+     */
     public void popFragment(Fragment myFragment){
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
@@ -146,16 +152,17 @@ public class MapView extends AppCompatActivity
         ft.commit();
     }
 
+    /**
+     * Create the MapView activity
+     * @param savedInstanceState current state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         currContext = getApplicationContext();
-
         starting = true;
 
-        setContentView( R.layout.activity_map_view );
-
+        setContentView( R.layout.activity_map_view ); //Load MapView
         spinner = (ProgressBar) findViewById(R.id.loading_spinner);
 
         // Initialize Firebase Auth
@@ -168,45 +175,47 @@ public class MapView extends AppCompatActivity
         } else {
             Log.i( TAG, "User already signed in." );
             loggedIn = true;
-            startup();
+            startup(); //Setup components of the page
         }
-
     }
 
+    /**
+     * Handle user login activity
+     * @param requestCode user sign in request code
+     * @param resultCode user sign in result
+     * @param data user data
+     */
     @Override
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
-
         if ( requestCode == SIGN_IN_REQUEST ) {
             if ( resultCode == LoginScreen.LOGGED_IN ) {
                 Log.i( TAG, "User sign-in successful." );
                 loggedIn = true;
-                startup();
+                startup(); //Setup components
             } else {
                 Log.i( TAG, "User sign-in aborted." );
-                startActivityForResult( new Intent( this, LoginScreen.class ), SIGN_IN_REQUEST );
+                startActivityForResult( new Intent( this, LoginScreen.class ),SIGN_IN_REQUEST );
             }
         }
 
     }
 
+    /**
+     * Setup back-end database and components of the page
+     */
     public void startup() {
-
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         ServerLog.loadDatabase();
 
-        if ( curUser == null ) {
+        if ( curUser == null ) { //Read from database
             String userID = mFirebaseAuth.getCurrentUser().getUid();
             User.readFromFirebase(
                     mFirebaseReference.child( Identifiers.FIREBASE_USERS ).child( userID ),
                     new LoadListener() {
-
                         @Override
                         public void onLoadComplete(Object data) {
-
                             curUser = (User) data;
-
                         }
-
                     },
                     userID );
         }
@@ -226,15 +235,15 @@ public class MapView extends AppCompatActivity
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
     }
 
+    /**
+     * Switch among different tabs
+     */
     @Override
     protected void onPostResume() {
-
         super.onPostResume();
         if ( starting && loggedIn ) {
-
             // Setting up list
             eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
             nearbyEventListFragment = new MyListFragment();
@@ -252,12 +261,10 @@ public class MapView extends AppCompatActivity
                 nearbyEventListFragment.update();
             }
 
-
             bottomBar.setOnTabSelectListener( new OnTabSelectListener() {
 
                 @Override
-                public void onTabSelected( @IdRes int tabId ) {
-
+                public void onTabSelected( @IdRes int tabId ) { //Handle tab selection
                     switch ( tabId ) {
                         case R.id.my_event_item:
                             Log.d("TAB", "My Event Item Selected");
@@ -294,8 +301,7 @@ public class MapView extends AppCompatActivity
             bottomBar.setOnTabReselectListener(new OnTabReselectListener() {
 
                 @Override
-                public void onTabReSelected(@IdRes int tabId) {
-
+                public void onTabReSelected(@IdRes int tabId) { //Handle tab reselection
                     switch (tabId) {
                         case R.id.my_event_item:
                             Log.d("TAB", "My Event Item Reselected");
@@ -307,21 +313,21 @@ public class MapView extends AppCompatActivity
                             nearbyEventListFragment.update();
                             break;
                     }
-
                 }
 
             });
 
             // Set the color for the active tab. Ignored on mobile when there are more than three tabs.
             //bottomBar.setActiveTabColor(0xC2185B);
-
             starting = false;
-
         }
-
-
     }
 
+    /**
+     * Search and filter function
+     * @param menu options menu
+     * @return true if the menu is created successfully; otherwise false
+     */
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
         // Inflate the options menu from XML
@@ -352,6 +358,11 @@ public class MapView extends AppCompatActivity
 
         //Attach search text listener.
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            /**
+             * Callback for text change
+             * @param query query to search
+             * @return true if search successfully; otherwise false
+             */
             public boolean onQueryTextChange(String query) {
                 // this is your adapter that will be filtered
                 searchedText = query;
@@ -372,6 +383,11 @@ public class MapView extends AppCompatActivity
                 return true;
             }
 
+            /**
+             * Callback for text submitted
+             * @param query query to search
+             * @return true if text is submitted successfully; otherwise fase
+             */
             public boolean onQueryTextSubmit(String query) {
 
                 //Hee u can get the value "query" which is entered in the search box.
@@ -387,6 +403,9 @@ public class MapView extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Start the MapView activity
+     */
     protected void onStart() {
 
         // Create an instance of GoogleAPIClient.
@@ -398,152 +417,126 @@ public class MapView extends AppCompatActivity
                     .build();
         }
 
-        if (geoInfo == null) {
+        if (geoInfo == null) { //Initialize Google Geo Info API
             geoInfo = new GoogleApiClient.Builder(this)
                     .addApi(Places.GEO_DATA_API)
                     .addApi(Places.PLACE_DETECTION_API)
                     .build();
         }
 
+        /* Connect and start activity */
         mGoogleApiClient.connect();
         geoInfo.connect();
         super.onStart();
 
     }
 
+    /**
+     * Callback for activity stop
+     */
     protected void onStop() {
-        // only stop if it's connected, otherwise we crash
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) { //Disconnect api client
             mGoogleApiClient.disconnect();
         }
-        if(geoInfo.isConnected())
+
+        if(geoInfo.isConnected()) //Disconnect api client
             geoInfo.disconnect();
         super.onStop();
     }
 
+    /**
+     * Save current state
+     * @param state current state
+     */
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
     }
 
+    /**
+     * Launch the filter
+     * @param item menu
+     */
     public void openFilter(MenuItem item) {
         // Opening filter
         Intent intent = new Intent(this, OpenFilter.class);
         startActivity(intent);
     }
 
+    /**
+     * Callback for connecting server
+     * @param bundle current activity
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d("CONNECT", "onConnecting......");
+        /* Check location permission */
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_GET_LOCATION);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_GET_LOCATION);
             return;
         }
-        //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                //mLocationRequest, this);
 
-        try {
+        try { //Get most recent known location
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
         } catch (SecurityException e) {
             Log.d("SE", e.getMessage());
         }
 
-        if (mLastLocation != null) {
+        if (mLastLocation != null) { //Fail to obtain most recent location, use default
             Log.d("LATITUDE", String.valueOf(mLastLocation.getLatitude()));
             Log.d("LONGITUDE", String.valueOf(mLastLocation.getLongitude()));
         }
     }
 
+    /**
+     * Callback for connection suspend
+     * @param i error code
+     */
     @Override
     public void onConnectionSuspended(int i) {
         if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Disconnected. Please re-connect.",
+                    Toast.LENGTH_SHORT).show();
         } else if (i == CAUSE_NETWORK_LOST) {
-            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Network lost. Please re-connect.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Callback for connection failure
+     * @param connectionResult connection result
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i("CONNECTION_FAILED","onConnectionFailed:"+connectionResult.getErrorCode()+","
                 +connectionResult.getErrorMessage());
     }
 
+    /**
+     * Callback when the MapView is ready to display
+     * @param map Google Map to display
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         Log.v( TAG, "Map ready." );
+        /* Check user permission */
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
                 (this, android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
-            Log.e( TAG, "Location permissions not set." );
-            return;
-        }
-        map.setMyLocationEnabled(true);
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        LatLng loc;
-        if( mLastLocation == null ) {
-            loc = new LatLng( 32.8801, -117.2340 );
-        } else {
-            loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        }
-        map.addMarker( new MarkerOptions()
-                .position(loc)
-                .title("You're here")
-                .snippet("Current location\nEvent nerby is shown\n ")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        markAllEvent(map);
-        map.setInfoWindowAdapter(new MyInfoWindowAdapter(this));
-        map.setOnMarkerClickListener(this);
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
-    }
-
-
-    public boolean gotoCreateEvent(MenuItem item)
-    {
-        EventDetailActivity.user_editting_flag = 0;
-        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
-        intent1.putExtra( Identifiers.USER, curUser );
-        startActivity( intent1 );
-
-        return true;
-    }
-
-
-
-    protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_GET_LOCATION);
@@ -551,31 +544,63 @@ public class MapView extends AppCompatActivity
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     MY_PERMISSIONS_REQUEST_GET_LOCATION);
 
+            Log.e( TAG, "Location permissions not set." );
             return;
         }
-        //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        map.setMyLocationEnabled(true); //Enable current location
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient); //Get most recent location
+        LatLng loc;
+        if( mLastLocation == null ) {
+            loc = new LatLng( 32.8801, -117.2340 ); //Default location
+        } else {
+            loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        }
+        /* Add marker for current location */
+        map.addMarker( new MarkerOptions()
+                .position(loc)
+                .title("You're here")
+                .snippet("Current location\nEvent nerby is shown\n ")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        markAllEvent(map); //Add marker for all valid events
+        map.setInfoWindowAdapter(new MyInfoWindowAdapter(this));
+        map.setOnMarkerClickListener(this);
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f)); //Zoom to current location
     }
 
+    /**
+     * Open create event page
+     * @param item menu component
+     * @return true if the page is load successfully; otherwise false
+     */
+    public boolean gotoCreateEvent(MenuItem item)
+    {
+        Intent intent1 = new Intent(MapView.this, CreateEvent.class);
+        intent1.putExtra( Identifiers.USER, curUser );
+        startActivity( intent1 );
+        return true;
+    }
+
+    /**
+     * Callback for permission request
+     * @param requestCode permission request code
+     * @param permissions list of permissions
+     * @param grantResults list of results
+     */
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_GET_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
                 } else {
                     onStop();
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -601,20 +626,26 @@ public class MapView extends AppCompatActivity
         }
     }
 
+    /**
+     * Callback function of item swipe
+     * @param swiped_position1 swiped item
+     */
     public static void itemSwiped(int swiped_position1)
     {
-            swiped_position = swiped_position1;
-            System.out.println("Item swiped is at position "+ swiped_position);
-
-            Intent n = new Intent(currContext, DeleteDialog.class);
-            n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            currContext.startActivity(n);
+        swiped_position = swiped_position1;
+        Intent n = new Intent(currContext, DeleteDialog.class);
+        n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        currContext.startActivity(n); //Update event list
     }
 
+    /**
+     * Delete item from the database and local storage
+     */
     public static void deleteItem()
     {
         //eventList.remove(swiped_position);
-        mFirebaseReference.child("events").child(eventList.get(swiped_position).getUid()).removeValue();
+        mFirebaseReference.child("events").child(eventList.get(swiped_position).getUid()).
+                removeValue();
         eventList.remove(swiped_position);
     }
 

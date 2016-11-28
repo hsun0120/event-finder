@@ -1,21 +1,11 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
-
 import android.content.Context;
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.view.View;
 
 /**
  * Adapter Class for InfoWindow
@@ -35,9 +25,11 @@ class MyInfoWindowAdapter implements InfoWindowAdapter{
      */
     MyInfoWindowAdapter(Context c){
         context = c;
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.
+                LAYOUT_INFLATER_SERVICE);
         myContentsView = li.inflate(R.layout.custom_info_contents, null);
         }
+
         /**
          * Set information to be displayed
          *
@@ -52,11 +44,13 @@ class MyInfoWindowAdapter implements InfoWindowAdapter{
                 TextView tvDate = ((TextView)myContentsView.findViewById(R.id.windowDate));
                 tvDate.setText(infoString[2]);
                 TextView tvTime = ((TextView)myContentsView.findViewById(R.id.windowTime));
-                TextView tvDescription = ((TextView)myContentsView.findViewById(R.id.windowDescription));
+                TextView tvDescription = ((TextView)myContentsView.findViewById
+                        (R.id.windowDescription));
                 tvTime.setText(infoString[1]);
                 tvDescription.setText(infoString[0]);
                 return myContentsView;
         }
+
         /**
          * Set informationWindow
          *
@@ -66,5 +60,4 @@ class MyInfoWindowAdapter implements InfoWindowAdapter{
         public View getInfoWindow(Marker marker) {
                 return null;
         }
-
 }

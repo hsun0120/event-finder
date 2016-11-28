@@ -15,6 +15,7 @@ import com.google.android.gms.maps.*;
  * @Author Haoran Sun
  * @Date 2016/10/31.
  * Callback class for swipe and dismiss
+ * Source: https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.rzt0wowzq
  */
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
@@ -29,6 +30,24 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
         super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT |
                 ItemTouchHelper.RIGHT); //Allow swipe in left and right direction
         this.eventAdapter = eventAdapter;
+    }
+
+    /**
+     * Disable long press and drop
+     * @return false
+     */
+    @Override
+    public boolean isLongPressDragEnabled() {
+        return false;
+    }
+
+    /**
+     * Disable swipe and dismiss on all event view fragment
+     * @return true if swipe and drop is enabled in current fragment; otherwise false
+     */
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        return !MapView.user_on_all_events_flag;
     }
 
     /**
@@ -51,11 +70,6 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
      */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        //System.out.println("Position "+ viewHolder.getAdapterPosition() );
-        //MapView.swiped_item_position = viewHolder.getAdapterPosition();
         MapView.itemSwiped(viewHolder.getAdapterPosition());
-
-
-        //eventAdapter.removeOnSwipe(viewHolder.getAdapterPosition());
     }
 }
