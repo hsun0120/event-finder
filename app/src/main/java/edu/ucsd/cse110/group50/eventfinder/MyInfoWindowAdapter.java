@@ -30,10 +30,9 @@ class MyInfoWindowAdapter implements InfoWindowAdapter{
 
     private final View myContentsView;
     private Context context;
-    private Event event;
-MyInfoWindowAdapter(Context c, Event e){
+
+MyInfoWindowAdapter(Context c){
         context = c;
-        event = e;
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         myContentsView = li.inflate(R.layout.custom_info_contents, null);
         }
@@ -43,12 +42,13 @@ public View getInfoContents(Marker marker) {
 
         TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.windowTitle));
         tvTitle.setText(marker.getTitle());
+        String[] infoString = marker.getSnippet().split("\n");
         TextView tvDate = ((TextView)myContentsView.findViewById(R.id.windowDate));
-        tvDate.setText(event.getDate().getDate());
+        tvDate.setText(infoString[2]);
         TextView tvTime = ((TextView)myContentsView.findViewById(R.id.windowTime));
         TextView tvDescription = ((TextView)myContentsView.findViewById(R.id.windowDescription));
-        tvTime.setText(event.getDate().getTime());
-        tvDescription.setText(event.getDescription());
+        tvTime.setText(infoString[1]);
+        tvDescription.setText(infoString[0]);
         return myContentsView;
         }
 

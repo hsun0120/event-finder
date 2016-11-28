@@ -46,6 +46,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,7 +61,7 @@ import java.util.ArrayList;
 public class MapView extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 1;
 
@@ -107,6 +108,11 @@ public class MapView extends AppCompatActivity
 
     static EvDate date_filtered;
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        return false;
+    }
     static int swiped_position;
     private static Context currContext;
 
@@ -510,6 +516,8 @@ public class MapView extends AppCompatActivity
                 .draggable(true)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         markAllEvent(map);
+        map.setInfoWindowAdapter(new MyInfoWindowAdapter(this));
+        map.setOnMarkerClickListener(this);
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 16.0f));
     }
 
@@ -583,9 +591,12 @@ public class MapView extends AppCompatActivity
               Event event = event_list.get(i);
                 if (!event.getDate().isPast()) {
                     LatLng loc = new LatLng(event.getLat(), event.getLng());
-                    map.addMarker(new MarkerOptions()
+                    String info = event.getDescription() + "\n" + event.getDate().getDate() + "\n"
+                            + event.getDate().getTime();
+                    Marker marker = map.addMarker(new MarkerOptions()
                             .position(loc)
-                            .title(event.getName()));
+                            .title(event.getName())
+                            .snippet(info));
               }
           }
       }
