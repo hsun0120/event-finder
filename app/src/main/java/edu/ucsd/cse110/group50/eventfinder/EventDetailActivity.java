@@ -24,7 +24,6 @@ import org.w3c.dom.Text;
 public class EventDetailActivity extends AppCompatActivity {
     public static boolean userEnteredCorrectPassword;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +64,6 @@ public class EventDetailActivity extends AppCompatActivity {
 //        setData();
 //    }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -82,8 +79,6 @@ public class EventDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     public void createEvent( View v ){
         finish();
@@ -109,10 +104,6 @@ public class EventDetailActivity extends AppCompatActivity {
                 startActivity(checkpasswordIntent);
             }
         }
-
-
-
-
 
         //Set data here
         setTitle(card.getName());
