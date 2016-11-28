@@ -1,8 +1,6 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.content.Context;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,44 +9,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ProgressBar;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
+/**
+ * A class that implements the fragment for displaying event lists
+ */
 public class MyListFragment extends Fragment implements OnItemClickListener {
-
     RecyclerView recList;
-
     boolean ready;
     private int curEvents;
 
     private static String TAG = "MyListFragment";
 
-    ItemTouchHelper.Callback callback;
-    ItemTouchHelper helper;
-
-
-
-
+    /**
+     * Default constructor
+     */
     public MyListFragment() {
 
         ready = false;
 
     }
 
+    /**
+     * Callback function; create and setup view
+     * @param inflater inflater
+     * @param container container
+     * @param savedInstanceState current state
+     * @return View created
+     */
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -65,60 +55,61 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
 
+        /* Setup adapter */
         EventAdapter adapter = new EventAdapter(MapView.eventList, curEvents);
         recList.setAdapter(adapter);
         recList.setLayoutManager(llm);
 
-
-        System.out.println("user on all events is "+ MapView.user_on_all_events_flag);
         /* Swipe and dismiss configuarations */
-
-        callback = new ItemTouchHelperCallback(adapter);
-        helper = new ItemTouchHelper(callback);
-        if(!MapView.user_on_all_events_flag) {
-            helper.attachToRecyclerView(recList);
-        }
-        else
-        {
-            helper.attachToRecyclerView(null);
-        }
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recList);
 
         ready = true;
-
         return view;
     }
 
+    /**
+     * Callback for the activity created
+     * @param savedInstanceState current state
+     */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
 
+    /**
+     * Callback when an item is clicked
+     * @param parent parent activity/view
+     * @param view view
+     * @param position position of item clicked
+     * @param id item id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
         Log.d("LIST", "Item: " + position + "selected");
-
     }
 
-
-
-
+    /**
+     * Callback for starting fragment activity
+     */
     @Override
     public void onStart()
     {
         super.onStart();
-//        on_all_events_flag = MapView.user_on_all_events_flag;
-
-        update();
-
+        update(); //Update event list
     }
 
+    /**
+     * Update event list (local)
+     */
     void update()
     {
-
-        if ( !ready ) {
+        if ( !ready ) { //Stop if the view is not created normally
             return;
         }
 
+        /* Dispatch old adaptera and destroy old data */
         EventAdapter oldAdapter = (EventAdapter) recList.getAdapter();
         if ( oldAdapter != null ) {
             oldAdapter.destroyCards();
@@ -128,6 +119,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         MapView.spinner.setVisibility( View.VISIBLE );
         //Get events from MapView
         ArrayList<Event> eventList = MapView.eventList;
+
         //Update event base on Flag
         if(MapView.date_filtered != null)
         {
@@ -144,8 +136,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
             eventList = processSearch( true , eventList );
         }
 
-
-
+        /* Setup new adapter */
         EventAdapter ca = new EventAdapter( eventList, curEvents );
         recList.setAdapter( ca );
 
@@ -156,16 +147,20 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
         Log.v( TAG, "Updated." );
         MapView.spinner.setVisibility( View.GONE );
-
     }
 
-
+    /**
+     * Filter to sort out out-of-date events
+     * @param d event data
+     * @param eventList event list
+     * @return a list of valid events
+     */
     private ArrayList<Event> processFilter(EvDate d, ArrayList<Event> eventList)
     {
         ArrayList<Event> new_list = new ArrayList<>();
 
         for(Event e : eventList){
-            if(e.getDate().compareTo(d) <=0 )
+            if(e.getDate().compareTo(d) <=0 ) //Validate date
             {
                 new_list.add(e);
             }
@@ -175,23 +170,27 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
     }
 
 
-    //Yining: Dummy Local Search Functions:
-    //searchModeFlag: false for check user, true for searched String
+    /**
+     * Local Search Functions
+     * @param searchModeFlag true for search string; false for check user
+     * @param eventList local event list
+     */
     private ArrayList<Event> processSearch( boolean searchModeFlag, ArrayList<Event> eventList )
     {
-        ArrayList<Event> new_list = new ArrayList<>();
+        ArrayList<Event> new_list = new ArrayList<>(); //Search results
 
-        if ( searchModeFlag )
+        if ( searchModeFlag ) //Search for string
         {
             String key = MapView.searchedText;
             for ( Event e : eventList ) {
                 String currEventName = e.getName().toLowerCase();
-                if ( currEventName.contains( key.toLowerCase() ) )
+                if ( currEventName.contains( key.toLowerCase() ) ) //Search title
                 {
-                    new_list.add( e );
+                    new_list.add( e ); //Append to search result list
                     continue;
                 }
 
+                /* Search in description */
                 String currDes = e.getDescription().toLowerCase();
                 if ( currDes.contains( key.toLowerCase() ) &&
                         ( !e.getHasPassword() || !MapView.user_on_all_events_flag ) ) {
@@ -199,6 +198,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
                     continue;
                 }
 
+                /* Search in address */
                 String currAddress = e.getAddress().toLowerCase();
                 if ( currAddress.contains( key.toLowerCase() ) &&
                         ( !e.getHasPassword() || !MapView.user_on_all_events_flag ) ) {
@@ -207,15 +207,14 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
             }
             curEvents = new_list.size();
-        } else {
+        } else { //Search for event created by a specific user
             User user = MapView.curUser;
-            ArrayList<Event> old_list = new ArrayList<>();
+            ArrayList<Event> old_list = new ArrayList<>(); //Out-of-date event list
             curEvents = 0;
             for ( Event e : eventList ) {
-
                 if ( e.getHost().equals( user.getUid() ) ) {
                     Log.v( TAG, "In MYEVENTS, UID MATCH - userid is " + e.getUid() + "." );
-                    if ( !e.getDate().isPast() ) {
+                    if ( !e.getDate().isPast() ) { //Check date
                         Log.v( TAG, "Scheduled event." );
                         new_list.add( e );
                         curEvents++;
@@ -224,29 +223,32 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
                         old_list.add( e );
                     }
                 }
-
             }
-            new_list.addAll( old_list );
-
+            new_list.addAll( old_list ); //New events come first
         }
+
         return new_list;
     }
 
+    /**
+     * Callback for fragment activity stop
+     */
     @Override
     public void onStop() {
-
         super.onStop();
         EventAdapter adapter = (EventAdapter) recList.getAdapter();
         adapter.destroyCards();
-
     }
 
 
+    /**
+     * Callback for fragment activity resume
+     */
     @Override
     public void onResume()
     {
         super.onResume();
         Log.v(TAG, "ON resume Called");
-        update();
+        update(); //Update fragment
     }
 }
