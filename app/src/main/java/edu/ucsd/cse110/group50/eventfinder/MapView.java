@@ -583,13 +583,11 @@ public class MapView extends AppCompatActivity
 
           for(int i = 0; i < event_list.size(); i++){
               Event event = event_list.get(i);
-              if ( event.getHost().equals( curUser.getUid() ) ) {
-                  if (!event.getDate().isPast()) {
-                      LatLng loc = new LatLng(event.getLat(), event.getLng());
-                      map.addMarker(new MarkerOptions()
-                              .position(loc)
-                              .title(event.getName()));
-                  }
+                if (!event.getDate().isPast()) {
+                    LatLng loc = new LatLng(event.getLat(), event.getLng());
+                    map.addMarker(new MarkerOptions()
+                            .position(loc)
+                            .title(event.getName()));
               }
           }
       }
