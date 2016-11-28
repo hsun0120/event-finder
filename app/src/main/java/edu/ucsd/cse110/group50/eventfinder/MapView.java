@@ -105,6 +105,9 @@ public class MapView extends AppCompatActivity
     MyListFragment nearbyEventListFragment = null;
     private Fragment curFragment;
 
+    static EvDate date_filtered;
+
+
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
@@ -231,6 +234,12 @@ public class MapView extends AppCompatActivity
             // Set default tab to location_item
             bottomBar.setDefaultTabPosition(1);
             curFragment = supportMapFragment;
+
+            if(date_filtered != null)
+            {
+                nearbyEventListFragment.update();
+            }
+
 
             bottomBar.setOnTabSelectListener( new OnTabSelectListener() {
 
@@ -556,26 +565,6 @@ public class MapView extends AppCompatActivity
         }
     }
 
-//    //Yining: Dummy Local Search Functions:
-//    public ArrayList<Event> processSearch(ArrayList<Event> curr_list,  String hostID)
-//    {
-//        ArrayList<Event> new_list = new ArrayList<>();
-//
-//        for(Event e : curr_list)
-//        {
-//            if(e.getHost().equals(hostID))
-//            {
-//                System.out.println("In MYEVENTS, UID MATCH\n userid is "+e.getUid());
-//                new_list.add(e);
-//            }
-//            else
-//            {
-//                System.out.println("In MYEVENTS, UID NOT MATCH\n curr userid is "+ hostID + "\nHOst UID in data is "+ e.getHost());
-//            }
-//        }
-//
-//        return new_list;
-//    }
 
       private void markAllEvent(GoogleMap map) {
           ArrayList<Event> event_list = eventList;

@@ -30,52 +30,47 @@
         android:layout_below="@+id/textView3"
         android:layout_alignStart="@+id/textView3"
         android:layout_marginTop="19dp"
-        android:id="@+id/filter_event_within_a_week" />
+        android:id="@+id/filter_event_within_a_week"
+        android:onClick="aweek" />
+
+    <Button
+        android:text="None"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/event_filter_none"
+        android:layout_below="@+id/filter_event_within_a_week"
+        android:layout_alignStart="@+id/filter_event_within_a_week"
+        android:onClick="filter_none" />
+
+    <Button
+        android:text="Done!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_filter_done_button"
+        android:onClick="event_filter_done"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/event_filter_none"
+        android:layout_alignStart="@+id/event_filter_none" />
 
     <Button
         android:text="A Month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/filter_event_within_a_week"
-        android:layout_toEndOf="@+id/filter_event_within_a_week"
-        android:id="@+id/filter_event_within_a_month" />
+        android:id="@+id/filter_event_within_a_month"
+        android:onClick="amonth"
+        android:layout_alignBaseline="@+id/filter_event_within_a_week"
+        android:layout_alignBottom="@+id/filter_event_within_a_week"
+        android:layout_toEndOf="@+id/filter_event_within_a_week" />
 
     <Button
         android:text="6 Months"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/filter_event_within_6_months"
-        android:layout_alignTop="@+id/filter_event_within_a_month"
+        android:onClick="sixmonths"
+        android:layout_alignBaseline="@+id/filter_event_within_a_month"
+        android:layout_alignBottom="@+id/filter_event_within_a_month"
         android:layout_toEndOf="@+id/filter_event_within_a_month" />
-
-    <TextView
-        android:text="Filter events within distance:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/filter_event_within_a_week"
-        android:layout_alignStart="@+id/filter_event_within_a_week"
-        android:layout_marginTop="42dp"
-        android:id="@+id/textView4"
-        android:textStyle="normal|bold"
-        android:textSize="18sp"
-        android:textColor="@color/bodyTextColor" />
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView4"
-        android:layout_marginTop="20dp"
-        android:id="@+id/seekBar3"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/seekBar3"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_marginTop="16dp"
-        android:id="@+id/filter_events_within_meters"
-        android:textStyle="normal|bold"
-        android:textColor="@color/colorAccent" />
 
 </RelativeLayout>

@@ -12,4 +12,5 @@
     <item name="filter_event_within_a_month" type="id" />
     <item name="filter_event_within_6_months" type="id" />
     <item name="filter_events_within_meters" type="id" />
+    <item name="event_filter_done_button" type="id" />
 </resources>
