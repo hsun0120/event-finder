@@ -48,7 +48,7 @@ public class EvDate implements Parcelable {
      * @param hour Hour of the new EvDate.
      * @param minute Minute of the new EvDate.
      */
-    public EvDate(int hour, int minute ) {
+    public EvDate( int hour, int minute ) {
 
         this.hour = hour;
         this.minute = minute;
@@ -68,7 +68,7 @@ public class EvDate implements Parcelable {
      * @param month Month of the new EvDate.
      * @param year Year of the new EvDate.
      */
-    public EvDate(int day, int month, int year ) {
+    public EvDate( int day, int month, int year ) {
 
         Calendar calendar = Calendar.getInstance();
 
@@ -90,7 +90,7 @@ public class EvDate implements Parcelable {
      * @param month Month of the new EvDate.
      * @param year Year of the new EvDate.
      */
-    public EvDate(int hour, int minute, int day, int month, int year ) {
+    public EvDate( int hour, int minute, int day, int month, int year ) {
 
         this.hour = hour;
         this.minute = minute;
@@ -106,7 +106,7 @@ public class EvDate implements Parcelable {
      *
      * @param d EvDate to be copied.
      */
-    public EvDate(EvDate d ) {
+    public EvDate( EvDate d ) {
 
         this.hour = d.hour;
         this.minute = d.minute;
@@ -123,7 +123,7 @@ public class EvDate implements Parcelable {
      *
      * @param in Parcel that contains a flattened instance of the class.
      */
-    private EvDate(Parcel in ) {
+    private EvDate( Parcel in ) {
 
         hour = in.readInt();
         minute = in.readInt();
@@ -232,7 +232,7 @@ public class EvDate implements Parcelable {
     public boolean isPast() {
 
         Calendar selected = Calendar.getInstance();
-        selected.set( year, month, day, hour, minute );
+        selected.set( year, month - 1, day, hour, minute );
         Calendar current = Calendar.getInstance();
 
         if ( selected.before( current ) ) {
@@ -253,15 +253,11 @@ public class EvDate implements Parcelable {
     public boolean after( EvDate d ) {
 
         Calendar current = Calendar.getInstance();
-        current.set( this.year, this.month, this.day, this.hour, this.minute );
+        current.set( this.year, this.month - 1, this.day, this.hour, this.minute );
         Calendar other = Calendar.getInstance();
-        current.set( d.year, d.month, d.day, d.hour, d.minute );
+        other.set( d.year, d.month - 1, d.day, d.hour, d.minute );
 
-        if ( other.before( current ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return other.before( current );
 
     }
 
@@ -275,15 +271,11 @@ public class EvDate implements Parcelable {
     public boolean before( EvDate d ) {
 
         Calendar current = Calendar.getInstance();
-        current.set( this.year, this.month, this.day, this.hour, this.minute );
+        current.set( this.year, this.month - 1, this.day, this.hour, this.minute );
         Calendar other = Calendar.getInstance();
-        current.set( d.year, d.month, d.day, d.hour, d.minute );
+        other.set( d.year, d.month - 1, d.day, d.hour, d.minute );
 
-        if ( current.before( other ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return current.before( other );
 
     }
 
