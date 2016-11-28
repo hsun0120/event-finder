@@ -5,9 +5,17 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.view.View;
 
 /**
  * Adapter Class for InfoWindow
@@ -21,7 +29,11 @@ class MyInfoWindowAdapter implements InfoWindowAdapter{
     private final View myContentsView;
     private Context context;
 
-MyInfoWindowAdapter(Context c){
+    /**
+     * Constructor
+     * @param c Current context
+     */
+    MyInfoWindowAdapter(Context c){
         context = c;
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         myContentsView = li.inflate(R.layout.custom_info_contents, null);
