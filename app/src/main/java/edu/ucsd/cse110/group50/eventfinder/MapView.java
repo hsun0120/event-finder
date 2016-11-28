@@ -212,7 +212,10 @@ public class MapView extends AppCompatActivity
     public void startup() {
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         ServerLog.loadDatabase();
+        // Initialize the drawer list
+        final String[] drawerTitles = new String[2];
 
+        drawerTitles[0] = "";
         if ( curUser == null ) { //Read from database
             String userID = mFirebaseAuth.getCurrentUser().getUid();
             User.readFromFirebase(
@@ -221,13 +224,26 @@ public class MapView extends AppCompatActivity
                         @Override
                         public void onLoadComplete(Object data) {
                             curUser = (User) data;
+                            curUser.addListener( new LoadListener() {
+                                @Override
+                                public void onLoadComplete( Object data ) {
+                                    drawerTitles[0] = curUser.getName();
+                                    curUser.removeListener( this );
+                                }
+                            });
+
                         }
                     },
                     userID );
         }
+        else
+        {
+            drawerTitles[0] = curUser.getName();
+        }
 
-        // Initialize the drawer list
-        mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
+        drawerTitles[1] = "Logout";
+        mDrawerTitles = drawerTitles;
+        //mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
