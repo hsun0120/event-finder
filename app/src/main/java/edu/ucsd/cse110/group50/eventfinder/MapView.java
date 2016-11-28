@@ -513,7 +513,7 @@ public class MapView extends AppCompatActivity
         map.addMarker( new MarkerOptions()
                 .position(loc)
                 .title("You're here")
-                .draggable(true)
+                .snippet("Current location\nEvent nerby is shown\n ")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         markAllEvent(map);
         map.setInfoWindowAdapter(new MyInfoWindowAdapter(this));
