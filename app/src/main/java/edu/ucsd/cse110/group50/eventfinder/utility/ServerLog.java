@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.utility;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,7 +30,7 @@ public class ServerLog {
     /**
      * Loads in the database (use after the user is authenticated).
      */
-    static void loadDatabase() {
+    public static void loadDatabase() {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child( Identifiers.FIREBASE_LOGS );
 

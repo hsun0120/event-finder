@@ -13,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import java.util.ArrayList;
 
+import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
+
 /**
  * A class that implements the fragment for displaying event lists
  */
@@ -175,7 +179,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
      * @param searchModeFlag true for search string; false for check user
      * @param eventList local event list
      */
-    private ArrayList<Event> processSearch( boolean searchModeFlag, ArrayList<Event> eventList )
+    private ArrayList<Event> processSearch(boolean searchModeFlag, ArrayList<Event> eventList )
     {
         ArrayList<Event> new_list = new ArrayList<>(); //Search results
 

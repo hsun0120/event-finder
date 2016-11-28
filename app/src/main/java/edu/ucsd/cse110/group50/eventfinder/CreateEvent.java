@@ -26,11 +26,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
+import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
 
 
 public class CreateEvent extends AppCompatActivity {

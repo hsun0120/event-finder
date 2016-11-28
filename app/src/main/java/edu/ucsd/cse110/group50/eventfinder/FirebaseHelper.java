@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+
 public class FirebaseHelper {
     DatabaseReference db;
     Boolean saved=null;
