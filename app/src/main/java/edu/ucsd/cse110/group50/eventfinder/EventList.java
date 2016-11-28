@@ -90,9 +90,9 @@ public class EventList extends ArrayList<Event> {
              */
             @Override
             public void onChildRemoved( DataSnapshot dataSnapshot ) {
-
-                System.out.println("onChildRemoved Called");
-
+//
+//                System.out.println("onChildRemoved Called");
+//
 //                Event.readFromFirebase( dataSnapshot.getRef(),
 //                        new LoadListener() {
 //
@@ -153,8 +153,7 @@ public class EventList extends ArrayList<Event> {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
                 .child( Identifiers.FIREBASE_EVENTS ).child( ev.getUid() );
         mDatabase.removeValue();
-        return true;
-
+        return super.remove(ev);
     }
 
     /**

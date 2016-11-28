@@ -2,6 +2,7 @@ package edu.ucsd.cse110.group50.eventfinder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.net.Uri;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,7 +31,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
     static int currentPosition;
     static Context currContext;
-    Event card;
+    static Event card;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,25 +42,9 @@ public class EventDetailActivity extends AppCompatActivity {
         else
             userEnteredCorrectPassword = true;
         setContentView(R.layout.activity_event_detail);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-//        setSupportActionBar(toolbar);
 
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        //Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        currentPosition = getIntent().getIntExtra("event_position", 1000);
+        System.out.println("Event detail, user swiped position "+ currentPosition);
 
         card = getIntent().getParcelableExtra("event_card");
         String eventPassword = card.getPassword();
@@ -70,6 +56,12 @@ public class EventDetailActivity extends AppCompatActivity {
                 startActivity(checkpasswordIntent);
             }
         }
+
+        if(MapView.user_on_all_events_flag)
+        {
+            ((FloatingActionButton)findViewById(R.id.floatingActionButton2)).setVisibility(View.INVISIBLE);
+        }
+
 
         System.out.println("Event detail ONCREEEEEATE Called");
 
@@ -109,6 +101,8 @@ public class EventDetailActivity extends AppCompatActivity {
     }
 
     private void setData(){
+        //System.out.println("User entered correct pasword is "+userEnteredCorrectPassword);
+
         //Set data here
         ((TextView) findViewById(R.id.event_detail_title)).setText(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
@@ -117,12 +111,21 @@ public class EventDetailActivity extends AppCompatActivity {
         desView.setText(card.getDescription());
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
         addressView.setText(card.getAddress());
+
+        if(card.getHasPassword() && !userEnteredCorrectPassword)
+        {
+            dateView.setText("You don't have permission for details.");
+            dateView.setTextColor(Color.RED);
+            addressView.setText("Please reopen this event and enter password.");
+            addressView.setTextColor(Color.RED);
+            desView.setText("");
+        }
     }
 
     public void event_detail_edit(View v)
     {
         user_editting_flag = 1;
-        currentPosition = getIntent().getIntExtra("event_position", 1000);
+
         //System.out.println("Event position is "+ eventPosition);
         Intent in = new Intent(this, CreateEvent.class);
         in.putExtra( "event_card", getIntent().getParcelableExtra("event_card") );
@@ -131,8 +134,9 @@ public class EventDetailActivity extends AppCompatActivity {
 
     public static void userEdited()
     {
-        System.out.println("User edited, deleting...");
+        System.out.println("User edited, deleting... position "+currentPosition);
         MapView.swiped_position = currentPosition;
+        MapView.swiped_item_uid = card.getUid();
         MapView.deleteItem();
     }
 
@@ -142,23 +146,25 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onStart();
         System.out.println("Event Detail on STAAAAAAAAART called.");
 
-        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");;
+        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");
         if(CreateEvent.editedCard != null)
-        System.out.println("Current Event Name is "+ CreateEvent.editedCard.getName());
+        System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
+        System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
         setData();
 
 
     }
 
-//    @Override
-//    public void onResume()
-//    {
-//        super.onResume();
-//        System.out.println("Event Detail on RESUMEEEEEEEE called.");
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        System.out.println("Event Detail on RESUMEEEEEEEE called.");
 //        if(CreateEvent.editedCard != null)
 //        System.out.println("Current Event Name is "+ CreateEvent.editedCard.getName());
 //        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");;
 //        setData();
-//    }
+    }
 
 }

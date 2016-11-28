@@ -51,8 +51,10 @@ public class CreateEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        //((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
         if(EventDetailActivity.user_editting_flag == 1)
         {
+            ((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
             Event card = getIntent().getParcelableExtra("event_card");
             //System.out.println("event got is " + card.toString());
             ((TextView)findViewById(R.id.eventName)).setText(card.getName());

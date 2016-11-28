@@ -108,6 +108,7 @@ public class MapView extends AppCompatActivity
 
     static EvDate date_filtered;
     static int swiped_position;
+    static String swiped_item_uid;
     private static Context currContext;
 
     /**
@@ -408,6 +409,9 @@ public class MapView extends AppCompatActivity
      */
     protected void onStart() {
 
+        //Clear edited card
+        CreateEvent.editedCard = null;
+
         // Create an instance of GoogleAPIClient.
         if ( mGoogleApiClient == null ) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -633,6 +637,7 @@ public class MapView extends AppCompatActivity
     public static void itemSwiped(int swiped_position1)
     {
         swiped_position = swiped_position1;
+        swiped_item_uid = eventList.get(swiped_position1).getUid();
         Intent n = new Intent(currContext, DeleteDialog.class);
         n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         currContext.startActivity(n); //Update event list
@@ -643,10 +648,17 @@ public class MapView extends AppCompatActivity
      */
     public static void deleteItem()
     {
-        //eventList.remove(swiped_position);
-        mFirebaseReference.child("events").child(eventList.get(swiped_position).getUid()).
-                removeValue();
-        eventList.remove(swiped_position);
+        System.out.println("Position to delete is "+swiped_position);
+//        mFirebaseReference.child("events").child(swiped_item_uid).
+//                removeValue();
+        for(Event e : eventList)
+        {
+            if(e.getUid().equals(swiped_item_uid))
+            {
+                eventList.remove(e);
+            }
+        }
+
     }
 
 }
