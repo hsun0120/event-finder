@@ -44,16 +44,42 @@ public class CreateEvent extends AppCompatActivity {
     private Place place;
     int REQUEST_PLACE_PICKER = 1;
 
+    public static Event editedCard;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        selected = new EvDate();
+        if(EventDetailActivity.user_editting_flag == 1)
+        {
+            Event card = getIntent().getParcelableExtra("event_card");
+            //System.out.println("event got is " + card.toString());
+            ((TextView)findViewById(R.id.eventName)).setText(card.getName());
+            ((TextView)findViewById(R.id.eventAddress)).setText(card.getAddress());
+            ((TextView)findViewById(R.id.eventDate)).setText(card.getDate().getDate().toString());
+            ((TextView)findViewById(R.id.eventTime)).setText(card.getDate().getTime().toString());
+            ((TextView)findViewById(R.id.eventPassword)).setText(card.getPassword());
+            ((TextView)findViewById(R.id.eventRestrictions)).setText(card.getRestrictions().get(0));
+            ((TextView)findViewById(R.id.eventDescription)).setText(card.getDescription());
 
-        Intent intent = getIntent();
-        curUser = intent.getParcelableExtra( Identifiers.USER );
+            if(card.getHasPassword())
+                ((Switch) findViewById( R.id.passOption )).toggle();
+            if(card.getHasRestrictions())
+                ((Switch) findViewById( R.id.restrictionsToggle )).toggle();
 
+
+            selected = card.getDate();
+            curUser = MapView.curUser;
+        }
+
+        else {
+
+            selected = new EvDate();
+
+            Intent intent = getIntent();
+            curUser = intent.getParcelableExtra(Identifiers.USER);
+        }
     }
 
     public void pickDate( View v ) {
@@ -220,31 +246,67 @@ public class CreateEvent extends AppCompatActivity {
         String uid = eventInDatabase.getKey();
         Event newEvent = new Event( uid, curUser.getUid() );
 
-        // Records the data in the Event.
-        newEvent.setName( name );
 
-        newEvent.setAddress( address );
-        if(place == null) {
-            Toast.makeText(CreateEvent.this, "You must pick a location from map!",
-                    Toast.LENGTH_SHORT).show();
-            return;
+
+
+            // Records the data in the Event.
+            newEvent.setName(name);
+
+            newEvent.setAddress(address);
+
+
+
+
+        if(EventDetailActivity.user_editting_flag == 1)
+        {
+            Event card = getIntent().getParcelableExtra("event_card");
+
+            if (place == null && !address.equals(card.getAddress())) {
+                Toast.makeText(CreateEvent.this, "You must pick a location from map!",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            newEvent.setLng(card.getLng());
+            newEvent.setLat(card.getLat());
+
+            EventDetailActivity.userEdited();
+
         }
-        newEvent.setLng( place.getLatLng().longitude );
-        newEvent.setLat( place.getLatLng().latitude);
+        else {
+            if (place == null) {
+                Toast.makeText(CreateEvent.this, "You must pick a location from map!",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        newEvent.setDate( selected );
+            newEvent.setLng(place.getLatLng().longitude);
+            newEvent.setLat(place.getLatLng().latitude);
 
-        newEvent.setHasPassword( passwordToggle.isChecked() );
-        newEvent.setPassword( password );
-        newEvent.setHasRestrictions( restrictionsToggle.isChecked() );
-        String[] restrictionList = restrictions.split( "\n" );
-        newEvent.setRestrictions( Arrays.asList( restrictionList ) );
 
-        newEvent.setDescription( description );
+        }
+            newEvent.setDate(selected);
 
-        eventInDatabase.setValue( newEvent );
+            newEvent.setHasPassword(passwordToggle.isChecked());
+            newEvent.setPassword(password);
+            newEvent.setHasRestrictions(restrictionsToggle.isChecked());
+            String[] restrictionList = restrictions.split("\n");
+            newEvent.setRestrictions(Arrays.asList(restrictionList));
 
-        finish();
+            newEvent.setDescription(description);
+
+            eventInDatabase.setValue(newEvent);
+
+
+            if(EventDetailActivity.user_editting_flag == 1)
+            {
+                editedCard = newEvent;
+                EventDetailActivity.user_editting_flag = 0;
+
+            }
+
+            finish();
+
 
     }
 

@@ -19,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -522,7 +521,7 @@ public class MapView extends AppCompatActivity
 
     public boolean gotoCreateEvent(MenuItem item)
     {
-
+        EventDetailActivity.user_editting_flag = 0;
         Intent intent1 = new Intent(MapView.this, CreateEvent.class);
         intent1.putExtra( Identifiers.USER, curUser );
         startActivity( intent1 );

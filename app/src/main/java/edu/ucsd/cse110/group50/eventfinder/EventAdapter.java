@@ -93,6 +93,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
                     int position = getAdapterPosition();
                     intent.putExtra( "event_card", eventList.get(position) );
+                    intent.putExtra("event_position", position);
                     v.getContext().startActivity(intent);
                 }
 
