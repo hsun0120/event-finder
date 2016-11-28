@@ -266,8 +266,9 @@ public class Event implements Parcelable {
             public void onDataChange( DataSnapshot data ) throws NullPointerException,
                     IllegalArgumentException {
 
-                if ( data == null ) {
-                    throw new NullPointerException();
+                if ( !data.exists()) {
+                    //throw new NullPointerException();
+                    return;
                 }
 
                 if ( !data.getKey().equals( uid ) ) {
@@ -279,6 +280,9 @@ public class Event implements Parcelable {
                 name = (String) data.child( NAME_CHILD ).getValue();
 
                 date = data.child( DATE_CHILD ).getValue( EvDate.class );
+
+                if(data.child(DURATION_CHILD).getValue() == null) throw new NullPointerException();
+
                 long dur = (Long) data.child( DURATION_CHILD ).getValue();
                 duration = (int) dur;
 

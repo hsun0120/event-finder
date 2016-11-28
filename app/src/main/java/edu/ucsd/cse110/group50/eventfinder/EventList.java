@@ -85,20 +85,22 @@ public class EventList extends ArrayList<Event> {
             @Override
             public void onChildRemoved( DataSnapshot dataSnapshot ) {
 
-                Event.readFromFirebase( dataSnapshot.getRef(),
-                        new LoadListener() {
+                System.out.println("onChildRemoved Called");
 
-                            @Override
-                            public void onLoadComplete( Object data ) {
-
-                                remove( (Event) data );
-                                notifyListeners( EventList.this );
-
-                            }
-
-                        },
-                        (String) dataSnapshot.child( UID_CHILD ).getValue(),
-                        (String) dataSnapshot.child( HOST_CHILD ).getValue() );
+//                Event.readFromFirebase( dataSnapshot.getRef(),
+//                        new LoadListener() {
+//
+//                            @Override
+//                            public void onLoadComplete( Object data ) {
+//
+//                                remove( (Event) data );
+//                                notifyListeners( EventList.this );
+//
+//                            }
+//
+//                        },
+//                        (String) dataSnapshot.child( UID_CHILD ).getValue(),
+//                        (String) dataSnapshot.child( HOST_CHILD ).getValue() );
 
             }
 

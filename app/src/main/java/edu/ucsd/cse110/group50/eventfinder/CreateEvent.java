@@ -224,6 +224,11 @@ public class CreateEvent extends AppCompatActivity {
         newEvent.setName( name );
 
         newEvent.setAddress( address );
+        if(place == null) {
+            Toast.makeText(CreateEvent.this, "You must pick a location from map!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         newEvent.setLng( place.getLatLng().longitude );
         newEvent.setLat( place.getLatLng().latitude);
 
