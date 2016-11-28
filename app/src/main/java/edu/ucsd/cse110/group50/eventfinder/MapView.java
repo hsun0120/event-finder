@@ -107,15 +107,18 @@ public class MapView extends AppCompatActivity
     private Fragment curFragment;
 
     static EvDate date_filtered;
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-
-        return false;
-    }
     static int swiped_position;
     private static Context currContext;
 
+    /**
+     * Callback function for onMarkerClickListener
+     * @param marker Marker clicked
+     * @return false to show info window
+     */
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
 
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
@@ -231,11 +234,6 @@ public class MapView extends AppCompatActivity
     protected void onPostResume() {
 
         super.onPostResume();
-
-
-
-
-
         if ( starting && loggedIn ) {
 
             // Setting up list
@@ -582,24 +580,27 @@ public class MapView extends AppCompatActivity
         }
     }
 
+    /**
+     * Make markers for all the events that are not out-of-date
+     * @param map Google map
+     */
+    private void markAllEvent(GoogleMap map) {
+        ArrayList<Event> event_list = eventList;
+        if(event_list.size() == 0) return; //event list is not ready yet
 
-      private void markAllEvent(GoogleMap map) {
-          ArrayList<Event> event_list = eventList;
-          if(event_list.size() == 0) return;
-
-          for(int i = 0; i < event_list.size(); i++){
-              Event event = event_list.get(i);
-                if (!event.getDate().isPast()) {
-                    LatLng loc = new LatLng(event.getLat(), event.getLng());
-                    String info = event.getDescription() + "\n" + event.getDate().getDate() + "\n"
-                            + event.getDate().getTime();
-                    Marker marker = map.addMarker(new MarkerOptions()
-                            .position(loc)
-                            .title(event.getName())
-                            .snippet(info));
-              }
-          }
-      }
+        for(int i = 0; i < event_list.size(); i++){ //Make markers
+            Event event = event_list.get(i);
+            if (!event.getDate().isPast()) { //Validate events
+                LatLng loc = new LatLng(event.getLat(), event.getLng());
+                String info = event.getDescription() + "\n" + event.getDate().getDate() + "\n"
+                        + event.getDate().getTime();
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(loc)
+                        .title(event.getName())
+                        .snippet(info));
+            }
+        }
+    }
 
     public static void itemSwiped(int swiped_position1)
     {

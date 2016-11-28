@@ -12,22 +12,22 @@
             android:id="@+id/windowTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
         <TextView
             android:id="@+id/windowDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"/>
+            android:textSize="14sp"/>
         <TextView
             android:id="@+id/windowTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"/>
+            android:textSize="14sp"/>
         <TextView
             android:id="@+id/windowDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"/>
+            android:textSize="14sp"/>
     </LinearLayout>
 </LinearLayout>
