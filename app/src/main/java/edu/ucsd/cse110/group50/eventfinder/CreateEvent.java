@@ -244,7 +244,12 @@ public class CreateEvent extends AppCompatActivity {
         }
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS ).push();
+        DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS );
+        if ( EventDetailActivity.user_editting_flag == 1 ) {
+            eventInDatabase = eventInDatabase.child( MapView.swiped_item_uid );
+        } else {
+            eventInDatabase = eventInDatabase.push();
+        }
         String uid = eventInDatabase.getKey();
         Event newEvent = new Event( uid, curUser.getUid() );
 
@@ -271,8 +276,6 @@ public class CreateEvent extends AppCompatActivity {
 
             newEvent.setLng(card.getLng());
             newEvent.setLat(card.getLat());
-
-            EventDetailActivity.userEdited();
 
         }
         else {
