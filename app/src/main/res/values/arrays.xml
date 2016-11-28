@@ -2,7 +2,7 @@
 <resources>
     <string-array name="drawer_array">
         <item> </item>
-        <item> Home </item>
+        <item> UserName </item>
         <item> Log Out </item>
         </string-array>
 </resources>
