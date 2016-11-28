@@ -128,6 +128,7 @@ public class MapView extends AppCompatActivity
             Log.d( "DRAWER", "position " + position + " selected!" );
             if ( position == 1 ) {
                 FirebaseAuth.getInstance().signOut();
+                curUser = null;
                 recreate();
             }
 
@@ -213,9 +214,10 @@ public class MapView extends AppCompatActivity
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         ServerLog.loadDatabase();
         // Initialize the drawer list
-        final String[] drawerTitles = new String[2];
+        mDrawerTitles = new String[2];
+        mDrawerTitles[0] = "";
+        mDrawerTitles[1] = "";
 
-        drawerTitles[0] = "";
         if ( curUser == null ) { //Read from database
             String userID = mFirebaseAuth.getCurrentUser().getUid();
             User.readFromFirebase(
@@ -227,7 +229,10 @@ public class MapView extends AppCompatActivity
                             curUser.addListener( new LoadListener() {
                                 @Override
                                 public void onLoadComplete( Object data ) {
-                                    drawerTitles[0] = curUser.getName();
+                                    mDrawerTitles[0] = curUser.getName();
+                                    // Update the adapter for the list view
+                                    mDrawerList.setAdapter(new ArrayAdapter<>(MapView.this,
+                                            R.layout.drawer_list_item, mDrawerTitles));
                                     curUser.removeListener( this );
                                 }
                             });
@@ -238,11 +243,10 @@ public class MapView extends AppCompatActivity
         }
         else
         {
-            drawerTitles[0] = curUser.getName();
+            mDrawerTitles[0] = curUser.getName();
         }
 
-        drawerTitles[1] = "Logout";
-        mDrawerTitles = drawerTitles;
+        mDrawerTitles[1] = "Logout";
         //mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
