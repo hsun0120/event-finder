@@ -1,24 +1,29 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 /**
  * List class that stores a list of events.
+ * Follows the Singleton pattern.
  *
  * @author Thiago Marback
- * @version 2.0
+ * @version 3.0
  * @since 2016-11-14
  */
 public class EventList extends ArrayList<Event> {
 
     private ArrayList<LoadListener> listeners;
+
+    private static EventList instance;
 
     private static final String UID_CHILD = "uid";
     private static final String HOST_CHILD = "host";
@@ -27,13 +32,14 @@ public class EventList extends ArrayList<Event> {
 
     /**
      * Creates a new list of events that contains all Event objects that are stored
-     * directly under the given Database node.
-     *
-     * @param mDatabase Database to read the Events from. Must be the root of a list of Events.
+     * in the events node in Firebase.
      */
-    public EventList( DatabaseReference mDatabase ) {
+    private EventList() {
 
         super();
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
+                .child( Identifiers.FIREBASE_EVENTS );
         listeners = new ArrayList<>();
 
         ChildEventListener childListener = new ChildEventListener() {
@@ -120,6 +126,34 @@ public class EventList extends ArrayList<Event> {
             }
         };
         mDatabase.addChildEventListener( childListener );
+
+    }
+
+    public static EventList getInstance() {
+
+        if ( instance == null ) {
+            instance = new EventList();
+        }
+        return instance;
+
+    }
+
+    @Override
+    public boolean remove( Object o ) throws IllegalArgumentException {
+
+        if ( o.getClass() != Event.class ) {
+            throw new IllegalArgumentException();
+        }
+
+        if ( !contains( o ) ) {
+            return false;
+        }
+
+        Event ev = (Event) o;
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
+                .child( Identifiers.FIREBASE_EVENTS ).child( ev.getUid() );
+        mDatabase.removeValue();
+        return true;
 
     }
 

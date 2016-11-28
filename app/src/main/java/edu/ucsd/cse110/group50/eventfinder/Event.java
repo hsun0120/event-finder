@@ -60,7 +60,6 @@ public class Event implements Parcelable {
     private static final String ADDRESS_CHILD = "address";
     private static final String LNG_CHILD = "lng";
     private static final String LAT_CHILD = "lat";
-    //private static final String LOCATION_CHILD = "locId";
 
     private static final String HAS_PASSWORD_CHILD = "hasPassword";
     private static final String PASSWORD_CHILD = "password";
@@ -202,7 +201,7 @@ public class Event implements Parcelable {
         int month = date.getMonth();
         int year = date.getYear();
         switch ( month ) {
-            case 1:
+            case 1: // Determines how long the current month lasts.
             case 3:
             case 5:
             case 7:
@@ -220,7 +219,7 @@ public class Event implements Parcelable {
                 days %= 30;
                 break;
             case 2:
-                if ( ( year % 4) == 0 ) {
+                if ( ( year % 4) == 0 ) { // Accounts for leap year.
                     month += days / 29;
                     days %= 29;
                 } else {
@@ -267,7 +266,6 @@ public class Event implements Parcelable {
                     IllegalArgumentException {
 
                 if ( !data.exists()) {
-                    //throw new NullPointerException();
                     return;
                 }
 
@@ -350,6 +348,23 @@ public class Event implements Parcelable {
     public void removeListener( LoadListener listener ) {
 
         listeners.remove( listener );
+
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+
+        if ( o.getClass() != Event.class ) {
+            return false;
+        }
+
+        Event ev = (Event) o;
+
+        if ( ev.uid != uid ) {
+            return false;
+        }
+
+        return true;
 
     }
 

@@ -245,12 +245,12 @@ public class MapView extends AppCompatActivity
         super.onPostResume();
         if ( starting && loggedIn ) {
             // Setting up list
-            eventList = new EventList( mFirebaseReference.child(Identifiers.FIREBASE_EVENTS) );
+            eventList = EventList.getInstance();
             nearbyEventListFragment = new MyListFragment();
             final SupportMapFragment supportMapFragment = SupportMapFragment.newInstance();
 
             // Setting up bottombar
-            final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+            final BottomBar bottomBar = (BottomBar) findViewById( R.id.bottomBar );
 
             // Set default tab to location_item
             bottomBar.setDefaultTabPosition(1);
