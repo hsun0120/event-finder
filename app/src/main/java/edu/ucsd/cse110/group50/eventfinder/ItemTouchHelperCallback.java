@@ -1,9 +1,15 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+
+import com.google.android.gms.maps.*;
 
 /**
  * @Author Haoran Sun
@@ -13,6 +19,7 @@ import android.util.Log;
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
     private final EventAdapter eventAdapter;
+
 
     /**
      * Constructor
@@ -44,6 +51,11 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
      */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        eventAdapter.removeOnSwipe(viewHolder.getAdapterPosition());
+        //System.out.println("Position "+ viewHolder.getAdapterPosition() );
+        //MapView.swiped_item_position = viewHolder.getAdapterPosition();
+        MapView.itemSwiped(viewHolder.getAdapterPosition());
+
+
+        //eventAdapter.removeOnSwipe(viewHolder.getAdapterPosition());
     }
 }

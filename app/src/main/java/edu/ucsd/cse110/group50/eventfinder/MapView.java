@@ -107,6 +107,9 @@ public class MapView extends AppCompatActivity
 
     static EvDate date_filtered;
 
+    static int swiped_position;
+    private static Context currContext;
+
 
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
@@ -139,6 +142,8 @@ public class MapView extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        currContext = getApplicationContext();
+
         starting = true;
 
         setContentView( R.layout.activity_map_view );
@@ -220,6 +225,10 @@ public class MapView extends AppCompatActivity
     protected void onPostResume() {
 
         super.onPostResume();
+
+
+
+
 
         if ( starting && loggedIn ) {
 
@@ -581,5 +590,19 @@ public class MapView extends AppCompatActivity
           }
       }
 
+    public static void itemSwiped(int swiped_position1)
+    {
+            swiped_position = swiped_position1;
+            System.out.println("Item swiped is at position "+ swiped_position);
+
+            Intent n = new Intent(currContext, DeleteDialog.class);
+            n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            currContext.startActivity(n);
+    }
+
+    public static void deleteItem()
+    {
+        eventList.remove(swiped_position);
+    }
 
 }

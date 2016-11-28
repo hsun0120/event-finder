@@ -29,7 +29,8 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".NewUser" />
-        <activity android:name=".CheckEventPassword"></activity>
+        <activity android:name=".CheckEventPassword" />
+        <activity android:name=".DeleteDialog"></activity>
     </application>
 
 </manifest>
