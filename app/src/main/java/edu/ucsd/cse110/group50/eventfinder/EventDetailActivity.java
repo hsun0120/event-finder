@@ -39,7 +39,7 @@ public class EventDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_detail);
 
         currentPosition = getIntent().getIntExtra("event_position", 1000);
-        System.out.println("Event detail, user swiped position "+ currentPosition);
+        //System.out.println("Event detail, user swiped position "+ currentPosition);
 
         card = getIntent().getParcelableExtra("event_card");
         String eventPassword = card.getPassword();
@@ -58,7 +58,7 @@ public class EventDetailActivity extends AppCompatActivity {
         }
 
 
-        System.out.println("Event detail ONCREEEEEATE Called");
+        //System.out.println("Event detail ONCREEEEEATE Called");
 
     }
 
@@ -82,10 +82,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
 
-//    public void createEvent( View v ){
-//        finish();
-//    }
-
     public void showMap(View v) {
         Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -95,17 +91,23 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method helps to initialize view of event detail.
+     * It hides event detail when an user has not entered the correct password for current selected event.
+     */
     private void setData(){
-        //System.out.println("User entered correct pasword is "+userEnteredCorrectPassword);
+        ////System.out.println("User entered correct pasword is "+userEnteredCorrectPassword);
 
         //Set data here
         ((TextView) findViewById(R.id.event_detail_title)).setText(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
         dateView.setText( card.getDate().getDate() );
+        dateView.setTextColor(Color.BLACK);
         TextView desView = (TextView) findViewById(R.id.event_detail_description_view);
         desView.setText(card.getDescription());
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
         addressView.setText(card.getAddress());
+        addressView.setTextColor(Color.BLACK);
 
         if(card.getHasPassword() && !userEnteredCorrectPassword)
         {
@@ -117,11 +119,16 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is the button call back for when the user pressed on edit event button.
+     * This call back redirects the user to create event class to edit current event.
+     * @param v current view.
+     */
     public void event_detail_edit(View v)
     {
         user_editting_flag = 1;
 
-        //System.out.println("Event position is "+ eventPosition);
+        ////System.out.println("Event position is "+ eventPosition);
         MapView.swiped_position = currentPosition;
         MapView.swiped_item_uid = card.getUid();
         Intent in = new Intent(this, CreateEvent.class);
@@ -133,12 +140,12 @@ public class EventDetailActivity extends AppCompatActivity {
     public void onStart()
     {
         super.onStart();
-        System.out.println("Event Detail on STAAAAAAAAART called.");
+        //System.out.println("Event Detail on STAAAAAAAAART called.");
 
         card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");
         if(CreateEvent.editedCard != null)
-        System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
-        System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
+        //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
+        //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
         setData();
 
 
@@ -149,11 +156,6 @@ public class EventDetailActivity extends AppCompatActivity {
     {
         super.onResume();
 
-        System.out.println("Event Detail on RESUMEEEEEEEE called.");
-//        if(CreateEvent.editedCard != null)
-//        System.out.println("Current Event Name is "+ CreateEvent.editedCard.getName());
-//        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");;
-//        setData();
     }
 
 }

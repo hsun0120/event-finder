@@ -62,6 +62,10 @@ import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
 /**
  * The main activity of the app.The main screen will be the mapView, with the ability to switch
  * to MyEvent list and All Event list.
+ * Reference of inspiration:
+ * Yining Liang :
+ *  1. https://codelabs.developers.google.com/codelabs/firebase-android/#0
+ *      I followed this tutorial for introduction on firebase.
  */
 public class MapView extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
@@ -103,10 +107,12 @@ public class MapView extends AppCompatActivity
     private static final int SIGN_IN_REQUEST = 9000;
     private static final String TAG = "MapView";
 
+    //Used for managing view of event list.
     static EventList eventList;
     MyListFragment nearbyEventListFragment = null;
     private Fragment curFragment;
 
+    //Used for swipe and click on card interactions.
     static EvDate date_filtered;
     static int swiped_position;
     static String swiped_item_uid;

@@ -11,7 +11,11 @@ import java.util.Calendar;
 
 import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
 
-
+/**
+ * This class manages the within time filter of events.
+ * The filter helps user to filter events within some time: a week, a month, 6 months.
+ * @Author Yining Liang
+ */
 public class OpenFilter extends AppCompatActivity {
 
     @Override
@@ -19,11 +23,12 @@ public class OpenFilter extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_filter);
 
+
+        /**
+         * Below is the optional feature for filtering distance.
+         */
         //SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar3);
-        final TextView within_distance_view = (TextView) findViewById(R.id.filter_events_within_meters);
-
-
-        // Initialize the textview with '0'.
+        //final TextView within_distance_view = (TextView) findViewById(R.id.filter_events_within_meters);
 
         //within_distance_view.setText("Within " + seekBar.getProgress()/seekBar.getMax()*1000 + " meters");
 
@@ -73,6 +78,10 @@ public class OpenFilter extends AppCompatActivity {
         MapView.date_filtered = d;
     }
 
+    /**
+     * Button call back for when user pressed a_month button.
+     * @param v current view
+     */
     public void amonth(View v)
     {
         Calendar calendar = Calendar.getInstance();
@@ -92,6 +101,10 @@ public class OpenFilter extends AppCompatActivity {
         MapView.date_filtered = d;
     }
 
+    /**
+     * Button call back for when user pressed six_months button.
+     * @param v current view
+     */
     public void sixmonths(View v)
     {
         Calendar calendar = Calendar.getInstance();
@@ -113,6 +126,10 @@ public class OpenFilter extends AppCompatActivity {
     }
 
 
+    /**
+     * Button call back for when user pressed filter_none button.
+     * @param v current view
+     */
     public void filter_none(View v)
     {
         Calendar calendar = Calendar.getInstance();
@@ -134,6 +151,10 @@ public class OpenFilter extends AppCompatActivity {
         MapView.date_filtered = d;
     }
 
+    /**
+     * Button call back for when user pressed done button.
+     * @param v current view
+     */
     public void event_filter_done(View v)
     {
         finish();

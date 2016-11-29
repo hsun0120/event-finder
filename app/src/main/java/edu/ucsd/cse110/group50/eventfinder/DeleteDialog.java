@@ -6,6 +6,10 @@ import android.view.View;
 
 import com.google.android.gms.maps.*;
 
+/**
+ * This class is a dialog window that helps to confirm whether the user want to delete an event.
+ * @Author Yining Liang
+ */
 public class DeleteDialog extends AppCompatActivity {
 
     @Override

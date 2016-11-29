@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * This class helps to check whether a user has permission to read details of an event.
+ * @Author Yining Liang
+ */
 public class CheckEventPassword extends AppCompatActivity {
     String password_to_match;
 

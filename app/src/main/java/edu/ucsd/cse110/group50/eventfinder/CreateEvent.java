@@ -34,6 +34,9 @@ import edu.ucsd.cse110.group50.eventfinder.storage.User;
 import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
 
 
+/**
+ * This class manages activity_create_event.
+ */
 public class CreateEvent extends AppCompatActivity {
     private static final  int NAME_LENGTH_MAX = 30;
     private static final  int NAME_LENGTH_TOREAD = 30;
