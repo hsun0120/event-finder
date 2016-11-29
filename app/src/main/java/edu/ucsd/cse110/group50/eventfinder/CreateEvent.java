@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -50,10 +52,54 @@ public class CreateEvent extends AppCompatActivity {
 
     public static Event editedCard;
 
+    //For toggles
+    private boolean hasPasswordChecked;
+    private boolean hasRestrictionChecked;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+
+        Switch passwordToggle = (Switch) findViewById(R.id.passOption);
+        Switch restriToggle = (Switch)findViewById(R.id.restrictionsToggle);
+
+        passwordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    hasPasswordChecked = true;
+                    ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.VISIBLE);
+
+
+                }
+                else
+                {
+                    ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.INVISIBLE);
+
+                    hasPasswordChecked = false;
+                }
+            }
+        });
+
+        restriToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    hasRestrictionChecked = true;
+                    ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    hasRestrictionChecked = false;
+                    ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
 
         //((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
         if(EventDetailActivity.user_editting_flag == 1)

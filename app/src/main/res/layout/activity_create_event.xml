@@ -114,7 +114,8 @@
                 android:id="@+id/eventPassword"
                 android:hint="@string/passFieldHint"
                 android:textSize="14sp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -137,7 +138,8 @@
                 android:ems="10"
                 android:hint="@string/restrictionsHint"
                 android:id="@+id/eventRestrictions"
-                android:layout_height="87dp" />
+                android:layout_height="87dp"
+                android:visibility="invisible" />
         </LinearLayout>
 
         <EditText
