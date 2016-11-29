@@ -220,6 +220,12 @@ public class CreateEvent extends AppCompatActivity {
         EditText descriptionBox = (EditText) findViewById( R.id.eventDescription );
         String description = descriptionBox.getText().toString().trim();
 
+        if(!passwordToggle.isChecked())
+        {
+            password = "";
+            passwordBox.setText("");
+        }
+
         // Checks for input errors.
         if ( name.isEmpty() ) {
             Toast.makeText( CreateEvent.this, "Name field cannot be empty.",

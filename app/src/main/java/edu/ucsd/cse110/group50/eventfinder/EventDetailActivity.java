@@ -143,7 +143,7 @@ public class EventDetailActivity extends AppCompatActivity {
         //System.out.println("Event Detail on STAAAAAAAAART called.");
 
         card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");
-        if(CreateEvent.editedCard != null)
+        //if(CreateEvent.editedCard != null)
         //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
         //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
         setData();
