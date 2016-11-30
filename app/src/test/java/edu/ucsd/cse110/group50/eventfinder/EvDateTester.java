@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  *
  * @author Thiago Marback
  * @since 2016-11-28
- * @version 1.0
+ * @version 1.1
  */
 public class EvDateTester {
 
@@ -123,6 +123,18 @@ public class EvDateTester {
         assertFalse( "Incorrect equality.", date.equals( date2 ) );
         date2.setYear( date2.getYear() + 2 );
         assertFalse( "Incorrect equality.", date.equals( date2 ) );
+
+    }
+
+    @Test
+    public void testCompareTo() {
+
+        EvDate date2 = new EvDate( date );
+        assertEquals( "Incorrect return.", 0, date.compareTo( date2 ) );
+        date2.setYear( date2.getYear() - 1 );
+        assertTrue( "Incorrect return.", date.compareTo( date2 ) > 0 );
+        date2.setYear( date2.getYear() + 2 );
+        assertTrue( "Incorrect return.", date.compareTo( date2 ) < 0 );
 
     }
 

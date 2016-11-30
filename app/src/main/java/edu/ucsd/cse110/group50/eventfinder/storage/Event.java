@@ -241,6 +241,31 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Checks if this is equal to a given object. It will be equal if the object is another
+     * Event with the same UID.
+     *
+     * @param obj Object to be compared.
+     * @return true if this and obj represent the same object.
+     *         false otherwise.
+     */
+    @Override
+    public boolean equals( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
+        }
+
+        if ( obj.getClass() != Event.class ) {
+            return false;
+        }
+
+        Event ev = (Event) obj;
+
+        return ev.uid.equals( uid );
+
+    }
+
+    /**
      * Fills in the data (other than UID) for this instance from a given database.
      * The root of the database should be the node that corresponds to this object as a
      * whole.
@@ -355,23 +380,6 @@ public class Event implements Parcelable {
 
     }
 
-    @Override
-    public boolean equals( Object o ) {
-
-        if ( o.getClass() != Event.class ) {
-            return false;
-        }
-
-        Event ev = (Event) o;
-
-        if ( ev.uid != uid ) {
-            return false;
-        }
-
-        return true;
-
-    }
-
     /* Getters */
 
     /**
@@ -419,7 +427,7 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Retrieves the duration of this event.
+     * Retrieves the duration of this event, in minutes.
      *
      * @return The duration of this event.
      */
@@ -536,7 +544,7 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Sets the duration of this event.
+     * Sets the duration of this event, in minutes.
      *
      * @param duration New duration of this event.
      */
