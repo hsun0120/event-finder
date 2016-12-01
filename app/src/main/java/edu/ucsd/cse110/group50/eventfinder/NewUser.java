@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+
 public class NewUser extends AppCompatActivity {
 
     static final int CREATED = 420;

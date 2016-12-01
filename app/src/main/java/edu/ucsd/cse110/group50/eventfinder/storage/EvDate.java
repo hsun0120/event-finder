@@ -1,10 +1,11 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * Class that stores a particular date and time.
@@ -114,6 +115,22 @@ public class EvDate implements Parcelable {
         this.day = d.day;
         this.month = d.month;
         this.year = d.year;
+
+    }
+
+    /**
+     * Creates a new EvDate from a Calendar object.
+     *
+     * @param c Calendar to be converted to EvDate.
+     */
+    public EvDate( Calendar c ) {
+
+        this.hour = c.get( Calendar.HOUR_OF_DAY );
+        this.minute = c.get( Calendar.MINUTE );
+
+        this.day = c.get( Calendar.DAY_OF_MONTH );
+        this.month = c.get( Calendar.MONTH ) + 1;
+        this.year = c.get( Calendar.YEAR );
 
     }
 
@@ -280,34 +297,49 @@ public class EvDate implements Parcelable {
     }
 
     /**
-     * Checks if this EvDate represents the same point in time as a given EvDate.
+     * Checks if this is equal to a given object. Two EvDates are equal if they represent the
+     * same point in time.
      *
-     * @param other EvDate that this should be compared to.
-     * @return true if both objects have the same values (represent the same point in time).
+     * @param obj Object that this should be compared to.
+     * @return true if o is equivalent to this.
      *         false otherwise.
      */
-    public boolean equals( EvDate other ) {
+    @Override
+    public boolean equals( Object obj ) {
 
-        if ( ( this.hour == other.hour ) &&
+        if ( obj == null ) {
+            return false;
+        }
+
+        if ( obj.getClass() != EvDate.class ) {
+            return false;
+        }
+
+        EvDate other = (EvDate) obj;
+
+        return ( this.hour == other.hour ) &&
                 ( this.minute == other.minute ) &&
                 ( this.day == other.day ) &&
                 ( this.month == other.month ) &&
-                ( this.year == other.year ) ) {
-            return true;
-        } else {
-            return false;
-        }
+                ( this.year == other.year );
 
     }
 
     /**
-     * Compares two dates using rough estimation.
-     * @param
-     * @return negative if this<other, 0 if this ==other, positive if this >other
+     * Compares two EvDates.
+     *
+     * @param other EvDate to be compared.
+     * @return negative if this < other, 0 if this == other, positive if this > other
      */
-    public int compareTo(EvDate other)
-    {
-        return this.year*365 + this.month * 30 + this.day - (other.year*365 + other.month * 30 + other.day);
+    public int compareTo( EvDate other ) {
+        if ( equals( other ) ) {
+            return 0;
+        } else if ( before( other ) ) {
+            return -1;
+        } else {
+            return 1;
+        }
+
     }
 
 

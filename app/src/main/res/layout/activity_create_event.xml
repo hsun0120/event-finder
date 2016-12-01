@@ -24,7 +24,8 @@
             android:hint="@string/nameFieldHint"
             android:ems="10"
             android:layout_marginTop="15dp"
-            android:id="@+id/eventName" />
+            android:id="@+id/eventName"
+            android:maxLength="30" />
 
         <EditText
             android:layout_width="match_parent"
@@ -113,7 +114,8 @@
                 android:id="@+id/eventPassword"
                 android:hint="@string/passFieldHint"
                 android:textSize="14sp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
@@ -136,25 +138,54 @@
                 android:ems="10"
                 android:hint="@string/restrictionsHint"
                 android:id="@+id/eventRestrictions"
-                android:layout_height="87dp" />
+                android:layout_height="87dp"
+                android:visibility="invisible" />
         </LinearLayout>
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:id="@+id/eventDescription"
             android:hint="@string/descriptionHint"
             android:inputType="textMultiLine"
             android:gravity="start"
-            android:layout_weight="1"
-            android:ems="10" />
+            android:ems="10"
+            android:layout_weight="200"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/durationHint"
+                android:ems="10"
+                android:id="@+id/duration"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textAlignment="textStart"
+                android:maxLength="6" />
+
+            <TextView
+                android:text="@string/durationUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/durationLabel"
+                android:textSize="24sp" />
+
+            </LinearLayout>
 
         <Button
             android:text="@string/createEventDoneButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/doneButton"
-            android:onClick="createEvent" />
+            android:onClick="createEvent"
+            android:layout_weight="1"
+            tools:layout_height="wrap_content" />
 
     </LinearLayout>
 

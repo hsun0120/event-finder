@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,7 +11,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
 
 /**
  * Class that stores the data for a single event.
@@ -19,7 +24,7 @@ import java.util.List;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 3.0
+ * @version 3.1
  */
 public class Event implements Parcelable {
 
@@ -45,12 +50,15 @@ public class Event implements Parcelable {
 
     private ArrayList<LoadListener> listeners;
 
+    private ValueEventListener updater;
+    private DatabaseReference database;
+
     /* Constants */
 
     private static final byte TRUE = 1;
     private static final byte FALSE = 0;
 
-    private static final String UID_CHILD = "uid";
+    static final String UID_CHILD = "uid";
     private static final String NAME_CHILD = "name";
     private static final String HOST_CHILD = "host";
 
@@ -100,8 +108,8 @@ public class Event implements Parcelable {
         this.duration = 0;
 
         this.address = "";
-        this.lat = 0;
-        this.lng = 0;
+        this.lat = 0.5;
+        this.lng = 0.5;
 
         this.hasPassword = false;
         this.password = "";
@@ -192,47 +200,36 @@ public class Event implements Parcelable {
      */
     public EvDate getEndTime() {
 
-        int minutes = date.getMinute() + duration;
-        int hours = ( date.getHour() + ( minutes / 60 ) );
-        minutes %= 60;
+        Calendar endTime = Calendar.getInstance();
+        endTime.set( date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(),
+                     date.getMinute() + duration );
 
-        int days = ( date.getDay() + ( hours / 24 ) );
-        hours %= 24;
-        int month = date.getMonth();
-        int year = date.getYear();
-        switch ( month ) {
-            case 1: // Determines how long the current month lasts.
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                month += days / 31;
-                days %= 31;
-                break;
-            case 4:
-            case 6:
-            case 9:
-            case 11:
-                month += days / 30;
-                days %= 30;
-                break;
-            case 2:
-                if ( ( year % 4) == 0 ) { // Accounts for leap year.
-                    month += days / 29;
-                    days %= 29;
-                } else {
-                    month += days / 28;
-                    days %= 28;
-                }
-                break;
+        return new EvDate( endTime );
 
+    }
+
+    /**
+     * Checks if this is equal to a given object. It will be equal if the object is another
+     * Event with the same UID.
+     *
+     * @param obj Object to be compared.
+     * @return true if this and obj represent the same object.
+     *         false otherwise.
+     */
+    @Override
+    public boolean equals( Object obj ) {
+
+        if ( obj == null ) {
+            return false;
         }
-        year += month / 12;
-        month %= 12;
 
-        return new EvDate( hours, minutes, days, month, year );
+        if ( obj.getClass() != Event.class ) {
+            return false;
+        }
+
+        Event ev = (Event) obj;
+
+        return uid.equals( ev.uid );
 
     }
 
@@ -248,8 +245,10 @@ public class Event implements Parcelable {
      */
     public void updateFromDatabase( final DatabaseReference mDatabase ) {
 
+        database = mDatabase;
+
         // Listener that reads the data initially and every time something changes.
-        ValueEventListener eventListener = new ValueEventListener() {
+        updater = new ValueEventListener() {
 
             /**
              * Fills in the fields of the corresponding instance with the data from server
@@ -274,6 +273,8 @@ public class Event implements Parcelable {
                     Log.wtf( TAG, "Was reading " + uid + ", got " + data.getKey() );
                     throw new IllegalArgumentException( "UID mismatch: " + uid + " | " + data.getKey() );
                 }
+
+                Log.v( TAG, "Loading event ID " + uid + " from database." );
 
                 name = (String) data.child( NAME_CHILD ).getValue();
 
@@ -325,7 +326,14 @@ public class Event implements Parcelable {
 
             }
         };
-        mDatabase.addValueEventListener( eventListener );
+        mDatabase.addValueEventListener( updater );
+
+    }
+
+    public void deleteFromFirebase() {
+
+        database.removeEventListener( updater );
+        database.removeValue();
 
     }
 
@@ -348,23 +356,6 @@ public class Event implements Parcelable {
     public void removeListener( LoadListener listener ) {
 
         listeners.remove( listener );
-
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-
-        if ( o.getClass() != Event.class ) {
-            return false;
-        }
-
-        Event ev = (Event) o;
-
-        if ( ev.uid != uid ) {
-            return false;
-        }
-
-        return true;
 
     }
 
@@ -415,7 +406,7 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Retrieves the duration of this event.
+     * Retrieves the duration of this event, in minutes.
      *
      * @return The duration of this event.
      */
@@ -532,7 +523,7 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Sets the duration of this event.
+     * Sets the duration of this event, in minutes.
      *
      * @param duration New duration of this event.
      */
@@ -694,7 +685,6 @@ public class Event implements Parcelable {
     /**
      * Creates a new Event instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired Event object.
-     * If the Event does not currently exist, initializes it.
      * If the host ID in the database is different from the expected ID, cancels the read,
      * and the listener will receive null instead of the loaded Event.
      *
@@ -715,10 +705,9 @@ public class Event implements Parcelable {
 
     /**
      * Listener class that performs the initial read of an Event from the database.
-     * Creates the Event in the database if it did not exist.
      *
      * @author Thiago Marback
-     * @version 1.2
+     * @version 1.3
      * @since 2016-11-13
      */
     private static class EventBuilder implements ValueEventListener {
@@ -778,7 +767,9 @@ public class Event implements Parcelable {
                     return;
                 }
             } else {
-                mDatabase.setValue( newEvent );
+                Log.e( TAG, "Attempt to load a non-existant Event." );
+                listener.onLoadComplete( null );
+                return;
             }
             newEvent.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newEvent );

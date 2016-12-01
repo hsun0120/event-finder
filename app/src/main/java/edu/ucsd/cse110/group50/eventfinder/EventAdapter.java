@@ -10,17 +10,27 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private static ArrayList<Event> eventList;
     private ArrayList<EventViewHolder> cards;
+    private int plannedEvents;
     private int curEvents;
 
+    private static final int PLANNED_COLOR = Color.BLUE;
+    private static final int CURRENT_COLOR = Color.GREEN;
+    private static final int PAST_COLOR = Color.RED;
+
     // Constructor
-    public EventAdapter( ArrayList<Event> contactList, int curEvents ) {
+    public EventAdapter( ArrayList<Event> contactList, int plannedEvents, int curEvents ) {
 
         eventList = contactList;
         this.cards = new ArrayList<>();
+        this.plannedEvents = plannedEvents;
         this.curEvents = curEvents;
 
     }
@@ -37,7 +47,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         Event ci = eventList.get( i );
         contactViewHolder.setEvent( ci );
-        if (  i >= curEvents ) {
+        if (  i < plannedEvents ) {
+            contactViewHolder.setPlanned();
+        } else if ( i < ( plannedEvents + curEvents ) ) {
+            contactViewHolder.setCurrent();
+        } else {
             contactViewHolder.setPast();
         }
         cards.add( contactViewHolder );
@@ -92,7 +106,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
                     int position = getAdapterPosition();
-                    intent.putExtra( "event_card", eventList.get(position) );
+                    intent.putExtra( Identifiers.EVENT, data );
                     intent.putExtra("event_position", position);
                     v.getContext().startActivity(intent);
                 }
@@ -126,9 +140,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         }
 
+        void setPlanned() {
+
+            vName.setBackgroundColor( PLANNED_COLOR );
+
+        }
+
+        void setCurrent() {
+
+            vName.setBackgroundColor( CURRENT_COLOR );
+
+        }
+
         void setPast() {
 
-            vName.setBackgroundColor( Color.RED );
+            vName.setBackgroundColor( PAST_COLOR );
 
         }
 
@@ -147,5 +173,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     }
 
+    public static Event getPosition( int position ) {
+
+        return eventList.get( position );
+
+    }
 
 }

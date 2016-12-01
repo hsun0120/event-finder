@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,14 +11,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
+
 /**
  * Class that stores the data for a single user.
  * Is identified by an UID that is defined at creation and cannot be changed.
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 3.0
+ * @version 3.1
  */
 public class User implements Parcelable {
 
@@ -279,7 +283,6 @@ public class User implements Parcelable {
     /**
      * Creates a new User instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired User object.
-     * If the User does not currently exist, initializes it.
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the User is completed.
@@ -296,10 +299,9 @@ public class User implements Parcelable {
 
     /**
      * Listener class that performs the initial read of an User from the database.
-     * Creates the User in the database if it did not exist.
      *
      * @author Thiago Marback
-     * @version 1.1
+     * @version 1.2
      * @since 2016-11-13
      */
     private static class UserBuilder implements ValueEventListener {
@@ -348,7 +350,9 @@ public class User implements Parcelable {
                     mDatabase.child( UID_CHILD ).setValue( uid );
                 }
             } else {
-                mDatabase.setValue( newUser );
+                Log.e( TAG, "Attempt to load a non-existant User." );
+                listener.onLoadComplete( null );
+                return;
             }
 
             newUser.updateFromDatabase( mDatabase );

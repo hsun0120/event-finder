@@ -1,20 +1,19 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.net.Uri;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -23,44 +22,27 @@ import org.w3c.dom.Text;
  * in a {}.
  */
 public class EventDetailActivity extends AppCompatActivity {
+
     public static boolean userEnteredCorrectPassword;
 
-    public static int user_editting_flag;
-
-    static int currentPosition;
-    static Context currContext;
-    Event card;
+    private static int currentPosition;
+    private Event card;
+    private LoadListener updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        currContext = getApplicationContext();
         if(MapView.user_on_all_events_flag)
              userEnteredCorrectPassword = false;
         else
             userEnteredCorrectPassword = true;
         setContentView(R.layout.activity_event_detail);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-//        setSupportActionBar(toolbar);
 
+        currentPosition = getIntent().getIntExtra("event_position", 1000);
+        //System.out.println("Event detail, user swiped position "+ currentPosition);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        //Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        card = getIntent().getParcelableExtra("event_card");
+        card = getIntent().getParcelableExtra( Identifiers.EVENT );
         String eventPassword = card.getPassword();
 
         if(!userEnteredCorrectPassword) {
@@ -71,7 +53,25 @@ public class EventDetailActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Event detail ONCREEEEEATE Called");
+        if(MapView.user_on_all_events_flag)
+        {
+            ((FloatingActionButton)findViewById(R.id.floatingActionButton2)).setVisibility(View.INVISIBLE);
+        }
+
+        card = (Event) getIntent().getParcelableExtra( Identifiers.EVENT );
+        updater = new LoadListener() {
+
+            @Override
+            public void onLoadComplete(Object data) {
+
+                setData();
+
+            }
+
+        };
+        card.addListener( updater );
+
+        //System.out.println("Event detail ONCREEEEEATE Called");
 
     }
 
@@ -95,10 +95,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
 
 
-//    public void createEvent( View v ){
-//        finish();
-//    }
-
     public void showMap(View v) {
         Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -108,57 +104,90 @@ public class EventDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method helps to initialize view of event detail.
+     * It hides event detail when an user has not entered the correct password for current selected event.
+     */
     private void setData(){
+        ////System.out.println("User entered correct pasword is "+userEnteredCorrectPassword);
+
         //Set data here
         ((TextView) findViewById(R.id.event_detail_title)).setText(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
-        dateView.setText( card.getDate().getDate() );
+        dateView.setText( "From " + card.getDate().toString() );
+        dateView.setTextColor(Color.BLACK);
+        TextView endDate = (TextView) findViewById(R.id.event_detail_end_date);
+        endDate.setText( "to " + card.getEndTime().toString() );
+        endDate.setTextColor(Color.BLACK);
         TextView desView = (TextView) findViewById(R.id.event_detail_description_view);
         desView.setText(card.getDescription());
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
         addressView.setText(card.getAddress());
+        addressView.setTextColor(Color.BLACK);
+        TextView restrictionView = (TextView)findViewById(R.id.event_restriction);
+        String restrictions = "Restrictions:\n";
+        for ( String restriction : card.getRestrictions() ) {
+
+            restrictions += restriction + "\n";
+
+        }
+        restrictionView.setText( restrictions );
+        if(card.getHasPassword() && !userEnteredCorrectPassword)
+        {
+            dateView.setText("You don't have permission for details.");
+            dateView.setTextColor(Color.RED);
+            endDate.setText("");
+            addressView.setText("Please reopen this event and enter password.");
+            addressView.setTextColor(Color.RED);
+            desView.setText("");
+            restrictionView.setText("");
+        }
     }
 
+    /**
+     * This is the button call back for when the user pressed on edit event button.
+     * This call back redirects the user to create event class to edit current event.
+     * @param v current view.
+     */
     public void event_detail_edit(View v)
     {
-        user_editting_flag = 1;
-        currentPosition = getIntent().getIntExtra("event_position", 1000);
-        //System.out.println("Event position is "+ eventPosition);
-        Intent in = new Intent(this, CreateEvent.class);
-        in.putExtra( "event_card", getIntent().getParcelableExtra("event_card") );
-        startActivity(in);
-    }
 
-    public static void userEdited()
-    {
-        System.out.println("User edited, deleting...");
-        MapView.swiped_position = currentPosition;
-        MapView.deleteItem();
+        ////System.out.println("Event position is "+ eventPosition);
+        Intent in = new Intent(this, CreateEvent.class);
+        in.putExtra( Identifiers.EDIT, true );
+        in.putExtra( Identifiers.EVENT, card );
+        startActivity(in);
+
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
-        System.out.println("Event Detail on STAAAAAAAAART called.");
+        //System.out.println("Event Detail on STAAAAAAAAART called.");
 
-        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");;
-        if(CreateEvent.editedCard != null)
-        System.out.println("Current Event Name is "+ CreateEvent.editedCard.getName());
-        setData();
-
+        if( !card.getHasRestrictions() )
+        {
+            ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.INVISIBLE);
+            ((ImageView)findViewById(R.id.restIcon)).setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.VISIBLE);
+            ((ImageView)findViewById(R.id.restIcon)).setVisibility(View.VISIBLE);
+        }
+        //if(CreateEvent.editedCard != null)
+        //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
+        //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
 
     }
 
-//    @Override
-//    public void onResume()
-//    {
-//        super.onResume();
-//        System.out.println("Event Detail on RESUMEEEEEEEE called.");
-//        if(CreateEvent.editedCard != null)
-//        System.out.println("Current Event Name is "+ CreateEvent.editedCard.getName());
-//        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");;
-//        setData();
-//    }
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+        card.removeListener( updater );
+
+    }
 
 }

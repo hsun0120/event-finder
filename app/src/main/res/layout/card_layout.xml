@@ -20,7 +20,8 @@
             android:text="Event name"
             android:gravity="center_vertical"
             android:textColor="@android:color/white"
-            android:textSize="20dp"/>
+            android:textSize="20dp"
+            android:paddingLeft="14dp" />
 
         <TextView
             android:id="@+id/txtAddress"
@@ -31,7 +32,8 @@
             android:textSize="16dp"
             android:layout_below="@id/newUserTitle"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="8dp" />
 
         <TextView
             android:id="@+id/txtDescrip"
@@ -43,7 +45,7 @@
             android:layout_below="@id/txtAddress"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
-            />
+            android:paddingLeft="8dp" />
 
     </RelativeLayout>
 

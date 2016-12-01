@@ -70,6 +70,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback{
      */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        System.out.println("Item touch helper: item swiped at pos "+ viewHolder.getAdapterPosition());
         MapView.itemSwiped(viewHolder.getAdapterPosition());
     }
 }

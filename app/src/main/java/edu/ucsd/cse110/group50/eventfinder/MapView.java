@@ -19,26 +19,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,9 +51,21 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.ArrayList;
 
+import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.storage.EventList;
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
+import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
+
 /**
  * The main activity of the app.The main screen will be the mapView, with the ability to switch
  * to MyEvent list and All Event list.
+ * Reference of inspiration:
+ * Yining Liang :
+ *  1. https://codelabs.developers.google.com/codelabs/firebase-android/#0
+ *      I followed this tutorial for introduction on firebase.
  */
 public class MapView extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
@@ -102,13 +107,14 @@ public class MapView extends AppCompatActivity
     private static final int SIGN_IN_REQUEST = 9000;
     private static final String TAG = "MapView";
 
+    //Used for managing view of event list.
     static EventList eventList;
     MyListFragment nearbyEventListFragment = null;
     private Fragment curFragment;
 
+    //Used for swipe and click on card interactions.
     static EvDate date_filtered;
-    static int swiped_position;
-    private static Context currContext;
+    private static Context context;
 
     /**
      * Callback function for onMarkerClickListener
@@ -123,8 +129,14 @@ public class MapView extends AppCompatActivity
     // inner class for drawer item listener
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("DRAWER", "position "+position+" selected!");
+        public void onItemClick( AdapterView<?> parent, View view, int position, long id ) {
+            Log.d( "DRAWER", "position " + position + " selected!" );
+            if ( position == 1 ) {
+                FirebaseAuth.getInstance().signOut();
+                curUser = null;
+                recreate();
+            }
+
         }
     }
 
@@ -158,9 +170,11 @@ public class MapView extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        currContext = getApplicationContext();
         starting = true;
+
+        context = getApplicationContext();
 
         setContentView( R.layout.activity_map_view ); //Load MapView
         spinner = (ProgressBar) findViewById(R.id.loading_spinner);
@@ -177,6 +191,7 @@ public class MapView extends AppCompatActivity
             loggedIn = true;
             startup(); //Setup components of the page
         }
+
     }
 
     /**
@@ -206,6 +221,10 @@ public class MapView extends AppCompatActivity
     public void startup() {
         mFirebaseReference = FirebaseDatabase.getInstance().getReference();
         ServerLog.loadDatabase();
+        // Initialize the drawer list
+        mDrawerTitles = new String[2];
+        mDrawerTitles[0] = "";
+        mDrawerTitles[1] = "";
 
         if ( curUser == null ) { //Read from database
             String userID = mFirebaseAuth.getCurrentUser().getUid();
@@ -215,13 +234,28 @@ public class MapView extends AppCompatActivity
                         @Override
                         public void onLoadComplete(Object data) {
                             curUser = (User) data;
+                            curUser.addListener( new LoadListener() {
+                                @Override
+                                public void onLoadComplete( Object data ) {
+                                    mDrawerTitles[0] = curUser.getName();
+                                    // Update the adapter for the list view
+                                    mDrawerList.setAdapter(new ArrayAdapter<>(MapView.this,
+                                            R.layout.drawer_list_item, mDrawerTitles));
+                                    curUser.removeListener( this );
+                                }
+                            });
+
                         }
                     },
                     userID );
         }
+        else
+        {
+            mDrawerTitles[0] = curUser.getName();
+        }
 
-        // Initialize the drawer list
-        mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
+        mDrawerTitles[1] = "Logout";
+        //mDrawerTitles = getResources().getStringArray(R.array.drawer_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -229,7 +263,7 @@ public class MapView extends AppCompatActivity
         mDrawerList.setAdapter(new ArrayAdapter<>(this,
                 R.layout.drawer_list_item, mDrawerTitles));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener( new DrawerItemClickListener() );
 
         // Setting up toolbar
         final Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -630,23 +664,14 @@ public class MapView extends AppCompatActivity
      * Callback function of item swipe
      * @param swiped_position1 swiped item
      */
-    public static void itemSwiped(int swiped_position1)
+    public static void itemSwiped( int swiped_position1 )
     {
-        swiped_position = swiped_position1;
-        Intent n = new Intent(currContext, DeleteDialog.class);
-        n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        currContext.startActivity(n); //Update event list
-    }
 
-    /**
-     * Delete item from the database and local storage
-     */
-    public static void deleteItem()
-    {
-        //eventList.remove(swiped_position);
-        mFirebaseReference.child("events").child(eventList.get(swiped_position).getUid()).
-                removeValue();
-        eventList.remove(swiped_position);
+        Intent n = new Intent( context, DeleteDialog.class );
+        n.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        n.putExtra( Identifiers.EVENT, EventAdapter.getPosition( swiped_position1 ) );
+        context.startActivity( n ); //Update event list
+
     }
 
 }

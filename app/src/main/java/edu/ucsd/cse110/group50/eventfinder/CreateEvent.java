@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -26,13 +28,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
+import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.storage.User;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
 
 
-
+/**
+ * This class manages activity_create_event.
+ */
 public class CreateEvent extends AppCompatActivity {
     private static final  int NAME_LENGTH_MAX = 30;
     private static final  int NAME_LENGTH_TOREAD = 30;
@@ -46,22 +52,69 @@ public class CreateEvent extends AppCompatActivity {
 
     public static Event editedCard;
 
+    private boolean editing;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        if(EventDetailActivity.user_editting_flag == 1)
-        {
-            Event card = getIntent().getParcelableExtra("event_card");
+
+        Switch passwordToggle = (Switch) findViewById(R.id.passOption);
+        Switch restriToggle = (Switch)findViewById(R.id.restrictionsToggle);
+
+        passwordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.VISIBLE);
+
+
+                }
+                else
+                {
+                    ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.INVISIBLE);
+
+                }
+            }
+        });
+
+        restriToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
+        editing = getIntent().getBooleanExtra( Identifiers.EDIT, false );
+        //((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
+        if( editing ) {
+            ((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
+            Event card = getIntent().getParcelableExtra( Identifiers.EVENT );
             //System.out.println("event got is " + card.toString());
             ((TextView)findViewById(R.id.eventName)).setText(card.getName());
             ((TextView)findViewById(R.id.eventAddress)).setText(card.getAddress());
-            ((TextView)findViewById(R.id.eventDate)).setText(card.getDate().getDate().toString());
-            ((TextView)findViewById(R.id.eventTime)).setText(card.getDate().getTime().toString());
+            ((TextView)findViewById(R.id.eventDate)).setText(card.getDate().getDate());
+            ((TextView)findViewById(R.id.eventTime)).setText(card.getDate().getTime());
             ((TextView)findViewById(R.id.eventPassword)).setText(card.getPassword());
-            ((TextView)findViewById(R.id.eventRestrictions)).setText(card.getRestrictions().get(0));
+            String restrictions = "";
+            for ( String restriction : card.getRestrictions() ) {
+
+                restrictions += restriction + "\n";
+
+            }
+            ((TextView)findViewById(R.id.eventRestrictions)).setText(restrictions);
             ((TextView)findViewById(R.id.eventDescription)).setText(card.getDescription());
+            ((TextView)findViewById(R.id.duration)).setText( String.valueOf( card.getDuration() ) );
 
             if(card.getHasPassword())
                 ((Switch) findViewById( R.id.passOption )).toggle();
@@ -189,7 +242,9 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
 
-        checkValidDate();
+        if ( !editing ) {
+            checkValidDate();
+        }
         TextView errorMessage = (TextView) findViewById( R.id.invalidDateMessage );
         if ( errorMessage.getVisibility() == View.VISIBLE ) {
             Toast.makeText( CreateEvent.this, "Invalid date/time.",
@@ -213,6 +268,15 @@ public class CreateEvent extends AppCompatActivity {
 
         EditText descriptionBox = (EditText) findViewById( R.id.eventDescription );
         String description = descriptionBox.getText().toString().trim();
+
+        EditText durationBox = (EditText) findViewById( R.id.duration );
+        String duration = durationBox.getText().toString().trim();
+
+        if(!passwordToggle.isChecked())
+        {
+            password = "";
+            passwordBox.setText("");
+        }
 
         // Checks for input errors.
         if ( name.isEmpty() ) {
@@ -240,72 +304,72 @@ public class CreateEvent extends AppCompatActivity {
                     Toast.LENGTH_SHORT ).show();
             return;
         }
+        if ( description.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Description field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( duration.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Duration field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS ).push();
+        DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS );
+        if ( editing ) {
+            Event ev = (Event) getIntent().getParcelableExtra( Identifiers.EVENT );
+            eventInDatabase = eventInDatabase.child( ev.getUid() );
+        } else {
+            eventInDatabase = eventInDatabase.push();
+        }
         String uid = eventInDatabase.getKey();
         Event newEvent = new Event( uid, curUser.getUid() );
 
+        // Records the data in the Event.
+        newEvent.setName( name );
+        newEvent.setAddress( address );
 
-
-
-            // Records the data in the Event.
-            newEvent.setName(name);
-
-            newEvent.setAddress(address);
-
-
-
-
-        if(EventDetailActivity.user_editting_flag == 1)
+        if( editing )
         {
-            Event card = getIntent().getParcelableExtra("event_card");
+            Event card = getIntent().getParcelableExtra( Identifiers.EVENT );
 
-            if (place == null && !address.equals(card.getAddress())) {
+            if ( place == null && !address.equals( card.getAddress() ) ) {
                 Toast.makeText(CreateEvent.this, "You must pick a location from map!",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            newEvent.setLng(card.getLng());
-            newEvent.setLat(card.getLat());
-
-            EventDetailActivity.userEdited();
+            newEvent.setLng( card.getLng() );
+            newEvent.setLat( card.getLat() );
 
         }
         else {
-            if (place == null) {
+            if ( place == null ) {
                 Toast.makeText(CreateEvent.this, "You must pick a location from map!",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            newEvent.setLng(place.getLatLng().longitude);
-            newEvent.setLat(place.getLatLng().latitude);
+            newEvent.setLng( place.getLatLng().longitude );
+            newEvent.setLat( place.getLatLng().latitude );
 
 
         }
-            newEvent.setDate(selected);
+        newEvent.setDate( selected );
+        newEvent.setDuration( Integer.valueOf( duration ) );
 
-            newEvent.setHasPassword(passwordToggle.isChecked());
-            newEvent.setPassword(password);
-            newEvent.setHasRestrictions(restrictionsToggle.isChecked());
-            String[] restrictionList = restrictions.split("\n");
-            newEvent.setRestrictions(Arrays.asList(restrictionList));
+        newEvent.setHasPassword( passwordToggle.isChecked() );
+        newEvent.setPassword( password );
+        newEvent.setHasRestrictions( restrictionsToggle.isChecked() );
+        String[] restrictionList = restrictions.split("\n");
+        newEvent.setRestrictions( Arrays.asList( restrictionList ) );
 
-            newEvent.setDescription(description);
+        newEvent.setDescription(description);
 
-            eventInDatabase.setValue(newEvent);
+        eventInDatabase.setValue(newEvent);
 
-
-            if(EventDetailActivity.user_editting_flag == 1)
-            {
-                editedCard = newEvent;
-                EventDetailActivity.user_editting_flag = 0;
-
-            }
-
-            finish();
+        finish();
 
 
     }
@@ -339,6 +403,7 @@ public class CreateEvent extends AppCompatActivity {
         Switch restrictionsToggle = (Switch) findViewById( R.id.restrictionsToggle );
         EditText restrictions = (EditText) findViewById( R.id.eventRestrictions );
         EditText description = (EditText) findViewById( R.id.eventDescription );
+        EditText duration = (EditText) findViewById( R.id.duration );
         Button finish = (Button) findViewById( R.id.doneButton );
 
         name.setEnabled( clickable );
@@ -350,6 +415,7 @@ public class CreateEvent extends AppCompatActivity {
         restrictionsToggle.setClickable( clickable );
         restrictions.setEnabled( clickable );
         description.setEnabled( clickable );
+        duration.setEnabled( clickable );
         finish.setClickable( clickable );
 
     }

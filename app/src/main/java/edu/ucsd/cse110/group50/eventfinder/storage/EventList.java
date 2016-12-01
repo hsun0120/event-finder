@@ -1,6 +1,5 @@
-package edu.ucsd.cse110.group50.eventfinder;
+package edu.ucsd.cse110.group50.eventfinder.storage;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.google.firebase.database.ChildEventListener;
@@ -10,6 +9,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
 
 /**
  * List class that stores a list of events.
@@ -59,6 +61,9 @@ public class EventList extends ArrayList<Event> {
                             @Override
                             public void onLoadComplete( Object data ) {
 
+                                if ( data == null ) {
+                                    return;
+                                }
                                 add( (Event) data );
                                 notifyListeners( EventList.this );
 
@@ -91,22 +96,10 @@ public class EventList extends ArrayList<Event> {
             @Override
             public void onChildRemoved( DataSnapshot dataSnapshot ) {
 
-                System.out.println("onChildRemoved Called");
-
-//                Event.readFromFirebase( dataSnapshot.getRef(),
-//                        new LoadListener() {
-//
-//                            @Override
-//                            public void onLoadComplete( Object data ) {
-//
-//                                remove( (Event) data );
-//                                notifyListeners( EventList.this );
-//
-//                            }
-//
-//                        },
-//                        (String) dataSnapshot.child( UID_CHILD ).getValue(),
-//                        (String) dataSnapshot.child( HOST_CHILD ).getValue() );
+                String uid = (String) dataSnapshot.child( Event.UID_CHILD ).getValue();
+                Event deleted = new Event( uid , "" );
+                remove( deleted );
+                notifyListeners( EventList.this );
 
             }
 
@@ -129,6 +122,11 @@ public class EventList extends ArrayList<Event> {
 
     }
 
+    /**
+     * Returns the EventList. Creates it if it hasn't been initialized yet.
+     *
+     * @return The instance of EventList.
+     */
     public static EventList getInstance() {
 
         if ( instance == null ) {
@@ -138,6 +136,14 @@ public class EventList extends ArrayList<Event> {
 
     }
 
+    /**
+     * Removes an Event from the list and from the database.
+     *
+     * @param o Event to be removed.
+     * @return true if successfully removed.
+     *         false if not found.
+     * @throws IllegalArgumentException if the object received is not an Event.
+     */
     @Override
     public boolean remove( Object o ) throws IllegalArgumentException {
 
@@ -145,14 +151,16 @@ public class EventList extends ArrayList<Event> {
             throw new IllegalArgumentException();
         }
 
-        if ( !contains( o ) ) {
+        int idx = indexOf( o );
+        if ( idx == -1 ) {
             return false;
         }
 
-        Event ev = (Event) o;
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference()
-                .child( Identifiers.FIREBASE_EVENTS ).child( ev.getUid() );
-        mDatabase.removeValue();
+        Event ev = get( idx );
+        Log.v( TAG, "Removing " + ev.getName() + "|" + ev.getUid() );
+        remove( idx );
+        ev.deleteFromFirebase();
+
         return true;
 
     }
