@@ -9,6 +9,7 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.net.Uri;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.ucsd.cse110.group50.eventfinder.storage.Event;
@@ -56,6 +57,7 @@ public class EventDetailActivity extends AppCompatActivity {
         {
             ((FloatingActionButton)findViewById(R.id.floatingActionButton2)).setVisibility(View.INVISIBLE);
         }
+
 
 
         //System.out.println("Event detail ONCREEEEEATE Called");
@@ -108,7 +110,8 @@ public class EventDetailActivity extends AppCompatActivity {
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
         addressView.setText(card.getAddress());
         addressView.setTextColor(Color.BLACK);
-
+        TextView restrictionView = (TextView)findViewById(R.id.event_restriction);
+        restrictionView.setText("Restrictions: "+card.getRestrictions().get(0));
         if(card.getHasPassword() && !userEnteredCorrectPassword)
         {
             dateView.setText("You don't have permission for details.");
@@ -116,6 +119,7 @@ public class EventDetailActivity extends AppCompatActivity {
             addressView.setText("Please reopen this event and enter password.");
             addressView.setTextColor(Color.RED);
             desView.setText("");
+            restrictionView.setText("");
         }
     }
 
@@ -143,6 +147,17 @@ public class EventDetailActivity extends AppCompatActivity {
         //System.out.println("Event Detail on STAAAAAAAAART called.");
 
         card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");
+
+        if(card.getHasRestrictions() == false)
+        {
+            ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.INVISIBLE);
+            ((ImageView)findViewById(R.id.imageView)).setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.VISIBLE);
+            ((ImageView)findViewById(R.id.imageView)).setVisibility(View.VISIBLE);
+        }
         //if(CreateEvent.editedCard != null)
         //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
         //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
