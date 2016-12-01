@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/event_restriction"
                 android:textStyle="normal|bold"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textColor="@android:color/holo_red_dark"
                 android:layout_below="@+id/event_detail_description_view"
                 android:layout_alignStart="@+id/event_detail_description_view"
@@ -130,12 +130,11 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/stat_sys_warning"
+                app:srcCompat="@drawable/ic_error_outline_black_24dp"
                 android:id="@+id/restIcon"
                 android:background="@color/bodyTextColor"
                 android:layout_alignTop="@+id/event_restriction"
-                android:layout_toStartOf="@+id/event_restriction"
-                android:paddingEnd="5dp"/>
+                android:layout_toStartOf="@+id/event_restriction" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
