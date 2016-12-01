@@ -242,7 +242,9 @@ public class CreateEvent extends AppCompatActivity {
 
     public void createEvent( View v ) {
 
-        checkValidDate();
+        if ( !editing ) {
+            checkValidDate();
+        }
         TextView errorMessage = (TextView) findViewById( R.id.invalidDateMessage );
         if ( errorMessage.getVisibility() == View.VISIBLE ) {
             Toast.makeText( CreateEvent.this, "Invalid date/time.",

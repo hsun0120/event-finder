@@ -24,6 +24,7 @@ import edu.ucsd.cse110.group50.eventfinder.storage.User;
 public class MyListFragment extends Fragment implements OnItemClickListener {
     RecyclerView recList;
     boolean ready;
+    private int plannedEvents;
     private int curEvents;
 
     private static String TAG = "MyListFragment";
@@ -61,7 +62,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
 
         /* Setup adapter */
-        EventAdapter adapter = new EventAdapter(MapView.eventList, curEvents);
+        EventAdapter adapter = new EventAdapter( MapView.eventList, 0, 0 );
         recList.setAdapter(adapter);
         recList.setLayoutManager(llm);
 
@@ -125,12 +126,6 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         //Get events from MapView
         ArrayList<Event> eventList = EventList.getInstance();
 
-        //Update event base on Flag
-        if(MapView.date_filtered != null)
-        {
-            eventList = processFilter(MapView.date_filtered, eventList);
-        }
-
         if( !MapView.user_on_all_events_flag )
         {
             eventList = processSearch( false, eventList );
@@ -141,8 +136,10 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
             eventList = processSearch( true , eventList );
         }
 
+        eventList = processFilter( eventList );
+
         /* Setup new adapter */
-        EventAdapter ca = new EventAdapter( eventList, curEvents );
+        EventAdapter ca = new EventAdapter( eventList, plannedEvents, curEvents );
         recList.setAdapter( ca );
 
         /* Swipe and dismiss configurations */
@@ -156,20 +153,34 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
 
     /**
      * Filter to sort out out-of-date events
-     * @param d event data
      * @param eventList event list
      * @return a list of valid events
      */
-    private ArrayList<Event> processFilter(EvDate d, ArrayList<Event> eventList)
+    private ArrayList<Event> processFilter( ArrayList<Event> eventList )
     {
-        ArrayList<Event> new_list = new ArrayList<>();
+        ArrayList<Event> plannedList = new ArrayList<>();
+        ArrayList<Event> curList = new ArrayList<>();
+        ArrayList<Event> oldList = new ArrayList<>();
 
-        for(Event e : eventList){
-            if(e.getDate().compareTo(d) <=0 ) //Validate date
-            {
-                new_list.add(e);
+        for( Event e : eventList ) {
+
+            if( e.getEndTime().isPast() ) {
+                oldList.add(e);
+            } else if ( e.getDate().isPast() ) {
+                curList.add(e);
+            } else {
+                plannedList.add(e);
             }
+
         }
+
+        ArrayList<Event> new_list = new ArrayList<>();
+        new_list.addAll( plannedList );
+        new_list.addAll( curList );
+        new_list.addAll( oldList );
+
+        plannedEvents = plannedList.size();
+        curEvents = curList.size();
 
         return new_list;
     }
@@ -211,25 +222,14 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
                 }
 
             }
-            curEvents = new_list.size();
         } else { //Search for event created by a specific user
             User user = MapView.curUser;
-            ArrayList<Event> old_list = new ArrayList<>(); //Out-of-date event list
-            curEvents = 0;
             for ( Event e : eventList ) {
                 if ( e.getHost().equals( user.getUid() ) ) {
                     Log.v( TAG, "In MYEVENTS, UID MATCH - userid is " + e.getUid() + "." );
-                    if ( !e.getDate().isPast() ) { //Check date
-                        Log.v( TAG, "Scheduled event." );
-                        new_list.add( e );
-                        curEvents++;
-                    } else {
-                        Log.v( TAG, "Past event." );
-                        old_list.add( e );
-                    }
+                    new_list.add( e );
                 }
             }
-            new_list.addAll( old_list ); //New events come first
         }
 
         return new_list;
