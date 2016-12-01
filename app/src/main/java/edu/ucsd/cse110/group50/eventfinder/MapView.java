@@ -114,9 +114,7 @@ public class MapView extends AppCompatActivity
 
     //Used for swipe and click on card interactions.
     static EvDate date_filtered;
-    static int swiped_position;
-    static String swiped_item_uid;
-    private static Context currContext;
+    private static Context context;
 
     /**
      * Callback function for onMarkerClickListener
@@ -172,9 +170,11 @@ public class MapView extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        currContext = getApplicationContext();
         starting = true;
+
+        context = getApplicationContext();
 
         setContentView( R.layout.activity_map_view ); //Load MapView
         spinner = (ProgressBar) findViewById(R.id.loading_spinner);
@@ -191,6 +191,7 @@ public class MapView extends AppCompatActivity
             loggedIn = true;
             startup(); //Setup components of the page
         }
+
     }
 
     /**
@@ -663,25 +664,13 @@ public class MapView extends AppCompatActivity
      * Callback function of item swipe
      * @param swiped_position1 swiped item
      */
-    public static void itemSwiped(int swiped_position1)
+    public static void itemSwiped( int swiped_position1 )
     {
-        swiped_position = swiped_position1;
-        swiped_item_uid = eventList.get(swiped_position1).getUid();
-        Intent n = new Intent(currContext, DeleteDialog.class);
-        n.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        currContext.startActivity(n); //Update event list
-    }
 
-    /**
-     * Delete item from the database and local storage
-     */
-    public static void deleteItem()
-    {
-        System.out.println("Position to delete is "+swiped_position);
-//        mFirebaseReference.child("events").child(swiped_item_uid).
-//                removeValue();
-
-        Log.d( TAG, "REMOVE: " + eventList.remove( new Event(swiped_item_uid, "") ) );
+        Intent n = new Intent( context, DeleteDialog.class );
+        n.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        n.putExtra( Identifiers.EVENT, EventAdapter.getPosition( swiped_position1 ) );
+        context.startActivity( n ); //Update event list
 
     }
 

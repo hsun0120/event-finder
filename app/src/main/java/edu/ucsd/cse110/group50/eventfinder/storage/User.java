@@ -22,7 +22,7 @@ import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 3.0
+ * @version 3.1
  */
 public class User implements Parcelable {
 
@@ -352,7 +352,9 @@ public class User implements Parcelable {
                     mDatabase.child( UID_CHILD ).setValue( uid );
                 }
             } else {
-                mDatabase.setValue( newUser );
+                Log.e( TAG, "Attempt to load a non-existant User." );
+                listener.onLoadComplete( null );
+                return;
             }
 
             newUser.updateFromDatabase( mDatabase );

@@ -24,7 +24,7 @@ import edu.ucsd.cse110.group50.eventfinder.utility.ServerLog;
  *
  * @author Thiago Marback
  * @since 2016-11-06
- * @version 3.0
+ * @version 3.1
  */
 public class Event implements Parcelable {
 
@@ -50,12 +50,15 @@ public class Event implements Parcelable {
 
     private ArrayList<LoadListener> listeners;
 
+    private ValueEventListener updater;
+    private DatabaseReference database;
+
     /* Constants */
 
     private static final byte TRUE = 1;
     private static final byte FALSE = 0;
 
-    private static final String UID_CHILD = "uid";
+    static final String UID_CHILD = "uid";
     private static final String NAME_CHILD = "name";
     private static final String HOST_CHILD = "host";
 
@@ -105,8 +108,8 @@ public class Event implements Parcelable {
         this.duration = 0;
 
         this.address = "";
-        this.lat = 0;
-        this.lng = 0;
+        this.lat = 0.5;
+        this.lng = 0.5;
 
         this.hasPassword = false;
         this.password = "";
@@ -226,7 +229,7 @@ public class Event implements Parcelable {
 
         Event ev = (Event) obj;
 
-        return !ev.uid.equals( uid );
+        return uid.equals( ev.uid );
 
     }
 
@@ -242,8 +245,10 @@ public class Event implements Parcelable {
      */
     public void updateFromDatabase( final DatabaseReference mDatabase ) {
 
+        database = mDatabase;
+
         // Listener that reads the data initially and every time something changes.
-        ValueEventListener eventListener = new ValueEventListener() {
+        updater = new ValueEventListener() {
 
             /**
              * Fills in the fields of the corresponding instance with the data from server
@@ -268,6 +273,8 @@ public class Event implements Parcelable {
                     Log.wtf( TAG, "Was reading " + uid + ", got " + data.getKey() );
                     throw new IllegalArgumentException( "UID mismatch: " + uid + " | " + data.getKey() );
                 }
+
+                Log.v( TAG, "Loading event ID " + uid + " from database." );
 
                 name = (String) data.child( NAME_CHILD ).getValue();
 
@@ -319,7 +326,14 @@ public class Event implements Parcelable {
 
             }
         };
-        mDatabase.addValueEventListener( eventListener );
+        mDatabase.addValueEventListener( updater );
+
+    }
+
+    public void deleteFromFirebase() {
+
+        database.removeEventListener( updater );
+        database.removeValue();
 
     }
 
@@ -755,7 +769,9 @@ public class Event implements Parcelable {
                     return;
                 }
             } else {
-                mDatabase.setValue( newEvent );
+                Log.e( TAG, "Attempt to load a non-existant Event." );
+                listener.onLoadComplete( null );
+                return;
             }
             newEvent.updateFromDatabase( mDatabase );
             listener.onLoadComplete( newEvent );

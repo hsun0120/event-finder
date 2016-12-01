@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.group50.eventfinder;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -154,8 +153,6 @@ public class EventDetailActivity extends AppCompatActivity {
     {
 
         ////System.out.println("Event position is "+ eventPosition);
-        MapView.swiped_position = currentPosition;
-        MapView.swiped_item_uid = card.getUid();
         Intent in = new Intent(this, CreateEvent.class);
         in.putExtra( Identifiers.EDIT, true );
         in.putExtra( Identifiers.EVENT, card );
@@ -172,12 +169,12 @@ public class EventDetailActivity extends AppCompatActivity {
         if( !card.getHasRestrictions() )
         {
             ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.INVISIBLE);
-            ((ImageView)findViewById(R.id.imageView)).setVisibility(View.INVISIBLE);
+            ((ImageView)findViewById(R.id.restIcon)).setVisibility(View.INVISIBLE);
         }
         else
         {
             ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.VISIBLE);
-            ((ImageView)findViewById(R.id.imageView)).setVisibility(View.VISIBLE);
+            ((ImageView)findViewById(R.id.restIcon)).setVisibility(View.VISIBLE);
         }
         //if(CreateEvent.editedCard != null)
         //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());

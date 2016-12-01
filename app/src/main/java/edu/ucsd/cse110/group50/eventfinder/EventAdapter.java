@@ -173,5 +173,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     }
 
+    public static Event getPosition( int position ) {
+
+        return eventList.get( position );
+
+    }
 
 }

@@ -28,22 +28,23 @@
             android:layout_marginTop="30dp">
 
             <TextView
-
+                android:text="Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/event_detail_description_view"
+                android:id="@+id/event_detail_title"
+                android:textStyle="normal|bold"
                 android:textSize="24sp"
-                android:layout_alignStart="@id/event_detail_address_text_view"
-                android:layout_alignTop="@+id/imageView9"
-                android:layout_toEndOf="@+id/imageView9"
-                android:layout_marginRight="30dp"/>
+                android:textColor="@color/bodyTextColor"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/clockIcon" />
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/imageView7"
-                android:layout_toEndOf="@+id/imageView7">
+                android:id="@+id/times"
+                android:layout_alignTop="@+id/clockIcon"
+                android:layout_toEndOf="@+id/clockIcon">
 
                 <TextView
                     android:text="01/01/1900"
@@ -68,65 +69,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_query_builder_black_24dp"
-                android:id="@+id/imageView7"
+                android:id="@+id/clockIcon"
                 android:layout_marginStart="15dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="50dp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_location_on_black_24dp"
-                android:id="@+id/imageView8"
-                android:layout_marginTop="80dp"
-                android:layout_below="@+id/imageView7"
-                android:layout_alignStart="@+id/imageView7" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_event_black_24dp"
-                android:id="@+id/imageView9"
-                android:layout_marginTop="80dp"
-                android:layout_marginRight="30dp"
-                android:layout_below="@+id/imageView8"
-                android:layout_alignStart="@+id/imageView8" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/stat_sys_warning"
-                android:id="@+id/imageView"
                 android:layout_marginTop="50dp"
-                android:layout_marginRight="30dp"
-                android:layout_below="@+id/imageView9"
-                android:layout_alignStart="@+id/imageView9"
-                android:background="@color/bodyTextColor"
-                android:layout_alignTop="@+id/event_restriction" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_restriction"
-                android:textStyle="normal|bold"
-                android:textSize="18sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:layout_alignParentBottom="true"
-                android:layout_toEndOf="@+id/imageView"
-                android:layout_below="@+id/event_detail_description_view"
-                />
-
-            <TextView
-                android:text="Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_detail_title"
-                android:textStyle="normal|bold"
-                android:textSize="24sp"
-                android:textColor="@color/bodyTextColor"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/imageView7" />
+                android:layout_below="@+id/event_detail_title"/>
 
             <TextView
                 android:text="View location in map"
@@ -136,8 +84,58 @@
                 android:onClick="showMap"
                 android:textSize="30sp"
                 android:textColor="?android:attr/textColorPrimaryDisableOnly"
-                android:layout_above="@+id/imageView9"
-                android:layout_toEndOf="@+id/imageView8" />
+                android:layout_below="@+id/times"
+                android:layout_alignStart="@+id/times"
+                android:layout_marginTop="30dp"
+                android:paddingStart="17dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_location_on_black_24dp"
+                android:id="@+id/placeIcon"
+                android:layout_alignTop="@+id/event_detail_address_text_view"
+                android:layout_toStartOf="@+id/event_detail_address_text_view" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_detail_description_view"
+                android:textSize="24sp"
+                android:layout_below="@+id/event_detail_address_text_view"
+                android:layout_alignStart="@+id/event_detail_address_text_view"
+                android:layout_marginTop="30dp"
+                android:paddingStart="17dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_event_black_24dp"
+                android:id="@+id/descIcon"
+                android:layout_alignTop="@+id/event_detail_description_view"
+                android:layout_toStartOf="@+id/event_detail_description_view" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_restriction"
+                android:textStyle="normal|bold"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_below="@+id/event_detail_description_view"
+                android:layout_alignStart="@+id/event_detail_description_view"
+                android:layout_marginTop="30dp"
+                android:paddingStart="17dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/stat_sys_warning"
+                android:id="@+id/restIcon"
+                android:background="@color/bodyTextColor"
+                android:layout_alignTop="@+id/event_restriction"
+                android:layout_toStartOf="@+id/event_restriction"
+                android:paddingEnd="5dp"/>
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -318,7 +318,8 @@ public class CreateEvent extends AppCompatActivity {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS );
         if ( editing ) {
-            eventInDatabase = eventInDatabase.child( MapView.swiped_item_uid );
+            Event ev = (Event) getIntent().getParcelableExtra( Identifiers.EVENT );
+            eventInDatabase = eventInDatabase.child( ev.getUid() );
         } else {
             eventInDatabase = eventInDatabase.push();
         }
