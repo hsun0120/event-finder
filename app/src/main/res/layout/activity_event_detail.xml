@@ -95,25 +95,22 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/stat_sys_warning"
+                app:srcCompat="@drawable/ic_error_outline_black_24dp"
                 android:id="@+id/imageView"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="30dp"
                 android:layout_below="@+id/event_detail_description_view"
-                android:layout_alignStart="@+id/imageView9"
-                android:background="@color/bodyTextColor"
-                android:layout_alignTop="@+id/event_restriction" />
+                android:layout_alignStart="@+id/imageView9" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/event_restriction"
                 android:textStyle="normal|bold"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textColor="@android:color/holo_red_dark"
-                android:layout_alignParentBottom="true"
+                android:layout_marginTop="5dp"
+                android:layout_alignTop="@+id/imageView"
                 android:layout_toEndOf="@+id/imageView"
-                android:layout_below="@+id/event_detail_description_view"
                 />
 
             <TextView
