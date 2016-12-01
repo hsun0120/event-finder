@@ -176,6 +176,8 @@ public class EventDetailActivity extends AppCompatActivity {
             ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.VISIBLE);
             ((ImageView)findViewById(R.id.restIcon)).setVisibility(View.VISIBLE);
         }
+
+        setData();
         //if(CreateEvent.editedCard != null)
         //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
         //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
