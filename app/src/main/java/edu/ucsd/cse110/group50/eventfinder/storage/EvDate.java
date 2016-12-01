@@ -119,6 +119,22 @@ public class EvDate implements Parcelable {
     }
 
     /**
+     * Creates a new EvDate from a Calendar object.
+     *
+     * @param c Calendar to be converted to EvDate.
+     */
+    public EvDate( Calendar c ) {
+
+        this.hour = c.get( Calendar.HOUR_OF_DAY );
+        this.minute = c.get( Calendar.MINUTE );
+
+        this.day = c.get( Calendar.DAY_OF_MONTH );
+        this.month = c.get( Calendar.MONTH ) + 1;
+        this.year = c.get( Calendar.YEAR );
+
+    }
+
+    /**
      * Constructor that recreates an instance of the class from a Parcel.
      * Can only be accessed by CREATOR.
      *

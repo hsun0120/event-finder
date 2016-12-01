@@ -441,9 +441,6 @@ public class MapView extends AppCompatActivity
      */
     protected void onStart() {
 
-        //Clear edited card
-        CreateEvent.editedCard = null;
-
         // Create an instance of GoogleAPIClient.
         if ( mGoogleApiClient == null ) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)

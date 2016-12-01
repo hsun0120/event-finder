@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
 import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
@@ -95,7 +96,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
                     int position = getAdapterPosition();
-                    intent.putExtra( "event_card", eventList.get(position) );
+                    intent.putExtra( Identifiers.EVENT, data );
                     intent.putExtra("event_position", position);
                     v.getContext().startActivity(intent);
                 }

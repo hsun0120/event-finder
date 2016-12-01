@@ -52,9 +52,7 @@ public class CreateEvent extends AppCompatActivity {
 
     public static Event editedCard;
 
-    //For toggles
-    private boolean hasPasswordChecked;
-    private boolean hasRestrictionChecked;
+    private boolean editing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +68,6 @@ public class CreateEvent extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    hasPasswordChecked = true;
                     ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.VISIBLE);
 
 
@@ -79,7 +76,6 @@ public class CreateEvent extends AppCompatActivity {
                 {
                     ((TextView)findViewById(R.id.eventPassword)).setVisibility(View.INVISIBLE);
 
-                    hasPasswordChecked = false;
                 }
             }
         });
@@ -89,31 +85,36 @@ public class CreateEvent extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    hasRestrictionChecked = true;
                     ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.VISIBLE);
                 }
                 else
                 {
-                    hasRestrictionChecked = false;
                     ((TextView)findViewById(R.id.eventRestrictions)).setVisibility(View.INVISIBLE);
                 }
             }
         });
 
 
+        editing = getIntent().getBooleanExtra( Identifiers.EDIT, false );
         //((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
-        if(EventDetailActivity.user_editting_flag == 1)
-        {
+        if( editing ) {
             ((Button)findViewById(R.id.doneButton)).setText("Edit Event!");
-            Event card = getIntent().getParcelableExtra("event_card");
+            Event card = getIntent().getParcelableExtra( Identifiers.EVENT );
             //System.out.println("event got is " + card.toString());
             ((TextView)findViewById(R.id.eventName)).setText(card.getName());
             ((TextView)findViewById(R.id.eventAddress)).setText(card.getAddress());
-            ((TextView)findViewById(R.id.eventDate)).setText(card.getDate().getDate().toString());
-            ((TextView)findViewById(R.id.eventTime)).setText(card.getDate().getTime().toString());
+            ((TextView)findViewById(R.id.eventDate)).setText(card.getDate().getDate());
+            ((TextView)findViewById(R.id.eventTime)).setText(card.getDate().getTime());
             ((TextView)findViewById(R.id.eventPassword)).setText(card.getPassword());
-            ((TextView)findViewById(R.id.eventRestrictions)).setText(card.getRestrictions().get(0));
+            String restrictions = "";
+            for ( String restriction : card.getRestrictions() ) {
+
+                restrictions += restriction + "\n";
+
+            }
+            ((TextView)findViewById(R.id.eventRestrictions)).setText(restrictions);
             ((TextView)findViewById(R.id.eventDescription)).setText(card.getDescription());
+            ((TextView)findViewById(R.id.duration)).setText( String.valueOf( card.getDuration() ) );
 
             if(card.getHasPassword())
                 ((Switch) findViewById( R.id.passOption )).toggle();
@@ -314,7 +315,7 @@ public class CreateEvent extends AppCompatActivity {
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS );
-        if ( EventDetailActivity.user_editting_flag == 1 ) {
+        if ( editing ) {
             eventInDatabase = eventInDatabase.child( MapView.swiped_item_uid );
         } else {
             eventInDatabase = eventInDatabase.push();
@@ -322,20 +323,13 @@ public class CreateEvent extends AppCompatActivity {
         String uid = eventInDatabase.getKey();
         Event newEvent = new Event( uid, curUser.getUid() );
 
+        // Records the data in the Event.
+        newEvent.setName( name );
+        newEvent.setAddress( address );
 
-
-
-            // Records the data in the Event.
-            newEvent.setName( name );
-
-            newEvent.setAddress( address );
-
-
-
-
-        if(EventDetailActivity.user_editting_flag == 1)
+        if( editing )
         {
-            Event card = getIntent().getParcelableExtra("event_card");
+            Event card = getIntent().getParcelableExtra( Identifiers.EVENT );
 
             if ( place == null && !address.equals( card.getAddress() ) ) {
                 Toast.makeText(CreateEvent.this, "You must pick a location from map!",
@@ -371,14 +365,6 @@ public class CreateEvent extends AppCompatActivity {
         newEvent.setDescription(description);
 
         eventInDatabase.setValue(newEvent);
-
-
-        if(EventDetailActivity.user_editting_flag == 1)
-        {
-            editedCard = newEvent;
-            EventDetailActivity.user_editting_flag = 0;
-
-        }
 
         finish();
 

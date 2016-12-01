@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
+import edu.ucsd.cse110.group50.eventfinder.utility.LoadListener;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -21,18 +23,17 @@ import edu.ucsd.cse110.group50.eventfinder.storage.Event;
  * in a {}.
  */
 public class EventDetailActivity extends AppCompatActivity {
+
     public static boolean userEnteredCorrectPassword;
 
-    public static int user_editting_flag;
-
-    static int currentPosition;
-    static Context currContext;
-    static Event card;
+    private static int currentPosition;
+    private Event card;
+    private LoadListener updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        currContext = getApplicationContext();
         if(MapView.user_on_all_events_flag)
              userEnteredCorrectPassword = false;
         else
@@ -42,7 +43,7 @@ public class EventDetailActivity extends AppCompatActivity {
         currentPosition = getIntent().getIntExtra("event_position", 1000);
         //System.out.println("Event detail, user swiped position "+ currentPosition);
 
-        card = getIntent().getParcelableExtra("event_card");
+        card = getIntent().getParcelableExtra( Identifiers.EVENT );
         String eventPassword = card.getPassword();
 
         if(!userEnteredCorrectPassword) {
@@ -58,7 +59,18 @@ public class EventDetailActivity extends AppCompatActivity {
             ((FloatingActionButton)findViewById(R.id.floatingActionButton2)).setVisibility(View.INVISIBLE);
         }
 
+        card = (Event) getIntent().getParcelableExtra( Identifiers.EVENT );
+        updater = new LoadListener() {
 
+            @Override
+            public void onLoadComplete(Object data) {
+
+                setData();
+
+            }
+
+        };
+        card.addListener( updater );
 
         //System.out.println("Event detail ONCREEEEEATE Called");
 
@@ -104,6 +116,7 @@ public class EventDetailActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.event_detail_title)).setText(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
         dateView.setText( "From " + card.getDate().toString() );
+        dateView.setTextColor(Color.BLACK);
         TextView endDate = (TextView) findViewById(R.id.event_detail_end_date);
         endDate.setText( "to " + card.getEndTime().toString() );
         endDate.setTextColor(Color.BLACK);
@@ -113,11 +126,18 @@ public class EventDetailActivity extends AppCompatActivity {
         addressView.setText(card.getAddress());
         addressView.setTextColor(Color.BLACK);
         TextView restrictionView = (TextView)findViewById(R.id.event_restriction);
-        restrictionView.setText("Restrictions: "+card.getRestrictions().get(0));
+        String restrictions = "Restrictions:\n";
+        for ( String restriction : card.getRestrictions() ) {
+
+            restrictions += restriction + "\n";
+
+        }
+        restrictionView.setText( restrictions );
         if(card.getHasPassword() && !userEnteredCorrectPassword)
         {
             dateView.setText("You don't have permission for details.");
             dateView.setTextColor(Color.RED);
+            endDate.setText("");
             addressView.setText("Please reopen this event and enter password.");
             addressView.setTextColor(Color.RED);
             desView.setText("");
@@ -132,14 +152,15 @@ public class EventDetailActivity extends AppCompatActivity {
      */
     public void event_detail_edit(View v)
     {
-        user_editting_flag = 1;
 
         ////System.out.println("Event position is "+ eventPosition);
         MapView.swiped_position = currentPosition;
         MapView.swiped_item_uid = card.getUid();
         Intent in = new Intent(this, CreateEvent.class);
-        in.putExtra( "event_card", getIntent().getParcelableExtra("event_card") );
+        in.putExtra( Identifiers.EDIT, true );
+        in.putExtra( Identifiers.EVENT, card );
         startActivity(in);
+
     }
 
     @Override
@@ -148,9 +169,7 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onStart();
         //System.out.println("Event Detail on STAAAAAAAAART called.");
 
-        card = (CreateEvent.editedCard != null) ? CreateEvent.editedCard : (Event)getIntent().getParcelableExtra("event_card");
-
-        if(card.getHasRestrictions() == false)
+        if( !card.getHasRestrictions() )
         {
             ((TextView)findViewById(R.id.event_restriction)).setVisibility(View.INVISIBLE);
             ((ImageView)findViewById(R.id.imageView)).setVisibility(View.INVISIBLE);
@@ -163,15 +182,14 @@ public class EventDetailActivity extends AppCompatActivity {
         //if(CreateEvent.editedCard != null)
         //System.out.println("Edited card is "+ CreateEvent.editedCard.getName());
         //System.out.println("Real card is "+( (Event)getIntent().getParcelableExtra("event_card")).getName());
-        setData();
-
 
     }
 
     @Override
-    public void onResume()
-    {
-        super.onResume();
+    public void onDestroy() {
+
+        super.onDestroy();
+        card.removeListener( updater );
 
     }
 

@@ -144,20 +144,13 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:id="@+id/eventDescription"
             android:hint="@string/descriptionHint"
             android:inputType="textMultiLine"
             android:gravity="start"
-            android:layout_weight="1"
-            android:ems="10" />
-
-        <Button
-            android:text="@string/createEventDoneButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/doneButton"
-            android:onClick="createEvent" />
+            android:ems="10"
+            android:layout_weight="200"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -182,7 +175,17 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/durationLabel"
                 android:textSize="24sp" />
-        </LinearLayout>
+
+            </LinearLayout>
+
+        <Button
+            android:text="@string/createEventDoneButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/doneButton"
+            android:onClick="createEvent"
+            android:layout_weight="1"
+            tools:layout_height="wrap_content" />
 
     </LinearLayout>
 

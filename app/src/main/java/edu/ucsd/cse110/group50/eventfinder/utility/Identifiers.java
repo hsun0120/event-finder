@@ -26,6 +26,10 @@ public interface Identifiers {
      * Name used to pass a username in an intent.
      */
     String USER_NAME = "userName";
+    /**
+     * Name used to pass in an intent a flag indicating current action is an edit.
+     */
+    String EDIT = "edit";
 
     /**
      * Node in Firebase that contains user data.

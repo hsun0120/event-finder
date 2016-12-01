@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import edu.ucsd.cse110.group50.eventfinder.storage.EvDate;
 import edu.ucsd.cse110.group50.eventfinder.storage.Event;
+import edu.ucsd.cse110.group50.eventfinder.storage.EventList;
 import edu.ucsd.cse110.group50.eventfinder.storage.User;
 
 /**
@@ -122,7 +123,7 @@ public class MyListFragment extends Fragment implements OnItemClickListener {
         Log.d( TAG, "Updating." );
         MapView.spinner.setVisibility( View.VISIBLE );
         //Get events from MapView
-        ArrayList<Event> eventList = MapView.eventList;
+        ArrayList<Event> eventList = EventList.getInstance();
 
         //Update event base on Flag
         if(MapView.date_filtered != null)

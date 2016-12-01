@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import edu.ucsd.cse110.group50.eventfinder.utility.Identifiers;
@@ -196,47 +197,11 @@ public class Event implements Parcelable {
      */
     public EvDate getEndTime() {
 
-        int minutes = date.getMinute() + duration;
-        int hours = ( date.getHour() + ( minutes / 60 ) );
-        minutes %= 60;
+        Calendar endTime = Calendar.getInstance();
+        endTime.set( date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(),
+                     date.getMinute() + duration );
 
-        int days = ( date.getDay() + ( hours / 24 ) );
-        hours %= 24;
-        int month = date.getMonth();
-        int year = date.getYear();
-        switch ( month ) {
-            case 1: // Determines how long the current month lasts.
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                month += days / 31;
-                days %= 31;
-                break;
-            case 4:
-            case 6:
-            case 9:
-            case 11:
-                month += days / 30;
-                days %= 30;
-                break;
-            case 2:
-                if ( ( year % 4) == 0 ) { // Accounts for leap year.
-                    month += days / 29;
-                    days %= 29;
-                } else {
-                    month += days / 28;
-                    days %= 28;
-                }
-                break;
-
-        }
-        year += month / 12;
-        month %= 12;
-
-        return new EvDate( hours, minutes, days, month, year );
+        return new EvDate( endTime );
 
     }
 
