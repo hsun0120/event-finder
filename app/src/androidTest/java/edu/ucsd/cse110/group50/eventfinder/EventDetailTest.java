@@ -49,7 +49,7 @@ public class EventDetailTest {
 
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.cardList), isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(0, click()));
+        recyclerView.perform(actionOnItemAtPosition(1, click()));
 
         pressBack();
 
