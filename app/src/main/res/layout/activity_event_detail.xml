@@ -27,17 +27,6 @@
             android:layout_marginTop="30dp">
 
             <TextView
-                android:text="01/01/1900"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_detail_date_view"
-                android:layout_marginStart="17dp"
-                android:textSize="24sp"
-                android:layout_above="@+id/imageView8"
-                android:layout_toEndOf="@+id/imageView7"
-                android:textStyle="normal|bold" />
-
-            <TextView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,16 +36,31 @@
                 android:layout_alignTop="@+id/imageView9"
                 android:layout_marginRight="30dp"/>
 
-            <TextView
-                android:text="View location in map"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/event_detail_address_text_view"
-                android:onClick="showMap"
-                android:textSize="18sp"
-                android:textColor="?android:attr/textColorPrimaryDisableOnly"
-                android:layout_alignBottom="@+id/imageView8"
-                android:layout_alignStart="@+id/event_detail_date_view" />
+                android:layout_alignTop="@+id/imageView7"
+                android:layout_toEndOf="@+id/imageView7">
+
+                <TextView
+                    android:text="01/01/1900"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/event_detail_date_view"
+                    android:layout_marginStart="17dp"
+                    android:textSize="24sp"
+                    android:textStyle="normal|bold" />
+
+                <TextView
+                    android:text="to 01/01/1900"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/event_detail_end_date"
+                    android:layout_marginStart="17dp"
+                    android:textSize="24sp"
+                    android:textStyle="normal|bold" />
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -118,6 +122,17 @@
                 android:textColor="@color/bodyTextColor"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/imageView7" />
+
+            <TextView
+                android:text="View location in map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_detail_address_text_view"
+                android:onClick="showMap"
+                android:textSize="18sp"
+                android:textColor="?android:attr/textColorPrimaryDisableOnly"
+                android:layout_above="@+id/imageView9"
+                android:layout_toEndOf="@+id/imageView8" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

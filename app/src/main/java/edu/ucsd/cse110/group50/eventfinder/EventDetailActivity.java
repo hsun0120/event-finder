@@ -103,8 +103,10 @@ public class EventDetailActivity extends AppCompatActivity {
         //Set data here
         ((TextView) findViewById(R.id.event_detail_title)).setText(card.getName());
         TextView dateView = (TextView) findViewById(R.id.event_detail_date_view);
-        dateView.setText( card.getDate().getDate() );
-        dateView.setTextColor(Color.BLACK);
+        dateView.setText( "From " + card.getDate().toString() );
+        TextView endDate = (TextView) findViewById(R.id.event_detail_end_date);
+        endDate.setText( "to " + card.getEndTime().toString() );
+        endDate.setTextColor(Color.BLACK);
         TextView desView = (TextView) findViewById(R.id.event_detail_description_view);
         desView.setText(card.getDescription());
         TextView addressView = (TextView)findViewById(R.id.event_detail_address_text_view);
