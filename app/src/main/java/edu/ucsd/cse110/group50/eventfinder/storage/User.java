@@ -283,7 +283,6 @@ public class User implements Parcelable {
     /**
      * Creates a new User instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired User object.
-     * If the User does not currently exist, initializes it.
      *
      * @param mDatabase Database to be read.
      * @param listener Event handler for when the User is completed.
@@ -300,10 +299,9 @@ public class User implements Parcelable {
 
     /**
      * Listener class that performs the initial read of an User from the database.
-     * Creates the User in the database if it did not exist.
      *
      * @author Thiago Marback
-     * @version 1.1
+     * @version 1.2
      * @since 2016-11-13
      */
     private static class UserBuilder implements ValueEventListener {

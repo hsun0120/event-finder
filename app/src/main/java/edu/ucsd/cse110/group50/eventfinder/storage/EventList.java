@@ -136,6 +136,14 @@ public class EventList extends ArrayList<Event> {
 
     }
 
+    /**
+     * Removes an Event from the list and from the database.
+     *
+     * @param o Event to be removed.
+     * @return true if successfully removed.
+     *         false if not found.
+     * @throws IllegalArgumentException if the object received is not an Event.
+     */
     @Override
     public boolean remove( Object o ) throws IllegalArgumentException {
 

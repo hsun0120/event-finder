@@ -685,7 +685,6 @@ public class Event implements Parcelable {
     /**
      * Creates a new Event instance from the data stored in the given database.
      * The root of the database corresponds to the node containing to the desired Event object.
-     * If the Event does not currently exist, initializes it.
      * If the host ID in the database is different from the expected ID, cancels the read,
      * and the listener will receive null instead of the loaded Event.
      *
@@ -706,10 +705,9 @@ public class Event implements Parcelable {
 
     /**
      * Listener class that performs the initial read of an Event from the database.
-     * Creates the Event in the database if it did not exist.
      *
      * @author Thiago Marback
-     * @version 1.2
+     * @version 1.3
      * @since 2016-11-13
      */
     private static class EventBuilder implements ValueEventListener {
