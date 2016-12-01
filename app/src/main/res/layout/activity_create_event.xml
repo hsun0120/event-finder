@@ -159,6 +159,31 @@
             android:id="@+id/doneButton"
             android:onClick="createEvent" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/durationHint"
+                android:ems="10"
+                android:id="@+id/duration"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textAlignment="textStart"
+                android:maxLength="6" />
+
+            <TextView
+                android:text="@string/durationUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/durationLabel"
+                android:textSize="24sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <ImageView

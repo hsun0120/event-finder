@@ -31,6 +31,8 @@
     <string name="restrictionsLabel">Guest restrictions?</string>
     <string name="restrictionsHint">Restrictions...</string>
     <string name="descriptionHint">Event description...</string>
+    <string name="durationHint">Event duration...</string>
+    <string name="durationUnit">minutes</string>
     <string name="createEventDoneButton">Create event!</string>
     <string name="dummyContents">If you see this string, an error occurs in loading description.
     </string>

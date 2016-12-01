@@ -261,7 +261,7 @@ public class Event implements Parcelable {
 
         Event ev = (Event) obj;
 
-        return ev.uid.equals( uid );
+        return !ev.uid.equals( uid );
 
     }
 

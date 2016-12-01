@@ -266,6 +266,9 @@ public class CreateEvent extends AppCompatActivity {
         EditText descriptionBox = (EditText) findViewById( R.id.eventDescription );
         String description = descriptionBox.getText().toString().trim();
 
+        EditText durationBox = (EditText) findViewById( R.id.duration );
+        String duration = durationBox.getText().toString().trim();
+
         if(!passwordToggle.isChecked())
         {
             password = "";
@@ -298,6 +301,16 @@ public class CreateEvent extends AppCompatActivity {
                     Toast.LENGTH_SHORT ).show();
             return;
         }
+        if ( description.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Description field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
+        if ( duration.isEmpty() ) {
+            Toast.makeText( CreateEvent.this, "Duration field cannot be empty.",
+                    Toast.LENGTH_SHORT ).show();
+            return;
+        }
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference eventInDatabase = mDatabase.child( Identifiers.FIREBASE_EVENTS );
@@ -313,9 +326,9 @@ public class CreateEvent extends AppCompatActivity {
 
 
             // Records the data in the Event.
-            newEvent.setName(name);
+            newEvent.setName( name );
 
-            newEvent.setAddress(address);
+            newEvent.setAddress( address );
 
 
 
@@ -324,49 +337,50 @@ public class CreateEvent extends AppCompatActivity {
         {
             Event card = getIntent().getParcelableExtra("event_card");
 
-            if (place == null && !address.equals(card.getAddress())) {
+            if ( place == null && !address.equals( card.getAddress() ) ) {
                 Toast.makeText(CreateEvent.this, "You must pick a location from map!",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            newEvent.setLng(card.getLng());
-            newEvent.setLat(card.getLat());
+            newEvent.setLng( card.getLng() );
+            newEvent.setLat( card.getLat() );
 
         }
         else {
-            if (place == null) {
+            if ( place == null ) {
                 Toast.makeText(CreateEvent.this, "You must pick a location from map!",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            newEvent.setLng(place.getLatLng().longitude);
-            newEvent.setLat(place.getLatLng().latitude);
+            newEvent.setLng( place.getLatLng().longitude );
+            newEvent.setLat( place.getLatLng().latitude );
 
 
         }
-            newEvent.setDate(selected);
+        newEvent.setDate( selected );
+        newEvent.setDuration( Integer.valueOf( duration ) );
 
-            newEvent.setHasPassword(passwordToggle.isChecked());
-            newEvent.setPassword(password);
-            newEvent.setHasRestrictions(restrictionsToggle.isChecked());
-            String[] restrictionList = restrictions.split("\n");
-            newEvent.setRestrictions(Arrays.asList(restrictionList));
+        newEvent.setHasPassword( passwordToggle.isChecked() );
+        newEvent.setPassword( password );
+        newEvent.setHasRestrictions( restrictionsToggle.isChecked() );
+        String[] restrictionList = restrictions.split("\n");
+        newEvent.setRestrictions( Arrays.asList( restrictionList ) );
 
-            newEvent.setDescription(description);
+        newEvent.setDescription(description);
 
-            eventInDatabase.setValue(newEvent);
+        eventInDatabase.setValue(newEvent);
 
 
-            if(EventDetailActivity.user_editting_flag == 1)
-            {
-                editedCard = newEvent;
-                EventDetailActivity.user_editting_flag = 0;
+        if(EventDetailActivity.user_editting_flag == 1)
+        {
+            editedCard = newEvent;
+            EventDetailActivity.user_editting_flag = 0;
 
-            }
+        }
 
-            finish();
+        finish();
 
 
     }
@@ -400,6 +414,7 @@ public class CreateEvent extends AppCompatActivity {
         Switch restrictionsToggle = (Switch) findViewById( R.id.restrictionsToggle );
         EditText restrictions = (EditText) findViewById( R.id.eventRestrictions );
         EditText description = (EditText) findViewById( R.id.eventDescription );
+        EditText duration = (EditText) findViewById( R.id.duration );
         Button finish = (Button) findViewById( R.id.doneButton );
 
         name.setEnabled( clickable );
@@ -411,6 +426,7 @@ public class CreateEvent extends AppCompatActivity {
         restrictionsToggle.setClickable( clickable );
         restrictions.setEnabled( clickable );
         description.setEnabled( clickable );
+        duration.setEnabled( clickable );
         finish.setClickable( clickable );
 
     }
