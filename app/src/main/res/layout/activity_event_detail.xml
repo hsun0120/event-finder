@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/event_detail_address_text_view"
                 android:onClick="showMap"
-                android:textSize="18sp"
+                android:textSize="30sp"
                 android:textColor="?android:attr/textColorPrimaryDisableOnly"
                 android:layout_above="@+id/imageView9"
                 android:layout_toEndOf="@+id/imageView8" />
