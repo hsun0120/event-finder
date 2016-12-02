@@ -45,18 +45,26 @@ public class EventTester {
 
     }
 
+    /**
+     * Given a use has already signed in,
+     * when he or she switched to event detail page,
+     * then the correct event end time showed.
+     */
     @Test
     public void testGetEndTime() {
-
         EvDate date = new EvDate( 11, 42, 15, 3, 2015 );
         assertEquals( "Incorrect endtime calculated.", date, event.getEndTime() );
         event.setDuration( 1440 );
         date = new EvDate( 10, 2, 16, 3, 2015 );
         assertEquals( "Incorrect endtime calculated.", date, event.getEndTime() );
-
-
     }
 
+    /**
+     * Given an event organizer has already signed in,
+     * when he or she created two new events,
+     * and named the events the same name,
+     * then an error message popped up.
+     */
     @Test
     public void testEquals() {
 

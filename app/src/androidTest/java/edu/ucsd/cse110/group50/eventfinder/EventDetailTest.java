@@ -29,13 +29,25 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class EventDetailTest {
 
     @Rule
     public ActivityTestRule<MapView> mActivityTestRule = new ActivityTestRule<>(MapView.class);
 
+    /**
+     * Given I am logged in
+     * And users have added at least one event in all events page,
+     * When I click an event card
+     * Then a new page showed up with details of this event that I clicked.
+     *
+     * Given... the same pre-condition above,
+     * When I click the filter,
+     * Then it redirects to filter page,
+     * When I click on a time to filter within,
+     * And I click done,
+     * Then cardlist should refresh with the filtered events.
+     */
     @Test
     public void eventDetailTest() {
 

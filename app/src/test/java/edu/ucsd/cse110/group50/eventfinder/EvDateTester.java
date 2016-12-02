@@ -10,6 +10,10 @@ import static org.junit.Assert.*;
 /**
  * Test suite for the EvDate class.
  *
+ * Given an event organizer has already signed in,
+ * when he or she wants to create new event,
+ * and put past time as event time,
+ * then it should pop up an error message.
  * @author Thiago Marback
  * @since 2016-11-28
  * @version 1.1
